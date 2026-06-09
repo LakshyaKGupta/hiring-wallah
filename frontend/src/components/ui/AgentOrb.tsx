@@ -95,20 +95,20 @@ function NodeNetwork() {
           />
         </bufferGeometry>
         <pointsMaterial
-          color="#00E5FF"
-          size={0.12}
+          color="#6366F1"
+          size={0.10}
           sizeAttenuation={true}
           transparent={true}
-          opacity={0.8}
+          opacity={0.6}
         />
       </points>
       
       <lineSegments ref={linesRef}>
         <bufferGeometry />
         <lineBasicMaterial
-          color="#00E5FF"
+          color="#6366F1"
           transparent={true}
-          opacity={0.18}
+          opacity={0.12}
           linewidth={1}
         />
       </lineSegments>
@@ -123,13 +123,13 @@ export default function AgentOrb() {
   }, [])
   
   if (!mounted) {
-    return <div className="absolute inset-0 bg-[#050A14]" />
+    return <div className="absolute inset-0 bg-transparent" />
   }
   
   return (
-    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-40">
+    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-50">
       <Canvas camera={{ position: [0, 0, 10], fov: 60 }}>
-        <ambientLight intensity={0.6} />
+        <ambientLight intensity={0.8} />
         <NodeNetwork />
       </Canvas>
     </div>

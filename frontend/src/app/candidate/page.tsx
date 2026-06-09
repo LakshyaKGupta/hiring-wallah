@@ -135,8 +135,8 @@ export default function CandidateDashboard() {
         
         {/* Loading Overlay */}
         {isRunning && (
-          <div className="absolute inset-0 bg-[#050A14]/95 z-50 flex flex-col items-center justify-center p-6">
-            <div className="w-full max-w-lg bg-bg-surface border border-border-subtle rounded-xl p-8 shadow-[0_0_50px_rgba(0,229,255,0.15)] text-center">
+          <div className="absolute inset-0 bg-bg-deep/95 z-50 flex flex-col items-center justify-center p-6">
+            <div className="w-full max-w-lg bg-bg-surface border border-border-subtle rounded-xl p-8 shadow-sm text-center">
               <div className="flex items-center justify-center gap-3 mb-6">
                 <Loader2 className="w-6 h-6 text-accent-primary animate-spin" />
                 <h3 className="font-display font-bold text-lg text-text-primary tracking-wide uppercase">
@@ -262,7 +262,7 @@ export default function CandidateDashboard() {
             <button
               type="submit"
               disabled={!resumeFile || !targetRole}
-              className="w-full py-3.5 bg-accent-primary hover:bg-white text-bg-deep disabled:opacity-40 disabled:hover:bg-accent-primary rounded font-mono uppercase font-bold tracking-wider transition-colors flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(0,229,255,0.15)] cursor-pointer"
+              className="w-full py-3.5 bg-accent-primary hover:bg-white hover:text-accent-primary text-white border border-accent-primary disabled:opacity-40 disabled:hover:bg-accent-primary disabled:hover:text-white rounded font-mono uppercase font-bold tracking-wider transition-colors flex items-center justify-center gap-2 shadow-sm cursor-pointer"
             >
               <UserCheck className="w-5 h-5" />
               <span>Analyze My Profile</span>

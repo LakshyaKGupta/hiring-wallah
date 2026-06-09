@@ -19,27 +19,27 @@ export default function VerdictReveal({ verdict, confidence, explanation, jobTit
   const config = {
     'Strong Hire': {
       color: '#10B981',
-      bgGlow: 'rgba(16, 185, 129, 0.15)',
+      bgGlow: 'rgba(16, 185, 129, 0.08)',
       icon: CheckCircle2,
-      shadow: 'shadow-[0_0_50px_rgba(16,185,129,0.3)]'
+      shadow: 'shadow-[0_4px_30px_rgba(16,185,129,0.1)]'
     },
     'Consider': {
-      color: '#F59E0B',
-      bgGlow: 'rgba(245, 158, 11, 0.15)',
+      color: '#D97706',
+      bgGlow: 'rgba(217, 119, 6, 0.08)',
       icon: AlertTriangle,
-      shadow: 'shadow-[0_0_50px_rgba(245,158,11,0.3)]'
+      shadow: 'shadow-[0_4px_30px_rgba(217,119,6,0.1)]'
     },
     'Reject': {
       color: '#EF4444',
-      bgGlow: 'rgba(239, 68, 68, 0.15)',
+      bgGlow: 'rgba(239, 68, 68, 0.08)',
       icon: XCircle,
-      shadow: 'shadow-[0_0_50px_rgba(239,68,68,0.3)]'
+      shadow: 'shadow-[0_4px_30px_rgba(239,68,68,0.1)]'
     }
   }[verdict] || {
-    color: '#00E5FF',
-    bgGlow: 'rgba(0, 229, 255, 0.15)',
+    color: '#4F46E5',
+    bgGlow: 'rgba(79, 70, 229, 0.08)',
     icon: Sparkles,
-    shadow: 'shadow-[0_0_50px_rgba(0,229,255,0.3)]'
+    shadow: 'shadow-[0_4px_30px_rgba(79,70,229,0.1)]'
   }
 
   useEffect(() => {
@@ -113,8 +113,8 @@ export default function VerdictReveal({ verdict, confidence, explanation, jobTit
               animate={{
                 scale: stage >= 1 ? 1.05 : 0.9,
                 opacity: stage >= 1 ? 1 : 0.4,
-                boxShadow: stage >= 1 ? '0 0 15px rgba(0, 229, 255, 0.4)' : 'none',
-                borderColor: stage >= 1 ? '#00E5FF' : '#1A3050'
+                boxShadow: stage >= 1 ? '0 0 15px rgba(79, 70, 229, 0.2)' : 'none',
+                borderColor: stage >= 1 ? '#4F46E5' : 'var(--color-border-subtle)'
               }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
               className="w-10 h-10 rounded-full border bg-bg-deep flex items-center justify-center text-accent-primary"

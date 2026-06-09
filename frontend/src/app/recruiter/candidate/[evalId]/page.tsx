@@ -92,7 +92,7 @@ export default function CandidateDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex-1 bg-[#050A14] flex flex-col items-center justify-center py-20 gap-3">
+      <div className="flex-1 bg-bg-deep flex flex-col items-center justify-center py-20 gap-3">
         <RefreshCw className="w-8 h-8 text-accent-primary animate-spin" />
         <span className="font-mono text-xs text-text-tertiary uppercase tracking-wider">
           Syncing reasoning trails...
@@ -103,11 +103,11 @@ export default function CandidateDetailPage() {
 
   if (!data) {
     return (
-      <div className="flex-1 bg-[#050A14] flex flex-col items-center justify-center py-20 text-center">
+      <div className="flex-1 bg-bg-deep flex flex-col items-center justify-center py-20 text-center">
         <p className="text-text-secondary text-sm mb-4">Candidate evaluation detail not found.</p>
         <button 
           onClick={() => router.back()}
-          className="px-4 py-2 bg-bg-surface border border-border-subtle text-xs font-mono uppercase rounded text-text-primary hover:border-accent-primary"
+          className="px-4 py-2 bg-bg-surface border border-border-subtle text-xs font-mono uppercase rounded text-text-primary hover:border-accent-primary cursor-pointer"
         >
           Go Back
         </button>
@@ -121,9 +121,9 @@ export default function CandidateDetailPage() {
   const da = evaluation.devils_advocate || {}
 
   return (
-    <div className="flex-1 bg-[#050A14] min-h-screen text-[#F0F6FF] font-sans flex flex-col">
+    <div className="flex-1 bg-bg-deep min-h-screen text-text-primary font-sans flex flex-col">
       {/* Sub Header */}
-      <header className="border-b border-border-subtle bg-bg-surface py-4 px-6 sticky top-0 z-40">
+      <header className="border-b border-border-subtle bg-bg-surface py-4 px-6 sticky top-16 z-40">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button

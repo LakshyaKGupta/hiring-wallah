@@ -76,7 +76,7 @@ export default function CandidateReportPage() {
 
   if (loading) {
     return (
-      <div className="flex-1 bg-[#050A14] flex flex-col items-center justify-center py-20 gap-3">
+      <div className="flex-1 bg-bg-deep flex flex-col items-center justify-center py-20 gap-3">
         <RefreshCw className="w-8 h-8 text-accent-primary animate-spin" />
         <span className="font-mono text-xs text-text-tertiary uppercase tracking-wider">
           Compiling coach suggestions...
@@ -87,7 +87,7 @@ export default function CandidateReportPage() {
 
   if (!data) {
     return (
-      <div className="flex-1 bg-[#050A14] flex flex-col items-center justify-center py-20 text-center">
+      <div className="flex-1 bg-bg-deep flex flex-col items-center justify-center py-20 text-center">
         <p className="text-text-secondary text-sm mb-4">Candidate report details not found.</p>
         <button 
           onClick={() => router.back()}
@@ -118,9 +118,9 @@ export default function CandidateReportPage() {
   const strokeDashoffset = circumference - (session.fit_score / 100) * circumference
 
   return (
-    <div className="flex-1 bg-[#050A14] min-h-screen text-[#F0F6FF] font-sans flex flex-col">
+    <div className="flex-1 bg-bg-deep min-h-screen text-text-primary font-sans flex flex-col">
       {/* Sub Header */}
-      <header className="border-b border-border-subtle bg-bg-surface py-4 px-6 sticky top-0 z-40">
+      <header className="border-b border-border-subtle bg-bg-surface py-4 px-6 sticky top-16 z-40">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link 
@@ -145,7 +145,7 @@ export default function CandidateReportPage() {
       </header>
 
       {/* Tabs navigation */}
-      <div className="bg-bg-surface border-b border-border-subtle sticky top-[69px] z-30">
+      <div className="bg-bg-surface border-b border-border-subtle sticky top-[133px] z-30 font-sans">
         <div className="max-w-4xl mx-auto px-6 flex items-center justify-between overflow-x-auto">
           <div className="flex space-x-6 py-2">
             {[
@@ -295,7 +295,7 @@ export default function CandidateReportPage() {
                   </div>
 
                   {/* Suggestion */}
-                  <div className="bg-[#0F1E29] border border-accent-green/20 p-3 rounded-lg">
+                  <div className="bg-bg-surface border border-accent-green/20 p-3 rounded-lg">
                     <span className="text-[9px] text-accent-green font-mono uppercase block mb-1 font-bold">
                       Optimized Suggestion
                     </span>
@@ -390,7 +390,7 @@ export default function CandidateReportPage() {
 
                     {/* BACK SIDE */}
                     <div 
-                      className="absolute inset-0 bg-[#0C1221] border border-accent-primary/20 rounded-xl p-5 flex flex-col justify-between"
+                      className="absolute inset-0 bg-bg-raised border border-accent-primary/20 rounded-xl p-5 flex flex-col justify-between"
                       style={{ 
                         backfaceVisibility: 'hidden',
                         transform: 'rotateY(180deg)'

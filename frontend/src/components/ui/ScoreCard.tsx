@@ -50,7 +50,7 @@ export default function ScoreCard({ candidate, rank }: ScoreCardProps) {
         y: (rank - 1) * 15 - 12,
         scale: (1 - (rank - 1) * 0.04) * 1.02,
         z: -(rank - 1) * 35 + 15,
-        boxShadow: '0 20px 40px rgba(0, 229, 255, 0.1)',
+        boxShadow: '0 20px 40px rgba(79, 70, 229, 0.08)',
         borderColor: 'var(--color-accent-primary)'
       }}
       transition={{ duration: 0.3, ease: 'easeOut' }}

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Syne, JetBrains_Mono } from "next/font/google";
+import Navbar from "@/components/ui/Navbar";
 import "./globals.css";
 
 const inter = Inter({
@@ -32,7 +33,8 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${syne.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#050A14] text-[#F0F6FF] font-sans">
+      <body className="min-h-full flex flex-col bg-bg-deep text-text-primary font-sans">
+        <Navbar />
         {children}
       </body>
     </html>

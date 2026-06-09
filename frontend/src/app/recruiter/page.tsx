@@ -199,7 +199,7 @@ export default function RecruiterDashboard() {
   }
 
   return (
-    <div className="flex-1 flex bg-[#050A14] overflow-hidden min-h-screen">
+    <div className="flex-1 flex bg-bg-deep overflow-hidden h-[calc(100vh-4rem)]">
       
       {/* 1. Left Sidebar: Job list */}
       <aside className="w-80 border-r border-border-subtle bg-bg-surface flex flex-col shrink-0">
@@ -212,7 +212,7 @@ export default function RecruiterDashboard() {
               setIsCreatingJob(true)
               setSelectedJob(null)
             }}
-            className="w-7 h-7 rounded bg-accent-primary/10 border border-accent-primary/20 hover:bg-accent-primary hover:text-bg-deep flex items-center justify-center text-accent-primary transition-all"
+            className="w-7 h-7 rounded bg-accent-primary/10 border border-accent-primary/20 hover:bg-accent-primary hover:text-white flex items-center justify-center text-accent-primary transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
           </button>
@@ -234,7 +234,7 @@ export default function RecruiterDashboard() {
                   : 'hover:bg-bg-raised/40 text-text-secondary border border-transparent'
               }`}
             >
-              <Briefcase className="w-4 h-4 shrink-0" />
+              <Briefcase className="w-4 h-4 shrink-0 text-text-tertiary" />
               <div className="truncate">
                 <p className="font-semibold text-sm truncate">{job.title}</p>
                 <p className="text-[10px] text-text-tertiary truncate font-mono uppercase">{job.company || 'Private Co'}</p>
@@ -254,7 +254,7 @@ export default function RecruiterDashboard() {
         
         {/* Loader Overlays */}
         {isRunning && (
-          <div className="absolute inset-0 bg-[#050A14]/90 z-50 flex flex-col items-center justify-center p-6">
+          <div className="absolute inset-0 bg-bg-deep/90 z-50 flex flex-col items-center justify-center p-6">
             <div className="w-full max-w-xl bg-bg-surface border border-border-subtle rounded-xl p-8 shadow-[0_0_50px_rgba(0,229,255,0.15)]">
               <div className="flex items-center gap-3 mb-6">
                 <Loader2 className="w-6 h-6 text-accent-primary animate-spin" />
@@ -366,9 +366,9 @@ export default function RecruiterDashboard() {
 
               <button
                 type="submit"
-                className="w-full py-3 bg-accent-primary hover:bg-white text-bg-deep rounded font-mono uppercase font-bold tracking-wider transition-colors flex items-center justify-center gap-2"
+                className="w-full py-3 bg-accent-primary hover:bg-white hover:text-accent-primary text-white rounded font-mono uppercase font-bold tracking-wider transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
-                <Play className="w-4 h-4 fill-bg-deep" />
+                <Play className="w-4 h-4 fill-current" />
                 <span>Run Requirements Analysis (Agent 1 + 2)</span>
               </button>
             </form>
@@ -513,9 +513,9 @@ export default function RecruiterDashboard() {
                   {/* Run Pipeline Trigger Button */}
                   <button
                     onClick={handleRunPipeline}
-                    className="w-full mt-4 py-3 bg-accent-primary hover:bg-white text-bg-deep rounded font-mono uppercase font-bold tracking-wider transition-colors flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(0,229,255,0.15)]"
+                    className="w-full mt-4 py-3 bg-accent-primary hover:bg-white hover:text-accent-primary text-white rounded font-mono uppercase font-bold tracking-wider transition-colors flex items-center justify-center gap-2 shadow-sm cursor-pointer"
                   >
-                    <Play className="w-4 h-4 fill-bg-deep" />
+                    <Play className="w-4 h-4 fill-current" />
                     <span>Run Committee Assessment Chain</span>
                   </button>
                 </div>

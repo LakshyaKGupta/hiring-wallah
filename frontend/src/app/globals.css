@@ -1,22 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-deep: #050A14;
-  --color-bg-surface: #0A1628;
-  --color-bg-raised: #0F2040;
+  --color-bg-deep: #FAFAF9; /* Sophisticated warm alabaster */
+  --color-bg-surface: #FFFFFF; /* Pure white */
+  --color-bg-raised: #F8FAFC; /* Slate-50 */
   
-  --color-accent-primary: #00E5FF;
-  --color-accent-secondary: #7C3AED;
-  --color-accent-green: #10B981;
-  --color-accent-amber: #F59E0B;
-  --color-accent-red: #EF4444;
-  --color-accent-da: #FF3D71;
+  --color-accent-primary: #4F46E5; /* Indigo */
+  --color-accent-secondary: #0D9488; /* Teal */
+  --color-accent-green: #10B981; /* Emerald */
+  --color-accent-amber: #D97706; /* Amber */
+  --color-accent-red: #EF4444; /* Red */
+  --color-accent-da: #E11D48; /* Rose */
   
-  --color-text-primary: #F0F6FF;
-  --color-text-secondary: #8BA0C0;
-  --color-text-tertiary: #4A6080;
+  --color-text-primary: #0F172A; /* Slate-900 */
+  --color-text-secondary: #475569; /* Slate-600 */
+  --color-text-tertiary: #64748B; /* Slate-500 */
   
-  --color-border-subtle: #1A3050;
+  --color-border-subtle: #E2E8F0; /* Slate-200 */
   
   --font-sans: var(--font-inter), sans-serif;
   --font-display: var(--font-syne), sans-serif;
@@ -45,13 +45,21 @@ body {
   background: var(--color-text-tertiary);
 }
 
-/* Animations helpers */
+/* Smooth Scrolling snap panel styles */
+.snap-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  height: 100vh;
+  width: 100%;
+}
+
+/* Custom animations helper */
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 10px rgba(0, 229, 255, 0.1), 0 0 20px rgba(0, 229, 255, 0.05);
+    box-shadow: 0 0 10px rgba(79, 70, 229, 0.05), 0 0 20px rgba(79, 70, 229, 0.02);
   }
   50% {
-    box-shadow: 0 0 20px rgba(0, 229, 255, 0.3), 0 0 30px rgba(0, 229, 255, 0.15);
+    box-shadow: 0 0 20px rgba(79, 70, 229, 0.15), 0 0 30px rgba(79, 70, 229, 0.08);
   }
 }
 

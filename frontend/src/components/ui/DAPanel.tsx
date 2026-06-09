@@ -33,7 +33,7 @@ export default function DAPanel({ claims, riskFactors, confidenceAdjustment, rec
   }
 
   return (
-    <div className="border border-accent-da bg-[#0C0F19] rounded-xl p-5 relative overflow-hidden shadow-[0_0_20px_rgba(255,61,113,0.05)]">
+    <div className="border border-accent-da/30 bg-bg-surface rounded-xl p-5 relative overflow-hidden shadow-sm">
       {/* Background warning pattern */}
       <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-accent-da/10 to-transparent rounded-bl-full pointer-events-none" />
 
@@ -127,7 +127,7 @@ export default function DAPanel({ claims, riskFactors, confidenceAdjustment, rec
                       transition={{ duration: 0.3 }}
                       className="overflow-hidden"
                     >
-                      <div className="p-3 border-t border-border-subtle/50 bg-[#0F121F] text-xs space-y-2.5">
+                      <div className="p-3 border-t border-border-subtle/50 bg-bg-raised text-xs space-y-2.5">
                         <div>
                           <span className="text-[9px] text-text-tertiary font-mono uppercase block mb-0.5">
                             Original Evaluator Claim

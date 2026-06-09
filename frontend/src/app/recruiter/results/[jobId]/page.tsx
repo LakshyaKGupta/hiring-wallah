@@ -70,9 +70,9 @@ export default function ResultsPage() {
   }, [jobId])
 
   return (
-    <div className="flex-1 bg-[#050A14] min-h-screen text-[#F0F6FF] font-sans flex flex-col">
+    <div className="flex-1 bg-bg-deep min-h-screen text-text-primary font-sans flex flex-col">
       {/* Header */}
-      <header className="border-b border-border-subtle bg-bg-surface py-5 px-6 sticky top-0 z-40">
+      <header className="border-b border-border-subtle bg-bg-surface py-5 px-6 sticky top-16 z-40">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link 
@@ -116,20 +116,20 @@ export default function ResultsPage() {
             <p className="text-xs text-text-secondary mb-4">{errorMsg}</p>
             <button 
               onClick={fetchResults}
-              className="px-4 py-2 bg-bg-surface border border-border-subtle text-xs font-mono uppercase tracking-wider rounded hover:border-accent-primary hover:bg-bg-raised transition-colors"
+              className="px-4 py-2 bg-bg-surface border border-border-subtle text-xs font-mono uppercase tracking-wider rounded hover:border-accent-primary hover:bg-bg-raised transition-colors cursor-pointer"
             >
               Retry Connection
             </button>
           </div>
         ) : results.length === 0 ? (
-          <div className="border border-border-subtle bg-bg-surface rounded-xl p-10 text-center max-w-md mx-auto my-12">
+          <div className="border border-border-subtle bg-bg-surface rounded-xl p-10 text-center max-w-md mx-auto my-12 shadow-sm">
             <FileSearch className="w-12 h-12 text-text-tertiary mx-auto mb-3" />
             <p className="text-sm font-semibold text-text-primary mb-1">No Assessments Found</p>
             <p className="text-xs text-text-secondary mb-5">
               We found the position setup, but no candidate resumes have been evaluated yet.
             </p>
             <Link href="/recruiter">
-              <div className="px-4 py-2 bg-accent-primary text-bg-deep font-mono text-xs uppercase font-bold tracking-wider rounded hover:bg-white transition-colors inline-block">
+              <div className="px-4 py-2 bg-accent-primary hover:bg-white hover:text-accent-primary text-white border border-accent-primary font-mono text-xs uppercase font-bold tracking-wider rounded transition-colors inline-block cursor-pointer">
                 Upload Resumes
               </div>
             </Link>
