@@ -121,7 +121,10 @@ export default function CandidateDetailPage() {
   const da = evaluation.devils_advocate || {}
 
   return (
-    <div className="flex-1 bg-bg-deep min-h-screen text-text-primary font-sans flex flex-col">
+    <div className="flex-1 bg-bg-deep min-h-screen text-text-primary font-sans flex flex-col relative">
+      {/* Zoho Grid backdrop */}
+      <div className="absolute inset-0 grid-bg opacity-20 pointer-events-none z-0" />
+
       {/* Sub Header */}
       <header className="border-b border-border-subtle bg-bg-surface py-4 px-6 sticky top-16 z-40">
         <div className="max-w-7xl mx-auto flex items-center justify-between">

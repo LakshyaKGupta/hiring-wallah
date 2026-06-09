@@ -36,14 +36,14 @@ export default function AuthPage() {
 
   return (
     <div className="flex-1 bg-bg-deep relative overflow-hidden flex items-center justify-center px-6 py-12">
-      {/* 3D background wireframe */}
-      <AgentOrb />
+      {/* Zoho Grid backdrop */}
+      <div className="absolute inset-0 grid-bg opacity-35 z-0 pointer-events-none" />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-md bg-bg-surface border border-border-subtle rounded-2xl p-6 md:p-8 shadow-md relative z-10"
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] as any }}
+        className="w-full max-w-md bg-bg-surface border border-border-subtle rounded-2xl p-6 md:p-8 shadow-sm relative z-10"
       >
         {/* Success Screen */}
         <AnimatePresence>

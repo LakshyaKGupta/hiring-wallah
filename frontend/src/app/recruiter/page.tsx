@@ -251,6 +251,8 @@ export default function RecruiterDashboard() {
 
       {/* 2. Main Content Area */}
       <main className="flex-1 overflow-y-auto p-8 relative">
+        {/* Zoho Grid backdrop */}
+        <div className="absolute inset-0 grid-bg opacity-20 pointer-events-none z-0" />
         
         {/* Loader Overlays */}
         {isRunning && (

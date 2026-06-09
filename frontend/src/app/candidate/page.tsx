@@ -110,10 +110,9 @@ export default function CandidateDashboard() {
   }
 
   return (
-    <div className="relative min-h-screen bg-bg-deep overflow-hidden flex flex-col font-sans">
-      
-      {/* 3D background */}
-      <AgentOrb />
+    <div className="relative min-h-[calc(100vh-64px)] bg-bg-deep overflow-hidden flex flex-col font-sans">
+      {/* Zoho Grid backdrop */}
+      <div className="absolute inset-0 grid-bg opacity-35 z-0 pointer-events-none" />
 
       {/* Header */}
       <header className="w-full max-w-7xl mx-auto px-6 py-5 flex items-center justify-between relative z-10">

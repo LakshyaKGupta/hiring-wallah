@@ -1,20 +1,20 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-deep: #FAFAF9; /* Sophisticated warm alabaster */
+  --color-bg-deep: #FFFFFF; /* Absolute white */
   --color-bg-surface: #FFFFFF; /* Pure white */
   --color-bg-raised: #F8FAFC; /* Slate-50 */
   
-  --color-accent-primary: #4F46E5; /* Indigo */
-  --color-accent-secondary: #0D9488; /* Teal */
-  --color-accent-green: #10B981; /* Emerald */
-  --color-accent-amber: #D97706; /* Amber */
-  --color-accent-red: #EF4444; /* Red */
-  --color-accent-da: #E11D48; /* Rose */
+  --color-accent-primary: #0067FF; /* Zoho Vibrant Blue */
+  --color-accent-secondary: #7C3AED; /* Purple */
+  --color-accent-green: #00A389; /* Zoho Green */
+  --color-accent-amber: #F5B21D; /* Zoho Yellow */
+  --color-accent-red: #E21A22; /* Zoho Red */
+  --color-accent-da: #E21A22; /* Zoho Red / Devil's Advocate warning */
   
-  --color-text-primary: #0F172A; /* Slate-900 */
-  --color-text-secondary: #475569; /* Slate-600 */
-  --color-text-tertiary: #64748B; /* Slate-500 */
+  --color-text-primary: #0D1B2E; /* Zoho Deep Navy */
+  --color-text-secondary: #4A5D78; /* Charcoal Slate */
+  --color-text-tertiary: #8FA0B8; /* Slate Tertiary */
   
   --color-border-subtle: #E2E8F0; /* Slate-200 */
   
@@ -53,13 +53,33 @@ body {
   width: 100%;
 }
 
+/* Zoho Cloud Background Grid Pattern */
+.grid-bg {
+  background-image: 
+    linear-gradient(to right, rgba(226, 232, 240, 0.45) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(226, 232, 240, 0.45) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Terminal decoration dots */
+.window-dots-container {
+  display: flex;
+  gap: 5px;
+}
+.window-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
 /* Custom animations helper */
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 10px rgba(79, 70, 229, 0.05), 0 0 20px rgba(79, 70, 229, 0.02);
+    box-shadow: 0 0 10px rgba(0, 103, 255, 0.04), 0 0 20px rgba(0, 103, 255, 0.01);
   }
   50% {
-    box-shadow: 0 0 20px rgba(79, 70, 229, 0.15), 0 0 30px rgba(79, 70, 229, 0.08);
+    box-shadow: 0 0 20px rgba(0, 103, 255, 0.12), 0 0 30px rgba(0, 103, 255, 0.06);
   }
 }
 

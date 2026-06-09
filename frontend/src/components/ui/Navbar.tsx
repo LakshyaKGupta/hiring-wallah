@@ -21,7 +21,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-accent-primary to-accent-secondary flex items-center justify-center font-display font-bold text-base text-white shadow-sm transition-transform duration-300 group-hover:scale-105">
+          <div className="w-8 h-8 rounded-lg bg-accent-primary flex items-center justify-center font-display font-bold text-base text-white shadow-sm transition-transform duration-300 group-hover:scale-105">
             W
           </div>
           <span className="font-display font-bold text-lg text-text-primary tracking-wide transition-colors group-hover:text-accent-primary">
