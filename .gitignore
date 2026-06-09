@@ -30,3 +30,7 @@ site-packages/
 
 # Supabase
 .supabase/
+
+# Database files
+*.db
+*.sqlite

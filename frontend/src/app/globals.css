@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-deep: #050A14;
+  --color-bg-surface: #0A1628;
+  --color-bg-raised: #0F2040;
+  
+  --color-accent-primary: #00E5FF;
+  --color-accent-secondary: #7C3AED;
+  --color-accent-green: #10B981;
+  --color-accent-amber: #F59E0B;
+  --color-accent-red: #EF4444;
+  --color-accent-da: #FF3D71;
+  
+  --color-text-primary: #F0F6FF;
+  --color-text-secondary: #8BA0C0;
+  --color-text-tertiary: #4A6080;
+  
+  --color-border-subtle: #1A3050;
+  
+  --font-sans: var(--font-inter), sans-serif;
+  --font-display: var(--font-syne), sans-serif;
+  --font-mono: var(--font-jetbrains), monospace;
+}
+
+body {
+  background-color: var(--color-bg-deep);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-subtle);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-tertiary);
+}
+
+/* Animations helpers */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(0, 229, 255, 0.1), 0 0 20px rgba(0, 229, 255, 0.05);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.3), 0 0 30px rgba(0, 229, 255, 0.15);
+  }
+}
+
+.glow-pulse {
+  animation: pulse-glow 2s infinite ease-in-out;
+}
