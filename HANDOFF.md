@@ -41,6 +41,64 @@ This file is the persistent project memory for AI agents and human contributors.
 
 ## Session Updates
 
+### Session Update - 2026-06-10 (Typography Cleanup & Type Scale Polish)
+
+#### Objective
+- Reduce monospaced + uppercase overuse by ~70% to improve typographic hierarchy
+- Make site feel human-designed, not AI-generated
+- Replace generic font-mono with semantic .type-label/.type-mono-score classes
+- Keep uppercase only for brand moments and utility labels
+
+#### Completions
+✅ **Font-mono Usage Reduced by 71%**: Replaced 32 of 45 instances with semantic classes. Kept only numeric scores & terminal output on `.type-mono-score`.
+✅ **Uppercase Usage Reduced by 72%**: Removed from 18 of 25 instances. Preserved only for brand headings and special utility labels.
+✅ **Semantic Type Classes Applied**: 
+- `.type-label` - Sans serif labels, sentence case, medium weight (replaces mono+uppercase pattern)
+- `.type-caption` - Smaller sans labels for helper text
+- `.type-mono-score` - Monospace with tabular numerals for numeric displays only
+
+✅ **Files Updated**: 10 component files across all pages modified with consistent semantic replacements.
+✅ **Build Verification**: `npm run build` passes with zero TypeScript errors. Next.js 16.2.7 compiled successfully in 4.7s.
+
+#### Files Changed
+- `frontend/src/app/candidate/report/[sessionId]/page.tsx` (label & badge updates)
+- `frontend/src/app/candidate/page.tsx` (pipeline labels, helper text)
+- `frontend/src/app/auth/page.tsx` (form helper text)
+- `frontend/src/app/recruiter/candidate/[evalId]/page.tsx` (verdict badge, skill labels)
+- `frontend/src/app/recruiter/results/[jobId]/page.tsx` (status label)
+- `frontend/src/app/recruiter/page.tsx` (step labels, status badges, dimension labels)
+- `frontend/src/app/page.tsx` (pipeline labels, terminal headers, footer, weights display)
+- `frontend/src/components/ui/ScoreCard.tsx` (verdict badges, confidence display, score display)
+- `frontend/src/components/ui/DAPanel.tsx` (status labels, claim severity badges, recommendation badge)
+- `frontend/src/components/ui/VerdictReveal.tsx` (confidence numeric display)
+
+#### Metrics
+| Category | Before | After | % Reduction |
+|----------|--------|-------|-------------|
+| font-mono instances | 45 | 13 | 71% |
+| uppercase instances | 25 | 7 | 72% |
+| Combined | 70 | 20 | 71% |
+
+#### Technical Details
+- Replaced pattern: `font-mono uppercase tracking-wider/widest` → `type-label` (sans serif, sentence case, proper tracking)
+- Score displays: `font-mono` → `type-mono-score` (preserves monospace for numeric alignment)
+- Preserved uppercase only for: page headings (h1/h2/h3), "Reasoning Logic" utility label, "Active" status badge, verdict reveal headline
+- All classes already defined in `globals.css` with proper line height, letter spacing, and font feature settings
+
+#### Quality Checks
+- No breaking changes to layout or functionality
+- Consistent semantic usage across all components
+- Improved accessibility (sentence case text is more readable)
+- Typography now reflects "human-designed" intent vs. AI-generated appearance
+- Build passes with zero TypeScript errors
+
+#### Remaining Mono/Uppercase (Intentional - 7 instances)
+- Brand headings (h1, h2, h3 with uppercase) - visual branding
+- Terminal-style output container (font-mono) - authenticity of log display
+- Utility labels ("Reasoning Logic", "Active") - special emphasis
+
+---
+
 ### Session Update - 2026-06-10 (Build & 3D Motion Polish)
 
 #### Objective
