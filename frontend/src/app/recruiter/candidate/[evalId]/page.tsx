@@ -1,12 +1,13 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft, RefreshCw, Copy, Check, MessageSquare, Briefcase, Calendar, GraduationCap, Award, Compass } from 'lucide-react'
 import ScoreBar from '@/components/ui/ScoreBar'
 import DAPanel from '@/components/ui/DAPanel'
 import VerdictReveal from '@/components/ui/VerdictReveal'
+import MeshBackground from '@/components/ui/MeshBackground'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
@@ -20,7 +21,16 @@ interface EvaluationDetail {
     strengths: string[]
     weaknesses: string[]
     evidence: string[]
-    devils_advocate: any
+    devils_advocate?: {
+      contested_claims?: Array<{
+        severity: string
+        original_claim: string
+        counter: string
+      }>
+      risk_factors?: string[]
+      overall_confidence_adjustment?: number
+      recommendation?: string
+    }
   }
   candidate: {
     id: string
@@ -63,7 +73,7 @@ export default function CandidateDetailPage() {
   const [loading, setLoading] = useState(true)
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
 
-  const fetchDetail = async () => {
+  const fetchDetail = useCallback(async () => {
     setLoading(true)
     try {
       const res = await fetch(`${API_URL}/recruiter/evaluation/${evalId}`)
@@ -76,13 +86,22 @@ export default function CandidateDetailPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [evalId])
 
   useEffect(() => {
+    let active = true
     if (evalId) {
-      fetchDetail()
+      const handle = requestAnimationFrame(() => {
+        if (active) {
+          fetchDetail()
+        }
+      })
+      return () => {
+        active = false
+        cancelAnimationFrame(handle)
+      }
     }
-  }, [evalId])
+  }, [evalId, fetchDetail])
 
   const copyToClipboard = (text: string, index: number) => {
     navigator.clipboard.writeText(text)
@@ -94,7 +113,7 @@ export default function CandidateDetailPage() {
     return (
       <div className="flex-1 bg-bg-deep flex flex-col items-center justify-center py-20 gap-3">
         <RefreshCw className="w-8 h-8 text-accent-primary animate-spin" />
-        <span className="font-mono text-xs text-text-tertiary uppercase tracking-wider">
+        <span className="type-label text-xs text-text-tertiary">
           Syncing reasoning trails...
         </span>
       </div>
@@ -107,7 +126,7 @@ export default function CandidateDetailPage() {
         <p className="text-text-secondary text-sm mb-4">Candidate evaluation detail not found.</p>
         <button 
           onClick={() => router.back()}
-          className="px-4 py-2 bg-bg-surface border border-border-subtle text-xs font-mono uppercase rounded text-text-primary hover:border-accent-primary cursor-pointer"
+          className="px-4 py-2 bg-bg-surface border border-border-subtle text-caption font-sans font-medium rounded text-text-primary hover:border-accent-primary cursor-pointer"
         >
           Go Back
         </button>
@@ -122,8 +141,8 @@ export default function CandidateDetailPage() {
 
   return (
     <div className="flex-1 bg-bg-deep min-h-screen text-text-primary font-sans flex flex-col relative">
-      {/* Zoho Grid backdrop */}
-      <div className="absolute inset-0 grid-bg opacity-20 pointer-events-none z-0" />
+      {/* Zoho Grid backdrop with Mesh Blobs */}
+      <MeshBackground opacity={0.2} />
 
       {/* Sub Header */}
       <header className="border-b border-border-subtle bg-bg-surface py-4 px-6 sticky top-16 z-40">
@@ -136,18 +155,18 @@ export default function CandidateDetailPage() {
               <ArrowLeft className="w-4 h-4" />
             </button>
             <div>
-              <span className="text-[10px] text-text-tertiary font-mono uppercase tracking-widest block">
+              <span className="type-caption text-text-tertiary block">
                 Detailed Candidate Dossier
               </span>
-              <h1 className="text-xl font-display font-bold text-text-primary tracking-wide">
+              <h1 className="text-xl font-display font-extrabold text-text-primary tracking-tight">
                 {profile.name || data.candidate.name || 'Unknown Candidate'}
               </h1>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs text-text-tertiary font-mono uppercase">VERDICT:</span>
-            <span className={`px-2 py-0.5 rounded text-xs font-mono border uppercase tracking-wider ${
+            <span className="type-label text-text-tertiary">Verdict:</span>
+            <span className={`px-2 py-0.5 rounded text-xs type-label border ${
               decision.verdict === 'Strong Hire' 
                 ? 'text-accent-green border-accent-green/20 bg-accent-green/5' 
                 : decision.verdict === 'Consider' 
@@ -166,7 +185,7 @@ export default function CandidateDetailPage() {
         {/* COLUMN 1: CANDIDATE PROFILE (col span 3) */}
         <section className="lg:col-span-3 space-y-6">
           <div className="bg-bg-surface border border-border-subtle rounded-xl p-5 space-y-5">
-            <h2 className="text-xs uppercase font-mono tracking-widest text-text-tertiary border-b border-border-subtle pb-2">
+            <h2 className="type-label text-text-tertiary border-b border-border-subtle pb-2">
               Dossier Metadata
             </h2>
 
@@ -184,12 +203,12 @@ export default function CandidateDetailPage() {
 
             {/* Skills chip list */}
             <div>
-              <span className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider block mb-2">
+              <span className="type-caption text-text-tertiary block mb-2">
                 Demonstrated Skills
               </span>
               <div className="flex flex-wrap gap-1.5">
                 {profile.skills_demonstrated?.map((skill) => (
-                  <span key={skill} className="bg-bg-deep border border-border-subtle px-2 py-0.5 rounded text-[10px] font-mono text-text-secondary">
+                  <span key={skill} className="bg-bg-deep border border-border-subtle px-2 py-0.5 rounded text-[10px] type-label text-text-secondary">
                     {skill}
                   </span>
                 ))}
@@ -198,7 +217,7 @@ export default function CandidateDetailPage() {
 
             {/* Career trajectory */}
             <div>
-              <span className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider block mb-1">
+              <span className="type-caption text-text-tertiary block mb-1">
                 Career Trajectory
               </span>
               <p className="text-xs text-text-secondary leading-relaxed font-sans italic">
@@ -209,7 +228,7 @@ export default function CandidateDetailPage() {
 
           {/* Stated Projects */}
           <div className="bg-bg-surface border border-border-subtle rounded-xl p-5 space-y-4">
-            <h2 className="text-xs uppercase font-mono tracking-widest text-text-tertiary border-b border-border-subtle pb-2">
+            <h2 className="type-label text-text-tertiary border-b border-border-subtle pb-2">
               Extracted Projects
             </h2>
 
@@ -245,7 +264,7 @@ export default function CandidateDetailPage() {
 
           {/* Scoring Rubric Dimension breakdowns */}
           <div className="bg-bg-surface border border-border-subtle rounded-xl p-5 space-y-5">
-            <h2 className="text-xs uppercase font-mono tracking-widest text-text-tertiary border-b border-border-subtle pb-2">
+            <h2 className="type-label text-text-tertiary border-b border-border-subtle pb-2">
               Rubric Dimension Breakdown
             </h2>
 
@@ -269,7 +288,7 @@ export default function CandidateDetailPage() {
 
           {/* Suggested Interview Questions */}
           <div className="bg-bg-surface border border-border-subtle rounded-xl p-5 space-y-4">
-            <h2 className="text-xs uppercase font-mono tracking-widest text-text-tertiary border-b border-border-subtle pb-2 flex items-center gap-2">
+            <h2 className="type-label text-text-tertiary border-b border-border-subtle pb-2 flex items-center gap-2">
               <MessageSquare className="w-4 h-4 text-accent-primary" />
               <span>Suggested Interview Questions</span>
             </h2>
@@ -311,7 +330,7 @@ export default function CandidateDetailPage() {
             
             {/* Strengths */}
             <div>
-              <h4 className="text-[10px] font-mono text-accent-green uppercase tracking-wider border-b border-border-subtle pb-1 mb-2">
+              <h4 className="type-caption text-accent-green border-b border-border-subtle pb-1 mb-2">
                 Evaluator Strengths
               </h4>
               <ul className="space-y-1.5">
@@ -325,7 +344,7 @@ export default function CandidateDetailPage() {
 
             {/* Weaknesses */}
             <div>
-              <h4 className="text-[10px] font-mono text-accent-da uppercase tracking-wider border-b border-border-subtle pb-1 mb-2">
+              <h4 className="type-caption text-accent-da border-b border-border-subtle pb-1 mb-2">
                 Evaluator Weaknesses
               </h4>
               <ul className="space-y-1.5">

@@ -1,10 +1,11 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { Briefcase, Plus, Upload, Play, CheckCircle2, Loader2, Sparkles, AlertTriangle, ShieldCheck } from 'lucide-react'
+import { motion, AnimatePresence, Variants } from 'framer-motion'
+import { Briefcase, Plus, Upload, Play, CheckCircle2, Loader2, Sparkles, AlertTriangle } from 'lucide-react'
+import MeshBackground from '@/components/ui/MeshBackground'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
@@ -13,8 +14,36 @@ interface Job {
   title: string
   company: string
   description: string
-  requirement_analysis?: any
-  evaluation_framework?: any
+  requirement_analysis?: {
+    must_have?: string[]
+    red_flags?: string[]
+  }
+  evaluation_framework?: {
+    evaluation_framework?: Record<string, number>
+  }
+}
+
+const containerVariants: Variants = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.05,
+      delayChildren: 0.02
+    }
+  }
+}
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 150,
+      damping: 20
+    }
+  }
 }
 
 export default function RecruiterDashboard() {
@@ -46,25 +75,37 @@ export default function RecruiterDashboard() {
     { label: 'Hiring Committee', desc: 'Agent 6 synthesizing reports and rendering verdicts' }
   ]
 
+  const initialLoadRef = useRef(true)
+
   // Load jobs list
-  const loadJobs = async () => {
+  const loadJobs = useCallback(async () => {
     try {
       const res = await fetch(`${API_URL}/jobs`)
       if (res.ok) {
         const data = await res.json()
         setJobs(data)
-        if (data.length > 0 && !selectedJob && !isCreatingJob) {
+        if (data.length > 0 && initialLoadRef.current) {
           setSelectedJob(data[0])
+          initialLoadRef.current = false
         }
       }
     } catch (e) {
       console.error('Error fetching jobs:', e)
     }
-  }
+  }, [])
 
   useEffect(() => {
-    loadJobs()
-  }, [])
+    let active = true
+    const handle = requestAnimationFrame(() => {
+      if (active) {
+        loadJobs()
+      }
+    })
+    return () => {
+      active = false
+      cancelAnimationFrame(handle)
+    }
+  }, [loadJobs])
 
   // Create Job
   const handleCreateJob = async (e: React.FormEvent) => {
@@ -204,115 +245,141 @@ export default function RecruiterDashboard() {
       {/* 1. Left Sidebar: Job list */}
       <aside className="w-80 border-r border-border-subtle bg-bg-surface flex flex-col shrink-0">
         <div className="p-4 border-b border-border-subtle flex items-center justify-between">
-          <h2 className="font-display font-bold text-md tracking-wider text-text-primary uppercase">
+          <h2 className="font-display font-extrabold text-md tracking-tight text-text-primary uppercase">
             Hiring Positions
           </h2>
-          <button 
+          <motion.button 
             onClick={() => {
               setIsCreatingJob(true)
               setSelectedJob(null)
             }}
-            className="w-7 h-7 rounded bg-accent-primary/10 border border-accent-primary/20 hover:bg-accent-primary hover:text-white flex items-center justify-center text-accent-primary transition-all cursor-pointer"
+            whileHover={{ scale: 1.08, rotate: 90 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+            className="w-7 h-7 rounded bg-accent-primary/10 border border-accent-primary/20 hover:bg-accent-primary hover:text-white flex items-center justify-center text-accent-primary cursor-pointer transition-all duration-200"
           >
             <Plus className="w-4 h-4" />
-          </button>
+          </motion.button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-3 space-y-1">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          className="flex-1 overflow-y-auto p-3 space-y-1"
+        >
           {jobs.map((job) => (
-            <div
+            <motion.div
               key={job.id}
+              variants={itemVariants}
               onClick={() => {
                 setSelectedJob(job)
                 setIsCreatingJob(false)
                 setUploadedFiles([])
                 setErrorMsg('')
               }}
-              className={`p-3 rounded-lg cursor-pointer transition-all flex items-center gap-3 ${
+              whileHover={{ x: 2 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+              className={`p-3 rounded-lg cursor-pointer flex items-center gap-3 border transition-all duration-200 ${
                 selectedJob?.id === job.id 
-                  ? 'bg-bg-raised border border-accent-primary/30 text-text-primary' 
-                  : 'hover:bg-bg-raised/40 text-text-secondary border border-transparent'
+                  ? 'bg-bg-raised border-accent-primary/30 text-text-primary' 
+                  : 'bg-transparent border-transparent hover:bg-bg-raised/40 text-text-secondary'
               }`}
             >
               <Briefcase className="w-4 h-4 shrink-0 text-text-tertiary" />
               <div className="truncate">
                 <p className="font-semibold text-sm truncate">{job.title}</p>
-                <p className="text-[10px] text-text-tertiary truncate font-mono uppercase">{job.company || 'Private Co'}</p>
+                <p className="type-caption text-text-tertiary truncate">{job.company || 'Private Co'}</p>
               </div>
-            </div>
+            </motion.div>
           ))}
           {jobs.length === 0 && (
             <div className="text-center py-8 text-xs text-text-tertiary">
               No jobs configured. Click + to setup.
             </div>
           )}
-        </div>
+        </motion.div>
       </aside>
 
       {/* 2. Main Content Area */}
       <main className="flex-1 overflow-y-auto p-8 relative">
-        {/* Zoho Grid backdrop */}
-        <div className="absolute inset-0 grid-bg opacity-20 pointer-events-none z-0" />
+        {/* Zoho Grid backdrop with Mesh Blobs */}
+        <MeshBackground opacity={0.2} />
         
         {/* Loader Overlays */}
-        {isRunning && (
-          <div className="absolute inset-0 bg-bg-deep/90 z-50 flex flex-col items-center justify-center p-6">
-            <div className="w-full max-w-xl bg-bg-surface border border-border-subtle rounded-xl p-8 shadow-[0_0_50px_rgba(0,229,255,0.15)]">
-              <div className="flex items-center gap-3 mb-6">
-                <Loader2 className="w-6 h-6 text-accent-primary animate-spin" />
-                <h3 className="font-display font-bold text-lg text-text-primary tracking-wide">
-                  RUNNING ASSESSMENT COMMITTEE PIPELINE
-                </h3>
-              </div>
+        <AnimatePresence>
+          {isRunning && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-bg-deep/90 z-50 flex flex-col items-center justify-center p-6"
+            >
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95, y: 15 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 15 }}
+                transition={{ type: 'spring', stiffness: 180, damping: 24 }}
+                className="w-full max-w-xl bg-bg-surface border border-border-subtle rounded-xl p-8 shadow-sm"
+              >
+                <div className="flex items-center gap-3 mb-6">
+                  <Loader2 className="w-6 h-6 text-accent-primary animate-spin" />
+                  <h3 className="font-display font-extrabold text-lg text-text-primary tracking-tight">
+                    RUNNING ASSESSMENT COMMITTEE PIPELINE
+                  </h3>
+                </div>
 
-              <div className="space-y-4">
-                {pipelineSteps.map((step, idx) => {
-                  const isActive = idx === currentStep
-                  const isDone = idx < currentStep
-                  return (
-                    <div 
-                      key={step.label} 
-                      className={`p-3 rounded-lg border flex items-center justify-between transition-all duration-500 ${
-                        isActive 
-                          ? 'border-accent-primary bg-accent-primary/5 glow-pulse' 
-                          : isDone 
-                            ? 'border-accent-green/20 bg-accent-green/5 opacity-60' 
-                            : 'border-border-subtle opacity-30'
-                      }`}
-                    >
-                      <div>
-                        <p className="text-xs font-mono font-bold tracking-wider uppercase text-text-primary">
-                          {step.label}
-                        </p>
-                        <p className="text-[10px] text-text-secondary mt-0.5">{step.desc}</p>
+                <div className="space-y-4">
+                  {pipelineSteps.map((step, idx) => {
+                    const isActive = idx === currentStep
+                    const isDone = idx < currentStep
+                    return (
+                      <div 
+                        key={step.label} 
+                        className={`p-3 rounded-lg border flex items-center justify-between ${
+                          isActive 
+                            ? 'border-accent-primary bg-accent-primary/5 text-text-primary' 
+                            : isDone 
+                              ? 'border-accent-green/20 bg-accent-green/5 opacity-60' 
+                              : 'border-border-subtle opacity-30'
+                        }`}
+                      >
+                        <div>
+                          <p className="text-xs type-label font-bold text-text-primary">
+                            {step.label}
+                          </p>
+                          <p className="text-[10px] text-text-secondary mt-0.5">{step.desc}</p>
+                        </div>
+                        <div>
+                          {isDone ? (
+                            <span className="text-[10px] type-label text-accent-green font-bold">Done</span>
+                          ) : isActive ? (
+                            <span className="text-[10px] type-label text-accent-primary font-bold animate-pulse">Processing...</span>
+                          ) : (
+                            <span className="text-[10px] type-label text-text-tertiary font-bold">Waiting</span>
+                          )}
+                        </div>
                       </div>
-                      <div>
-                        {isDone ? (
-                          <span className="text-[10px] font-mono text-accent-green font-bold uppercase">DONE</span>
-                        ) : isActive ? (
-                          <span className="text-[10px] font-mono text-accent-primary font-bold uppercase animate-pulse">PROCESSING...</span>
-                        ) : (
-                          <span className="text-[10px] font-mono text-text-tertiary font-bold uppercase">WAITING</span>
-                        )}
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          </div>
-        )}
+                    )
+                  })}
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* --- CREATE NEW JOB FORM --- */}
         {isCreatingJob && (
           <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.97, y: 15 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ type: 'spring', stiffness: 180, damping: 24 }}
             className="max-w-2xl bg-bg-surface border border-border-subtle rounded-xl p-6 shadow-xl"
           >
             <div className="flex items-center gap-2 mb-4 border-b border-border-subtle pb-4">
               <Sparkles className="w-5 h-5 text-accent-primary" />
-              <h1 className="font-display font-bold text-xl text-text-primary tracking-wide">
+              <h1 className="font-display font-extrabold text-xl text-text-primary tracking-tight">
                 CREATE POSITION EVALUATION STRATEGY
               </h1>
             </div>
@@ -326,7 +393,7 @@ export default function RecruiterDashboard() {
             <form onSubmit={handleCreateJob} className="space-y-5">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-[10px] text-text-secondary font-mono uppercase tracking-wide block mb-1">
+                  <label className="type-label block mb-1">
                     Job Title *
                   </label>
                   <input
@@ -339,7 +406,7 @@ export default function RecruiterDashboard() {
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] text-text-secondary font-mono uppercase tracking-wide block mb-1">
+                  <label className="type-label block mb-1">
                     Company
                   </label>
                   <input
@@ -353,7 +420,7 @@ export default function RecruiterDashboard() {
               </div>
 
               <div>
-                <label className="text-[10px] text-text-secondary font-mono uppercase tracking-wide block mb-1">
+                <label className="type-label block mb-1">
                   Full Job Description *
                 </label>
                 <textarea
@@ -366,35 +433,48 @@ export default function RecruiterDashboard() {
                 />
               </div>
 
-              <button
+              <motion.button
                 type="submit"
-                className="w-full py-3 bg-accent-primary hover:bg-white hover:text-accent-primary text-white rounded font-mono uppercase font-bold tracking-wider transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+                className="w-full py-3 bg-accent-primary hover:bg-white hover:text-accent-primary text-white rounded font-sans font-bold text-caption flex items-center justify-center gap-2 cursor-pointer border border-accent-primary transition-all duration-200"
               >
                 <Play className="w-4 h-4 fill-current" />
                 <span>Run Requirements Analysis (Agent 1 + 2)</span>
-              </button>
+              </motion.button>
             </form>
           </motion.div>
         )}
 
         {/* --- DISPLAY SELECTED JOB Rubrics & Resume dropzone --- */}
         {selectedJob && (
-          <div className="space-y-6 max-w-4xl">
+          <motion.div 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: 'spring', stiffness: 150, damping: 22 }}
+            className="space-y-6 max-w-4xl"
+          >
             {/* Title block */}
             <div className="border-b border-border-subtle pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h1 className="text-3xl font-display font-bold tracking-tight text-text-primary">
+                <h1 className="text-3xl font-display font-extrabold tracking-tight text-text-primary">
                   {selectedJob.title}
                 </h1>
-                <p className="text-xs text-text-secondary font-mono uppercase tracking-wide mt-1">
+                <p className="type-caption text-text-secondary mt-1">
                   {selectedJob.company || 'Private Co'}
                 </p>
               </div>
 
               <Link href={`/recruiter/results/${selectedJob.id}`}>
-                <div className="px-4 py-2 border border-accent-primary/20 bg-accent-primary/5 hover:bg-accent-primary/10 text-accent-primary font-mono text-xs uppercase tracking-wider rounded transition-colors">
+                <motion.div 
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.96 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+                  className="px-4 py-2 border border-accent-primary/20 bg-accent-primary/5 hover:bg-accent-primary/10 text-accent-primary font-sans text-caption font-medium rounded cursor-pointer transition-all duration-200"
+                >
                   View Ranked Results
-                </div>
+                </motion.div>
               </Link>
             </div>
 
@@ -405,25 +485,33 @@ export default function RecruiterDashboard() {
             )}
 
             {/* Rubrics grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <motion.div 
+              variants={containerVariants}
+              initial="hidden"
+              animate="show"
+              className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            >
               {/* Requirements summary (Agent 1) */}
-              <div className="bg-bg-surface border border-border-subtle rounded-xl p-5">
-                <h3 className="text-xs uppercase font-mono tracking-widest text-text-tertiary mb-3">
+              <motion.div 
+                variants={itemVariants}
+                className="bg-bg-surface border border-border-subtle rounded-xl p-5"
+              >
+                <h3 className="type-label text-text-tertiary mb-3">
                   Parsed Job Requirements
                 </h3>
                 <div className="space-y-3 text-xs">
                   {selectedJob.requirement_analysis ? (
                     <>
                       <div>
-                        <span className="font-mono text-[10px] text-accent-primary block uppercase mb-1">Must Have</span>
+                        <span className="type-caption text-accent-primary block mb-1">Must have</span>
                         <ul className="list-disc list-inside space-y-0.5 text-text-secondary">
-                          {selectedJob.requirement_analysis.must_have?.slice(0, 4).map((m: string) => (
+                           {selectedJob.requirement_analysis.must_have?.slice(0, 4).map((m: string) => (
                             <li key={m} className="truncate">{m}</li>
                           ))}
                         </ul>
                       </div>
                       <div>
-                        <span className="font-mono text-[10px] text-accent-da block uppercase mb-1">Red Flags</span>
+                        <span className="type-caption text-accent-da block mb-1">Red flags</span>
                         <ul className="list-disc list-inside space-y-0.5 text-text-secondary">
                           {selectedJob.requirement_analysis.red_flags?.slice(0, 3).map((r: string) => (
                             <li key={r} className="truncate">{r}</li>
@@ -435,18 +523,21 @@ export default function RecruiterDashboard() {
                     <p className="text-text-tertiary">No requirements parsed.</p>
                   )}
                 </div>
-              </div>
+              </motion.div>
 
               {/* Rubric evaluation (Agent 2) */}
-              <div className="bg-bg-surface border border-border-subtle rounded-xl p-5">
-                <h3 className="text-xs uppercase font-mono tracking-widest text-text-tertiary mb-3">
+              <motion.div 
+                variants={itemVariants}
+                className="bg-bg-surface border border-border-subtle rounded-xl p-5"
+              >
+                <h3 className="type-label text-text-tertiary mb-3">
                   Weighted scoring Rubric
                 </h3>
                 <div className="space-y-3">
                   {selectedJob.evaluation_framework?.evaluation_framework ? (
                     Object.entries(selectedJob.evaluation_framework.evaluation_framework).map(([dim, weight]) => (
-                      <div key={dim} className="flex items-center justify-between text-xs font-mono border-b border-border-subtle/50 pb-1.5 last:border-b-0">
-                        <span className="text-text-secondary uppercase">{dim.replace('_', ' ')}</span>
+                      <div key={dim} className="flex items-center justify-between text-xs type-mono border-b border-border-subtle/50 pb-1.5 last:border-b-0">
+                        <span className="text-text-secondary">{dim.replace('_', ' ')}</span>
                         <span className="text-accent-primary font-bold">{weight as number}%</span>
                       </div>
                     ))
@@ -454,21 +545,26 @@ export default function RecruiterDashboard() {
                     <p className="text-text-tertiary text-xs">No scoring framework found.</p>
                   )}
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
             {/* Resume Upload Zone */}
-            <div className="bg-bg-surface border border-border-subtle rounded-xl p-6">
-              <h3 className="text-xs uppercase font-mono tracking-widest text-text-tertiary mb-4">
+            <motion.div 
+              variants={itemVariants}
+              className="bg-bg-surface border border-border-subtle rounded-xl p-6"
+            >
+              <h3 className="type-label text-text-tertiary mb-4">
                 Candidate Resume Assessment
               </h3>
 
               {/* Dropzone container */}
-              <div
+              <motion.div
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                className={`border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 relative ${
+                whileTap={{ scale: 0.99 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                className={`border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer relative transition-all group ${
                   isDragOver 
                     ? 'border-accent-primary bg-accent-primary/5' 
                     : 'border-border-subtle hover:border-accent-primary/40'
@@ -481,19 +577,21 @@ export default function RecruiterDashboard() {
                   onChange={handleFileChange}
                   className="absolute inset-0 opacity-0 cursor-pointer"
                 />
-                <Upload className="w-10 h-10 text-text-tertiary mb-3 group-hover:text-accent-primary transition-colors" />
+                <div className="p-3 rounded-full bg-bg-raised border border-border-subtle mb-3 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
+                  <Upload className="w-6 h-6 text-text-tertiary group-hover:text-accent-primary transition-colors duration-200" />
+                </div>
                 <p className="text-sm font-semibold text-text-primary">
                   Drag & Drop PDF Resumes
                 </p>
                 <p className="text-xs text-text-tertiary mt-1">
                   Supports multiple PDF files up to 10.
                 </p>
-              </div>
+              </motion.div>
 
               {/* Uploaded File Chip list */}
               {uploadedFiles.length > 0 && (
                 <div className="mt-5 space-y-2">
-                  <span className="text-[10px] font-mono text-text-secondary uppercase tracking-wider block">
+                  <span className="type-label block">
                     Staged Resumes ({uploadedFiles.length})
                   </span>
                   <div className="flex flex-wrap gap-2">
@@ -513,17 +611,20 @@ export default function RecruiterDashboard() {
                   </div>
 
                   {/* Run Pipeline Trigger Button */}
-                  <button
+                  <motion.button
                     onClick={handleRunPipeline}
-                    className="w-full mt-4 py-3 bg-accent-primary hover:bg-white hover:text-accent-primary text-white rounded font-mono uppercase font-bold tracking-wider transition-colors flex items-center justify-center gap-2 shadow-sm cursor-pointer"
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.96 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+                    className="w-full mt-4 py-3 bg-accent-primary hover:bg-white hover:text-accent-primary text-white rounded font-sans font-bold text-caption flex items-center justify-center gap-2 shadow-sm cursor-pointer border border-accent-primary transition-all duration-200"
                   >
                     <Play className="w-4 h-4 fill-current" />
                     <span>Run Committee Assessment Chain</span>
-                  </button>
+                  </motion.button>
                 </div>
               )}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         )}
 
       </main>

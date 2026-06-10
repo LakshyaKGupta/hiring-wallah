@@ -1,32 +1,219 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-deep: #FFFFFF; /* Absolute white */
-  --color-bg-surface: #FFFFFF; /* Pure white */
-  --color-bg-raised: #F8FAFC; /* Slate-50 */
-  
-  --color-accent-primary: #0067FF; /* Zoho Vibrant Blue */
-  --color-accent-secondary: #7C3AED; /* Purple */
-  --color-accent-green: #00A389; /* Zoho Green */
-  --color-accent-amber: #F5B21D; /* Zoho Yellow */
-  --color-accent-red: #E21A22; /* Zoho Red */
-  --color-accent-da: #E21A22; /* Zoho Red / Devil's Advocate warning */
-  
-  --color-text-primary: #0D1B2E; /* Zoho Deep Navy */
-  --color-text-secondary: #4A5D78; /* Charcoal Slate */
-  --color-text-tertiary: #8FA0B8; /* Slate Tertiary */
-  
-  --color-border-subtle: #E2E8F0; /* Slate-200 */
-  
-  --font-sans: var(--font-inter), sans-serif;
-  --font-display: var(--font-syne), sans-serif;
-  --font-mono: var(--font-jetbrains), monospace;
+  /* ── Surfaces — Zoho light / warm alabaster ── */
+  --color-bg-deep: #F0EDE6;
+  --color-bg-surface: #FAFAF8;
+  --color-bg-raised: #FFFFFF;
+
+  /* ── Accents — Zoho blue primary ── */
+  --color-accent-primary: #0067FF;
+  --color-accent-secondary: #4A5D78;
+  --color-accent-green: #0F9D58;
+  --color-accent-amber: #E37400;
+  --color-accent-red: #D93025;
+  --color-accent-da: #D93025;
+
+  /* ── Text — deep navy hierarchy ── */
+  --color-text-primary: #0D1B2E;
+  --color-text-secondary: #4A5D78;
+  --color-text-tertiary: #7A8BA3;
+
+  --color-border-subtle: rgba(13, 27, 46, 0.1);
+
+  /* ── Font families ── */
+  --font-sans: var(--font-instrument), Inter, Roboto, "Helvetica Neue", sans-serif;
+  --font-display: var(--font-bricolage), var(--font-instrument), Inter, Roboto, sans-serif;
+  --font-mono: var(--font-ibm-plex), "Courier New", monospace;
+
+  /* ── Type scale ── */
+  --text-display-2xl: 3.75rem;
+  --text-display-xl: 3rem;
+  --text-display-lg: 2.25rem;
+  --text-heading-xl: 1.875rem;
+  --text-heading-lg: 1.5rem;
+  --text-heading-md: 1.25rem;
+  --text-heading-sm: 1.125rem;
+  --text-body-lg: 1.125rem;
+  --text-body-md: 1rem;
+  --text-body-sm: 0.875rem;
+  --text-caption: 0.75rem;
+  --text-caption-sm: 0.6875rem;
+  --text-mono-score: 0.8125rem;
+
+  /* ── Line heights ── */
+  --leading-display: 1.08;
+  --leading-heading: 1.22;
+  --leading-body: 1.62;
+  --leading-caption: 1.45;
+  --leading-mono: 1.35;
+
+  /* ── Letter spacing ── */
+  --tracking-display: -0.038em;
+  --tracking-heading: -0.022em;
+  --tracking-body: -0.008em;
+  --tracking-caption: 0.02em;
+  --tracking-label: 0.04em;
+  --tracking-mono: 0.02em;
+
+  /* ── Font weights ── */
+  --weight-body: 400;
+  --weight-body-medium: 500;
+  --weight-heading: 600;
+  --weight-display: 700;
+
+  /* ── Spacing scale ── */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-section: 5rem;
+  --space-page-x: clamp(1.25rem, 4vw, 2.5rem);
+  --space-page-y: clamp(2rem, 6vw, 4rem);
+  --space-card: 1.5rem;
+  --space-stack: 0.75rem;
+  --space-inline: 0.5rem;
+
+  /* ── Motion ── */
+  --duration-instant: 100ms;
+  --duration-fast: 150ms;
+  --duration-base: 220ms;
+  --duration-slow: 380ms;
+  --duration-enter: 480ms;
+  --duration-exit: 200ms;
+  --duration-blob: 25s;
+  --delay-stagger: 60ms;
+  --motion-distance-sm: 6px;
+  --motion-distance-md: 14px;
+  --motion-distance-lg: 24px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-emphasis: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Semantic type hierarchy ── */
+.type-display {
+  font-family: var(--font-display);
+  font-size: var(--text-display-lg);
+  font-weight: var(--weight-display);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  color: var(--color-text-primary);
+}
+
+.type-heading {
+  font-family: var(--font-display);
+  font-size: var(--text-heading-lg);
+  font-weight: var(--weight-heading);
+  line-height: var(--leading-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--color-text-primary);
+}
+
+.type-body {
+  font-family: var(--font-sans);
+  font-size: var(--text-body-md);
+  font-weight: var(--weight-body);
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-body);
+  color: var(--color-text-primary);
+}
+
+/* UI labels — sans, sentence case; replaces mono uppercase pattern */
+.type-caption,
+.type-label {
+  font-family: var(--font-sans);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-body-medium);
+  line-height: var(--leading-caption);
+  letter-spacing: var(--tracking-label);
+  color: var(--color-text-secondary);
+}
+
+/* Numeric scores & terminal output only — no uppercase */
+.type-mono,
+.type-mono-score {
+  font-family: var(--font-mono);
+  /* font-size is inherited from context (use tailwind text-* utilities); keep mono for numeric glyphs */
+  font-weight: 500;
+  line-height: var(--leading-mono);
+  letter-spacing: var(--tracking-mono);
+  font-variant-numeric: tabular-nums;
+  -moz-font-feature-settings: "tnum";
+  font-feature-settings: "tnum";
+  color: var(--color-text-primary);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: var(--weight-heading);
+  letter-spacing: var(--tracking-heading);
+  line-height: var(--leading-heading);
+  color: var(--color-text-primary);
+}
+
+h1 {
+  font-size: var(--text-display-lg);
+  font-weight: var(--weight-display);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-display);
+}
+
+h2 {
+  font-size: var(--text-heading-xl);
+  font-weight: var(--weight-display);
+  letter-spacing: var(--tracking-display);
+}
+
+h3 {
+  font-size: var(--text-heading-lg);
+}
+
+h4 {
+  font-size: var(--text-heading-md);
+}
+
+h5, h6 {
+  font-size: var(--text-heading-sm);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 body {
   background-color: var(--color-bg-deep);
   color: var(--color-text-primary);
   font-family: var(--font-sans);
+  font-size: var(--text-body-md);
+  font-weight: var(--weight-body);
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
 }
 
 /* Custom Scrollbar */
@@ -45,20 +232,33 @@ body {
   background: var(--color-text-tertiary);
 }
 
-/* Smooth Scrolling snap panel styles */
+/* Full-page scroll snap sections (accounts for 64px navbar) */
 .snap-section {
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  height: 100vh;
+  min-height: calc(100vh - 64px);
   width: 100%;
 }
 
-/* Zoho Cloud Background Grid Pattern */
+/* Subtle paper grid — navy ink on alabaster */
 .grid-bg {
-  background-image: 
-    linear-gradient(to right, rgba(226, 232, 240, 0.45) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(226, 232, 240, 0.45) 1px, transparent 1px);
+  background-image:
+    linear-gradient(to right, rgba(13, 27, 46, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(13, 27, 46, 0.04) 1px, transparent 1px);
   background-size: 40px 40px;
+}
+
+.grid-bg-drift {
+  animation: grid-drift 60s linear infinite;
+}
+
+@keyframes grid-drift {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  100% {
+    background-position: 40px 40px, 40px 40px;
+  }
 }
 
 /* Terminal decoration dots */
@@ -73,16 +273,150 @@ body {
   display: inline-block;
 }
 
-/* Custom animations helper */
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 10px rgba(0, 103, 255, 0.04), 0 0 20px rgba(0, 103, 255, 0.01);
+/* Motion utilities */
+.ease-apple {
+  transition-timing-function: var(--ease-out);
+}
+
+.duration-apple {
+  transition-duration: var(--duration-base);
+}
+
+.transition-apple {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: var(--ease-out);
+  transition-duration: var(--duration-base);
+}
+
+.motion-enter {
+  transition-duration: var(--duration-enter);
+  transition-timing-function: var(--ease-emphasis);
+}
+
+.motion-stagger {
+  transition-delay: var(--delay-stagger);
+}
+
+/* Ambient mesh blobs — Zoho blue, restrained */
+@keyframes blob-drift-1 {
+  0% {
+    transform: translate3d(0px, 0px, 0px) scale(1) rotate(0deg);
   }
-  50% {
-    box-shadow: 0 0 20px rgba(0, 103, 255, 0.12), 0 0 30px rgba(0, 103, 255, 0.06);
+  33% {
+    transform: translate3d(50px, -70px, 0px) scale(1.15) rotate(120deg);
+  }
+  66% {
+    transform: translate3d(-35px, 35px, 0px) scale(0.9) rotate(240deg);
+  }
+  100% {
+    transform: translate3d(0px, 0px, 0px) scale(1) rotate(360deg);
   }
 }
 
-.glow-pulse {
-  animation: pulse-glow 2s infinite ease-in-out;
+@keyframes blob-drift-2 {
+  0% {
+    transform: translate3d(0px, 0px, 0px) scale(1) rotate(360deg);
+  }
+  33% {
+    transform: translate3d(-55px, 70px, 0px) scale(0.88) rotate(240deg);
+  }
+  66% {
+    transform: translate3d(60px, -35px, 0px) scale(1.12) rotate(120deg);
+  }
+  100% {
+    transform: translate3d(0px, 0px, 0px) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes blob-drift-3 {
+  0% {
+    transform: translate3d(0px, 0px, 0px) scale(1) rotate(0deg);
+  }
+  33% {
+    transform: translate3d(70px, 50px, 0px) scale(1.1) rotate(90deg);
+  }
+  66% {
+    transform: translate3d(-50px, -60px, 0px) scale(0.92) rotate(180deg);
+  }
+  100% {
+    transform: translate3d(0px, 0px, 0px) scale(1) rotate(360deg);
+  }
+}
+
+@keyframes blob-drift-4 {
+  0% {
+    transform: translate3d(0px, 0px, 0px) scale(1) rotate(0deg);
+  }
+  40% {
+    transform: translate3d(-40px, -55px, 0px) scale(1.08) rotate(160deg);
+  }
+  70% {
+    transform: translate3d(45px, 30px, 0px) scale(0.94) rotate(280deg);
+  }
+  100% {
+    transform: translate3d(0px, 0px, 0px) scale(1) rotate(360deg);
+  }
+}
+
+@keyframes blob-drift-5 {
+  0% {
+    transform: translate3d(0px, 0px, 0px) scale(1) rotate(360deg);
+  }
+  35% {
+    transform: translate3d(30px, -45px, 0px) scale(1.05) rotate(200deg);
+  }
+  65% {
+    transform: translate3d(-55px, 40px, 0px) scale(0.9) rotate(80deg);
+  }
+  100% {
+    transform: translate3d(0px, 0px, 0px) scale(1) rotate(0deg);
+  }
+}
+
+.animate-blob-1 {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(circle at center, color-mix(in oklch, var(--color-accent-primary) 9%, transparent) 0%, transparent 70%);
+  filter: blur(80px);
+  will-change: transform;
+  pointer-events: none;
+  animation: blob-drift-1 var(--duration-blob) infinite alternate var(--ease-in-out);
+}
+
+.animate-blob-2 {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(circle at center, color-mix(in oklch, var(--color-accent-secondary) 8%, transparent) 0%, transparent 70%);
+  filter: blur(90px);
+  will-change: transform;
+  pointer-events: none;
+  animation: blob-drift-2 30s infinite alternate var(--ease-in-out);
+}
+
+.animate-blob-3 {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(circle at center, color-mix(in oklch, var(--color-accent-primary) 6%, transparent) 0%, transparent 70%);
+  filter: blur(75px);
+  will-change: transform;
+  pointer-events: none;
+  z-index: -10;
+  animation: blob-drift-3 28s infinite alternate var(--ease-in-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-blob-1,
+  .animate-blob-2,
+  .animate-blob-3,
+  .grid-bg-drift {
+    animation: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .animate-blob-1,
+  .animate-blob-2,
+  .animate-blob-3 {
+    display: none !important;
+  }
 }

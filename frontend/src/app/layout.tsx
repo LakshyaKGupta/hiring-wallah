@@ -1,21 +1,26 @@
 import type { Metadata } from "next";
-import { Inter, Syne, JetBrains_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Instrument_Sans, IBM_Plex_Mono } from "next/font/google";
 import Navbar from "@/components/ui/Navbar";
+import MeshBackground from "@/components/ui/MeshBackground";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const instrumentSans = Instrument_Sans({
+  variable: "--font-instrument",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const syne = Syne({
-  variable: "--font-syne",
+const bricolageGrotesque = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains",
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-ibm-plex",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -31,11 +36,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${syne.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${instrumentSans.variable} ${bricolageGrotesque.variable} ${ibmPlexMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-bg-deep text-text-primary font-sans">
-        <Navbar />
-        {children}
+      <body className="min-h-full flex flex-col bg-bg-deep text-text-primary font-sans relative">
+        <MeshBackground fixed mode="full" opacity={0.22} className="z-0" />
+        <div className="relative z-10 flex flex-col flex-1 min-h-full">
+          <Navbar />
+          {children}
+        </div>
       </body>
     </html>
   );

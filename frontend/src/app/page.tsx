@@ -581,7 +581,7 @@ export default function LandingPage() {
                 <Zap className="w-3 h-3 text-accent-primary" />
                 System Pipeline
               </span>
-              <span className="text-[10px] text-accent-primary font-mono font-bold uppercase tracking-wider">Upload → Verdict</span>
+              <span className="text-[10px] text-accent-primary type-label font-bold">Upload → Verdict</span>
             </div>
 
             <motion.div variants={sectionContainerVariants} className="space-y-2.5">
@@ -623,7 +623,7 @@ export default function LandingPage() {
                       <motion.span
                         initial={{ opacity: 0, x: 8 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="text-[9px] font-mono text-accent-primary font-bold uppercase tracking-wide bg-accent-primary/5 px-2 py-0.5 border border-accent-primary/10 rounded"
+                        className="text-[9px] type-label text-accent-primary font-bold bg-accent-primary/5 px-2 py-0.5 border border-accent-primary/10 rounded"
                       >
                         {step.tip}
                       </motion.span>
@@ -793,7 +793,7 @@ export default function LandingPage() {
                   <span className="window-dot bg-[#F59E0B] w-2.5 h-2.5" />
                   <span className="window-dot bg-[#10B981] w-2.5 h-2.5" />
                 </div>
-                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <span className="type-label text-slate-400 font-bold flex items-center gap-1.5">
                   <Terminal className="w-3.5 h-3.5 text-accent-primary" />
                   committee_consensus_trail.log
                 </span>
@@ -833,8 +833,8 @@ export default function LandingPage() {
                 </div>
                 
                 <div className="text-right flex flex-col justify-end items-end h-full pl-4 w-1/3">
-                  <span className="text-[9px] uppercase font-bold text-slate-500 tracking-wider mb-2">Ledger Health</span>
-                  <div className="flex items-center gap-1.5 text-accent-green bg-accent-green/5 border border-accent-green/20 px-2 py-1 rounded font-bold uppercase text-[9px] tracking-wider">
+                  <span className="text-[9px] type-label font-bold text-slate-500 mb-2">Ledger Health</span>
+                  <div className="flex items-center gap-1.5 text-accent-green bg-accent-green/5 border border-accent-green/20 px-2 py-1 rounded font-bold type-label text-[9px]">
                     <span className="w-1.5 h-1.5 rounded-full bg-accent-green animate-pulse" />
                     Consensus Verified
                   </div>
@@ -1007,9 +1007,9 @@ export default function LandingPage() {
               className="space-y-4 pt-2"
             >
               <div className="space-y-2">
-                <div className="flex items-center justify-between font-mono text-[11px] font-bold">
-                  <span className="text-text-primary uppercase">Experience weight: {expWeight}%</span>
-                  <span className="text-text-secondary uppercase">Skill alignment weight: {skillWeight}%</span>
+                <div className="flex items-center justify-between type-label text-[11px] font-bold">
+                  <span className="text-text-primary">Experience weight: {expWeight}%</span>
+                  <span className="text-text-secondary">Skill alignment weight: {skillWeight}%</span>
                 </div>
                 
                 {/* Single range slider adjusts both to sum to 100% */}
@@ -1184,7 +1184,7 @@ export default function LandingPage() {
           transition={{ duration: 0.25 }}
           className="w-full border-t border-border-subtle bg-bg-surface/50 backdrop-blur-xs py-5 mt-auto relative z-10"
         >
-          <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[9px] text-text-tertiary uppercase tracking-wider">
+          <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 type-label text-[9px] text-text-tertiary">
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 rounded-sm bg-accent-primary flex items-center justify-center font-bold text-[10px] text-white">
                 W

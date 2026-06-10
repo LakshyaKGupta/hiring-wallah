@@ -1,61 +1,183 @@
 'use client'
 
-import React from 'react'
+import React, { Suspense } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Cpu, User, Briefcase, LogIn } from 'lucide-react'
+import {
+  Cpu,
+  UserPlus,
+  LogIn,
+  Briefcase,
+  User,
+  Sparkles,
+  GitBranch,
+} from 'lucide-react'
 
-export default function Navbar() {
+const navLinks = [
+  { href: '/', label: 'Home', icon: Cpu, match: (pathname: string) => pathname === '/' },
+  { href: '/#features', label: 'Features', icon: Sparkles, match: () => false },
+  { href: '/#how-it-works', label: 'How It Works', icon: GitBranch, match: () => false },
+  { href: '/recruiter', label: 'Recruiter', icon: Briefcase, match: (pathname: string) => pathname.startsWith('/recruiter') },
+  { href: '/candidate', label: 'Candidate', icon: User, match: (pathname: string) => pathname.startsWith('/candidate') },
+]
+
+function NavLink({
+  href,
+  label,
+  icon: Icon,
+  isActive,
+  className = '',
+}: {
+  href: string
+  label: string
+  icon: React.ComponentType<{ className?: string }>
+  isActive: boolean
+  className?: string
+}) {
+  return (
+    <motion.div whileTap={{ scale: 0.95 }} className="relative">
+      <Link
+        href={href}
+        className={`px-2.5 sm:px-3 py-1.5 rounded-lg flex items-center gap-1.5 sm:gap-2 type-label font-medium select-none text-text-secondary hover:text-text-primary group/nav ${className}`}
+      >
+        <div className="p-0.5 rounded border border-border-subtle bg-bg-deep transition-transform duration-300 group-hover/nav:scale-110 group-hover/nav:rotate-6">
+          <Icon className={`w-3 h-3 ${isActive ? 'text-accent-primary' : 'text-text-tertiary'}`} />
+        </div>
+        <span className="hidden md:inline">{label}</span>
+        {isActive && (
+          <motion.div
+            layoutId="navbar-active-indicator"
+            transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+            className="absolute inset-0 bg-accent-primary/5 border border-accent-primary/20 rounded-lg -z-10"
+          />
+        )}
+      </Link>
+    </motion.div>
+  )
+}
+
+function NavbarContent() {
   const pathname = usePathname()
-
-  const navItems = [
-    { href: '/', label: 'Home', icon: Cpu },
-    { href: '/recruiter', label: 'Recruiters', icon: Briefcase },
-    { href: '/candidate', label: 'Candidates', icon: User },
-    { href: '/auth', label: 'Sign In', icon: LogIn }
-  ]
+  const searchParams = useSearchParams()
+  const mode = searchParams?.get('mode')
+  const isAuthPage = pathname === '/auth'
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border-subtle bg-bg-surface/75 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 rounded-lg bg-accent-primary flex items-center justify-center font-display font-bold text-base text-white shadow-sm transition-transform duration-300 group-hover:scale-105">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+        <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+          <motion.div
+            whileHover={{ scale: 1.08, rotate: -4 }}
+            whileTap={{ scale: 0.94 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+            className="w-8 h-8 rounded-lg bg-accent-primary flex items-center justify-center font-display font-bold text-base text-white shadow-sm"
+          >
             W
-          </div>
-          <span className="font-display font-bold text-lg text-text-primary tracking-wide transition-colors group-hover:text-accent-primary">
+          </motion.div>
+          <span className="font-display font-extrabold text-base sm:text-lg text-text-primary tracking-tight transition-all duration-200 group-hover:text-accent-primary">
             Hiring Wallah
           </span>
         </Link>
 
-        {/* Navigation Items */}
-        <nav className="flex items-center space-x-1 sm:space-x-2">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href || (item.href !== '/' && pathname?.startsWith(item.href))
-            const Icon = item.icon
-            
-            return (
-              <Link 
-                key={item.href} 
-                href={item.href}
-                className="relative px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider transition-colors select-none text-text-secondary hover:text-text-primary"
-              >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-accent-primary' : 'text-text-tertiary'}`} />
-                <span>{item.label}</span>
-                
-                {isActive && (
-                  <motion.div
-                    layoutId="active-nav-indicator"
-                    className="absolute inset-0 bg-accent-primary/5 border border-accent-primary/20 rounded-lg -z-10"
-                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                  />
-                )}
-              </Link>
-            )
-          })}
+        <nav className="flex items-center gap-0.5 sm:gap-1">
+          {navLinks.map((item) => (
+            <NavLink
+              key={item.href}
+              href={item.href}
+              label={item.label}
+              icon={item.icon}
+              isActive={item.match(pathname ?? '')}
+            />
+          ))}
         </nav>
+
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <motion.div whileTap={{ scale: 0.95 }}>
+            <Link
+              href="/auth?mode=signin"
+              className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 type-label font-medium font-bold transition-all duration-200 ${
+                isAuthPage && mode === 'signin'
+                  ? 'text-accent-primary bg-accent-primary/5 border border-accent-primary/20'
+                  : 'text-text-secondary hover:text-text-primary border border-transparent hover:border-border-subtle'
+              }`}
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Sign In</span>
+            </Link>
+          </motion.div>
+
+          <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.96 }}>
+            <Link
+              href="/auth?mode=signup"
+              className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 type-label font-medium font-bold transition-all duration-200 ${
+                isAuthPage && mode === 'signup'
+                  ? 'bg-accent-primary/90 text-white border border-accent-primary'
+                  : 'bg-accent-primary hover:bg-accent-primary/95 text-white border border-accent-primary shadow-sm'
+              }`}
+            >
+              <UserPlus className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Sign Up</span>
+            </Link>
+          </motion.div>
+        </div>
       </div>
     </header>
+  )
+}
+
+function NavbarFallback() {
+  const pathname = usePathname()
+
+  return (
+    <header className="sticky top-0 z-50 w-full border-b border-border-subtle bg-bg-surface/75 backdrop-blur-md">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+        <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-accent-primary flex items-center justify-center font-display font-bold text-base text-white shadow-sm">
+            W
+          </div>
+          <span className="font-display font-extrabold text-base sm:text-lg text-text-primary tracking-tight">
+            Hiring Wallah
+          </span>
+        </Link>
+
+        <nav className="flex items-center gap-0.5 sm:gap-1">
+          {navLinks.map((item) => (
+            <NavLink
+              key={item.href}
+              href={item.href}
+              label={item.label}
+              icon={item.icon}
+              isActive={item.match(pathname ?? '')}
+            />
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <Link
+            href="/auth?mode=signin"
+            className="px-3 py-1.5 rounded-lg flex items-center gap-1.5 type-label font-medium font-bold text-text-secondary"
+          >
+            <LogIn className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Sign In</span>
+          </Link>
+          <Link
+            href="/auth?mode=signup"
+            className="px-3 py-1.5 rounded-lg flex items-center gap-1.5 type-label font-medium font-bold bg-accent-primary text-white"
+          >
+            <UserPlus className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Sign Up</span>
+          </Link>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+export default function Navbar() {
+  return (
+    <Suspense fallback={<NavbarFallback />}>
+      <NavbarContent />
+    </Suspense>
   )
 }

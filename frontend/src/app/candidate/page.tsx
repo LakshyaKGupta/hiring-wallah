@@ -3,11 +3,34 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { UserCheck, Upload, ArrowLeft, Loader2, Sparkles, AlertOctagon } from 'lucide-react'
-import AgentOrb from '@/components/ui/AgentOrb'
+import { motion, Variants } from 'framer-motion'
+import { UserCheck, Upload, ArrowLeft, Loader2, Sparkles } from 'lucide-react'
+import MeshBackground from '@/components/ui/MeshBackground'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+
+const containerVariants: Variants = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.06,
+      delayChildren: 0.02
+    }
+  }
+}
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 150,
+      damping: 20
+    }
+  }
+}
 
 export default function CandidateDashboard() {
   const router = useRouter()
@@ -102,7 +125,7 @@ export default function CandidateDashboard() {
         setErrorMsg(err.detail || 'Candidate profile analysis failed.')
         setIsRunning(false)
       }
-    } catch (e) {
+    } catch {
       clearInterval(interval)
       setErrorMsg('Could not connect to backend service.')
       setIsRunning(false)
@@ -111,19 +134,20 @@ export default function CandidateDashboard() {
 
   return (
     <div className="relative min-h-[calc(100vh-64px)] bg-bg-deep overflow-hidden flex flex-col font-sans">
-      {/* Zoho Grid backdrop */}
-      <div className="absolute inset-0 grid-bg opacity-35 z-0 pointer-events-none" />
+      {/* Zoho Grid backdrop with Mesh Blobs */}
+      <MeshBackground opacity={0.35} />
 
       {/* Header */}
       <header className="w-full max-w-7xl mx-auto px-6 py-5 flex items-center justify-between relative z-10">
         <div className="flex items-center gap-4">
-          <Link 
-            href="/" 
-            className="w-9 h-9 rounded-full border border-border-subtle hover:border-accent-primary flex items-center justify-center text-text-secondary hover:text-accent-primary transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
+          <Link href="/">
+            <div 
+              className="w-9 h-9 rounded-full border border-border-subtle hover:border-accent-primary flex items-center justify-center text-text-secondary hover:text-accent-primary cursor-pointer transition-colors hover:scale-105 active:scale-95 transition-all duration-200"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </div>
           </Link>
-          <span className="font-display font-bold text-xl text-text-primary tracking-wide">
+          <span className="font-display font-extrabold text-xl text-text-primary tracking-tight">
             Application Strategist
           </span>
         </div>
@@ -135,24 +159,28 @@ export default function CandidateDashboard() {
         {/* Loading Overlay */}
         {isRunning && (
           <div className="absolute inset-0 bg-bg-deep/95 z-50 flex flex-col items-center justify-center p-6">
-            <div className="w-full max-w-lg bg-bg-surface border border-border-subtle rounded-xl p-8 shadow-sm text-center">
+            <div 
+              className="w-full max-w-lg bg-bg-surface border border-border-subtle rounded-xl p-8 shadow-sm text-center"
+            >
               <div className="flex items-center justify-center gap-3 mb-6">
                 <Loader2 className="w-6 h-6 text-accent-primary animate-spin" />
-                <h3 className="font-display font-bold text-lg text-text-primary tracking-wide uppercase">
+                <h3 className="font-display font-extrabold text-lg text-text-primary tracking-tight uppercase">
                   Analyzing Job Fit Strategy
                 </h3>
               </div>
 
-              <div className="space-y-3 text-left">
+              <div 
+                className="space-y-3 text-left"
+              >
                 {pipelineSteps.map((step, idx) => {
                   const isActive = idx === currentStep
                   const isDone = idx < currentStep
                   return (
                     <div 
                       key={step} 
-                      className={`p-2.5 rounded-lg border text-xs font-mono transition-all duration-500 flex items-center justify-between ${
+                      className={`p-2.5 rounded-lg border text-xs type-label flex items-center justify-between ${
                         isActive 
-                          ? 'border-accent-primary bg-accent-primary/5 glow-pulse text-text-primary' 
+                          ? 'border-accent-primary bg-accent-primary/5 text-text-primary font-semibold' 
                           : isDone 
                             ? 'border-accent-green/20 bg-accent-green/5 text-text-secondary opacity-60' 
                             : 'border-border-subtle text-text-tertiary opacity-30'
@@ -172,17 +200,18 @@ export default function CandidateDashboard() {
 
         {/* Dashboard Box */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ type: 'spring', stiffness: 150, damping: 20 }}
           className="w-full max-w-xl bg-bg-surface border border-border-subtle rounded-xl p-6 md:p-8 shadow-2xl relative"
         >
           <div className="flex items-center gap-3 mb-6 border-b border-border-subtle pb-4">
             <Sparkles className="w-5 h-5 text-accent-primary" />
             <div>
-              <h1 className="font-display font-bold text-xl text-text-primary tracking-wide uppercase">
+              <h1 className="font-display font-extrabold text-xl text-text-primary tracking-tight uppercase">
                 Analyze Candidate Profile
               </h1>
-              <span className="text-[10px] text-text-tertiary font-mono tracking-wider block mt-0.5">
+              <span className="text-[10px] text-text-tertiary type-label block mt-0.5">
                 Optimize your application matching for any target role
               </span>
             </div>
@@ -195,77 +224,88 @@ export default function CandidateDashboard() {
           )}
 
           <form onSubmit={handleRunAnalysis} className="space-y-6">
-            {/* Target Role Input */}
-            <div>
-              <label className="text-[10px] text-text-secondary font-mono uppercase tracking-wide block mb-1.5">
-                Target Role / Title *
-              </label>
-              <input
-                type="text"
-                required
-                value={targetRole}
-                onChange={(e) => setTargetRole(e.target.value)}
-                placeholder="e.g. Senior Frontend Engineer"
-                className="w-full bg-bg-deep border border-border-subtle rounded px-3 py-2.5 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
-              />
-            </div>
-
-            {/* Resume dropzone */}
-            <div>
-              <label className="text-[10px] text-text-secondary font-mono uppercase tracking-wide block mb-1.5">
-                Upload Resume (PDF only) *
-              </label>
-
-              <div
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                className={`border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 relative ${
-                  isDragOver 
-                    ? 'border-accent-primary bg-accent-primary/5' 
-                    : 'border-border-subtle hover:border-accent-primary/35'
-                }`}
-              >
-                <input
-                  type="file"
-                  required={!resumeFile}
-                  accept="application/pdf"
-                  onChange={handleFileChange}
-                  className="absolute inset-0 opacity-0 cursor-pointer"
-                />
-                <Upload className="w-10 h-10 text-text-tertiary mb-3" />
-                
-                {resumeFile ? (
-                  <div>
-                    <p className="text-sm font-semibold text-accent-primary">
-                      {resumeFile.name}
-                    </p>
-                    <p className="text-[10px] text-text-tertiary mt-0.5">
-                      {(resumeFile.size / 1024 / 1024).toFixed(2)} MB • PDF Document
-                    </p>
-                  </div>
-                ) : (
-                  <div>
-                    <p className="text-sm font-semibold text-text-primary">
-                      Drag & Drop Your Resume
-                    </p>
-                    <p className="text-[10px] text-text-tertiary mt-0.5">
-                      Click to browse files locally
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Trigger button */}
-            <button
-              type="submit"
-              disabled={!resumeFile || !targetRole}
-              className="w-full py-3.5 bg-accent-primary hover:bg-white hover:text-accent-primary text-white border border-accent-primary disabled:opacity-40 disabled:hover:bg-accent-primary disabled:hover:text-white rounded font-mono uppercase font-bold tracking-wider transition-colors flex items-center justify-center gap-2 shadow-sm cursor-pointer"
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="show"
+              className="space-y-6"
             >
-              <UserCheck className="w-5 h-5" />
-              <span>Analyze My Profile</span>
-            </button>
+              {/* Target Role Input */}
+              <motion.div variants={itemVariants}>
+                <label className="type-label block mb-1.5">
+                  Target Role / Title *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={targetRole}
+                  onChange={(e) => setTargetRole(e.target.value)}
+                  placeholder="e.g. Senior Frontend Engineer"
+                  className="w-full bg-bg-deep border border-border-subtle rounded px-3 py-2.5 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+                />
+              </motion.div>
+
+              {/* Resume dropzone */}
+              <motion.div variants={itemVariants}>
+                <label className="type-label block mb-1.5">
+                  Upload Resume (PDF only) *
+                </label>
+
+                <div
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  className={`border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer relative transition-colors active:scale-99 transition-all duration-200 ${
+                    isDragOver 
+                      ? 'border-accent-primary bg-accent-primary/5' 
+                      : 'border-border-subtle hover:border-accent-primary/35'
+                  }`}
+                >
+                  <input
+                    type="file"
+                    required={!resumeFile}
+                    accept="application/pdf"
+                    onChange={handleFileChange}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                  />
+                  <Upload className="w-10 h-10 text-text-tertiary mb-3" />
+                  
+                  {resumeFile ? (
+                    <div>
+                      <p className="text-sm font-semibold text-accent-primary">
+                        {resumeFile.name}
+                      </p>
+                      <p className="text-[10px] text-text-tertiary mt-0.5">
+                        {(resumeFile.size / 1024 / 1024).toFixed(2)} MB • PDF Document
+                      </p>
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="text-sm font-semibold text-text-primary">
+                        Drag & Drop Your Resume
+                      </p>
+                      <p className="text-[10px] text-text-tertiary mt-0.5">
+                        Click to browse files locally
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+
+              {/* Trigger button */}
+              <motion.button
+                variants={itemVariants}
+                type="submit"
+                disabled={!resumeFile || !targetRole}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+                className="w-full py-3.5 bg-accent-primary hover:bg-white hover:text-accent-primary text-white border border-accent-primary disabled:opacity-40 disabled:hover:bg-accent-primary disabled:hover:text-white rounded font-sans font-bold text-caption flex items-center justify-center gap-2 shadow-sm cursor-pointer transition-all duration-200"
+              >
+                <UserCheck className="w-5 h-5" />
+                <span>Analyze My Profile</span>
+              </motion.button>
+            </motion.div>
           </form>
         </motion.div>
 

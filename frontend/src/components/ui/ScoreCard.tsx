@@ -70,7 +70,7 @@ export default function ScoreCard({ candidate, rank, index = 0 }: ScoreCardProps
           <motion.div
             whileHover={{ scale: 1.1, rotate: -6 }}
             transition={{ type: 'spring', stiffness: 300, damping: 18 }}
-            className="w-10 h-10 rounded-lg bg-bg-deep border border-border-subtle flex items-center justify-center font-mono font-bold text-sm text-text-secondary group-hover:border-accent-primary/30 group-hover:text-accent-primary transition-all duration-400"
+            className="w-10 h-10 rounded-lg bg-bg-deep border border-border-subtle flex items-center justify-center type-mono font-bold text-sm text-text-secondary group-hover:border-accent-primary/30 group-hover:text-accent-primary transition-all duration-400"
           >
             {rank <= 3 ? <RankIcon className="w-4 h-4" /> : `#${rank}`}
           </motion.div>
@@ -81,12 +81,12 @@ export default function ScoreCard({ candidate, rank, index = 0 }: ScoreCardProps
             </h3>
 
             <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-              <span className={`px-2 py-0.5 rounded text-xs font-mono border uppercase tracking-wider flex items-center gap-1 ${config.color}`}>
+              <span className={`px-2 py-0.5 rounded text-xs type-label border flex items-center gap-1 ${config.color}`}>
                 <VerdictIcon className="w-3 h-3" />
                 {candidate.verdict}
               </span>
-              <span className="text-xs text-text-tertiary font-mono">
-                {candidate.confidence}% CONF
+              <span className="text-xs text-text-tertiary type-label">
+                {candidate.confidence}% Conf
               </span>
             </div>
           </div>
@@ -125,7 +125,7 @@ export default function ScoreCard({ candidate, rank, index = 0 }: ScoreCardProps
           {candidate.da_flags > 0 ? (
             <motion.div
               whileHover={{ scale: 1.05 }}
-              className="flex items-center gap-1.5 text-accent-da font-mono text-xs px-2 py-1 rounded border border-accent-da/10 bg-accent-da/5 transition-all duration-300 group-hover:bg-accent-da/10"
+              className="flex items-center gap-1.5 text-accent-da type-label text-xs px-2 py-1 rounded border border-accent-da/10 bg-accent-da/5 transition-all duration-300 group-hover:bg-accent-da/10"
             >
               <div className="flex items-center justify-center p-0.5 rounded bg-accent-da/10 transition-transform duration-300 group-hover:rotate-12">
                 <AlertCircle className="w-3.5 h-3.5 animate-pulse" />
@@ -133,9 +133,9 @@ export default function ScoreCard({ candidate, rank, index = 0 }: ScoreCardProps
               <span>{candidate.da_flags} DA FLAG{candidate.da_flags > 1 ? 'S' : ''}</span>
             </motion.div>
           ) : (
-            <div className="flex items-center gap-1.5 text-[10px] text-accent-green font-mono hidden md:flex">
+            <div className="flex items-center gap-1.5 text-[10px] text-accent-green type-label hidden md:flex">
               <ShieldCheck className="w-3.5 h-3.5" />
-              SECURE MATCH
+              Secure Match
             </div>
           )}
 
@@ -145,11 +145,11 @@ export default function ScoreCard({ candidate, rank, index = 0 }: ScoreCardProps
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-              className="text-3xl font-mono font-bold text-accent-primary"
+              className="text-3xl type-mono-score font-bold text-accent-primary"
             >
               {candidate.score}
             </motion.span>
-            <span className="text-[10px] text-text-tertiary block font-mono">OVERALL</span>
+            <span className="text-[10px] text-text-tertiary block type-mono-score">OVERALL</span>
           </div>
 
           <Link href={`/recruiter/candidate/${candidate.id}`}>

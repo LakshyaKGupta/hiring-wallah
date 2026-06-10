@@ -1,12 +1,24 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import { motion } from 'framer-motion'
 import { ArrowLeft, RefreshCw, Trophy, FileSearch, ShieldAlert } from 'lucide-react'
 import ScoreCard from '@/components/ui/ScoreCard'
+import MeshBackground from '@/components/ui/MeshBackground'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+
+const listContainerVariants = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.05
+    }
+  }
+}
 
 interface CandidateResult {
   evaluation_id: string
@@ -16,8 +28,14 @@ interface CandidateResult {
   }
   evaluation: {
     score: number
-    breakdown: any
-    devils_advocate?: any
+    breakdown: Record<string, { score: number; justification: string }>
+    devils_advocate?: {
+      contested_claims?: Array<{
+        severity: string
+        original_claim: string
+        counter: string
+      }>
+    }
   }
   decision: {
     id: string
@@ -36,7 +54,7 @@ export default function ResultsPage() {
   const [loading, setLoading] = useState(true)
   const [errorMsg, setErrorMsg] = useState('')
 
-  const fetchResults = async () => {
+  const fetchResults = useCallback(async () => {
     setLoading(true)
     setErrorMsg('')
     try {
@@ -44,7 +62,7 @@ export default function ResultsPage() {
       const jobRes = await fetch(`${API_URL}/jobs`)
       if (jobRes.ok) {
         const jobs = await jobRes.json()
-        const job = jobs.find((j: any) => j.id === jobId)
+        const job = jobs.find((j: { id: string; title: string }) => j.id === jobId)
         if (job) setJobTitle(job.title)
       }
 
@@ -61,34 +79,44 @@ export default function ResultsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [jobId])
 
   useEffect(() => {
+    let active = true
     if (jobId) {
-      fetchResults()
+      const handle = requestAnimationFrame(() => {
+        if (active) {
+          fetchResults()
+        }
+      })
+      return () => {
+        active = false
+        cancelAnimationFrame(handle)
+      }
     }
-  }, [jobId])
+  }, [jobId, fetchResults])
 
   return (
     <div className="flex-1 bg-bg-deep min-h-screen text-text-primary font-sans flex flex-col relative">
-      {/* Zoho Grid backdrop */}
-      <div className="absolute inset-0 grid-bg opacity-20 pointer-events-none z-0" />
+      {/* Zoho Grid backdrop with Mesh Blobs */}
+      <MeshBackground opacity={0.2} />
 
       {/* Header */}
       <header className="border-b border-border-subtle bg-bg-surface py-5 px-6 sticky top-16 z-40">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link 
-              href="/recruiter" 
-              className="w-9 h-9 rounded-full border border-border-subtle hover:border-accent-primary flex items-center justify-center text-text-secondary hover:text-accent-primary transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
+            <Link href="/recruiter">
+              <div 
+                className="w-9 h-9 rounded-full border border-border-subtle hover:border-accent-primary flex items-center justify-center text-text-secondary hover:text-accent-primary transition-colors cursor-pointer hover:scale-105 active:scale-95 transition-all duration-200"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </div>
             </Link>
             <div>
-              <span className="text-[10px] text-text-tertiary font-mono uppercase tracking-widest block">
+              <span className="type-caption text-text-tertiary block">
                 Ranked Candidates Summary
               </span>
-              <h1 className="text-xl font-display font-bold text-text-primary tracking-wide">
+              <h1 className="text-xl font-display font-extrabold text-text-primary tracking-tight">
                 {jobTitle || 'Evaluation Position'}
               </h1>
             </div>
@@ -96,7 +124,7 @@ export default function ResultsPage() {
 
           <button 
             onClick={fetchResults}
-            className="w-9 h-9 rounded-full border border-border-subtle hover:border-accent-primary flex items-center justify-center text-text-secondary hover:text-accent-primary transition-colors"
+            className="w-9 h-9 rounded-full border border-border-subtle hover:border-accent-primary flex items-center justify-center text-text-secondary hover:text-accent-primary transition-colors cursor-pointer hover:scale-105 active:scale-95 transition-all duration-200"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
@@ -108,7 +136,7 @@ export default function ResultsPage() {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
             <RefreshCw className="w-8 h-8 text-accent-primary animate-spin" />
-            <span className="font-mono text-xs text-text-tertiary uppercase tracking-wider">
+            <span className="type-label text-xs text-text-tertiary">
               Syncing reasoning logs...
             </span>
           </div>
@@ -119,7 +147,7 @@ export default function ResultsPage() {
             <p className="text-xs text-text-secondary mb-4">{errorMsg}</p>
             <button 
               onClick={fetchResults}
-              className="px-4 py-2 bg-bg-surface border border-border-subtle text-xs font-mono uppercase tracking-wider rounded hover:border-accent-primary hover:bg-bg-raised transition-colors cursor-pointer"
+              className="px-4 py-2 bg-bg-surface border border-border-subtle text-caption font-sans font-medium rounded hover:border-accent-primary hover:bg-bg-raised transition-colors cursor-pointer"
             >
               Retry Connection
             </button>
@@ -132,7 +160,7 @@ export default function ResultsPage() {
               We found the position setup, but no candidate resumes have been evaluated yet.
             </p>
             <Link href="/recruiter">
-              <div className="px-4 py-2 bg-accent-primary hover:bg-white hover:text-accent-primary text-white border border-accent-primary font-mono text-xs uppercase font-bold tracking-wider rounded transition-colors inline-block cursor-pointer">
+              <div className="px-4 py-2 bg-accent-primary hover:bg-white hover:text-accent-primary text-white border border-accent-primary font-sans text-caption font-bold rounded transition-colors inline-block cursor-pointer">
                 Upload Resumes
               </div>
             </Link>
@@ -147,13 +175,16 @@ export default function ResultsPage() {
                   Hiring Committee generated {results.length} ranked candidate recommendation{results.length > 1 ? 's' : ''}.
                 </span>
               </div>
-              <span className="text-[10px] text-text-tertiary font-mono uppercase">
+              <span className="type-caption text-text-tertiary">
                 Sorted by Confidence
               </span>
             </div>
 
             {/* 3D Stack Container */}
-            <div 
+            <motion.div 
+              variants={listContainerVariants}
+              initial="hidden"
+              animate="show"
               className="relative py-6"
               style={{
                 transformStyle: 'preserve-3d',
@@ -163,7 +194,7 @@ export default function ResultsPage() {
               {results.map((res, index) => {
                 // Determine Devil's Advocate flag count
                 const claims = res.evaluation?.devils_advocate?.contested_claims || []
-                const da_flags = claims.filter((c: any) => c.severity === 'high' || c.severity === 'medium').length
+                const da_flags = claims.filter((c: { severity: string }) => c.severity === 'high' || c.severity === 'medium').length
 
                 const cardCandidate = {
                   id: res.evaluation_id,
@@ -183,7 +214,7 @@ export default function ResultsPage() {
                   />
                 )
               })}
-            </div>
+            </motion.div>
           </div>
         )}
       </main>
