@@ -6,21 +6,24 @@ This file is the persistent project memory for AI agents and human contributors.
 
 - **Active systems:**
   - Git repository initialized.
-  - Private GitHub repository created at `LakshyaKGupta/hiring-wallah` and updated with all backend and frontend implementations.
-  - FastAPI Backend service fully operational, running on port 8000.
-  - Next.js 16 Frontend client fully built and type checked, running on port 3000.
-- **Recent progress (Design Overhaul v3 — Anti-AI-Template Session):**
-  - **Full design system migration**: Zoho blue (#0067FF) → Indigo/violet (#4f46e5, #7c3aed, #6366f1) palette across all CSS tokens in `globals.css`
-  - **Hero redesign** (`HeroConvergenceScene.tsx`): Replaced generic "blue glow + particle field" with editorial asymmetric layout; geometric icosahedron + torus ring 3D orb, grain noise texture (SVG feTurbulence at 2.2% opacity), indigo gradient headline, and a restrained cream/ivory (#faf9f7) background
-  - **Cursor redesign** (`CursorEffect.tsx`): Replaced 296-line cringy pulsing ring + canvas particle trail with a 38-line minimal spotlight (rgba(99,102,241,0.04) radial gradient only) + native OS cursor
-  - **Design system expansion** (`globals.css`): Added grain-overlay keyframe, aurora-bg conic gradient, shimmer-text utility, blob-drift-6, blob 4/5/6 classes with prime-adjacent timing for Moiré drift
-  - **Section backgrounds**: All 6 page sections now use distinct indigo-tinted diagonal gradients (no more static flat `from-bg-raised to-bg-deep`)
-  - **MeshBackground canvas orbs**: Updated from Zoho-blue to indigo/violet rgba for visual consistency
-  - **LedgerChainBackground**: Updated from Zoho-blue to indigo (#6366f1, #818cf8, #a78bfa), transparent canvas background
-  - **Navbar**: Updated header blur to `bg-white/80`, logo shimmer uses `bg-indigo-200/20`
-  - **Production build**: ✅ Compiles clean in 12.0s, TypeScript zero errors
+  - Private GitHub repository at `LakshyaKGupta/hiring-wallah` — latest commit: `8bd86c0`.
+  - FastAPI Backend service fully operational on port 8000.
+  - Next.js 16 Frontend fully built and type checked, running on port 3000.
+- **Recent progress (Design Overhaul v4 — HiringAgents.ai Palette + Kore.ai Transitions):**
+  - **Full design token migration**: Zoho blue → `#7c3aed` (violet-600) primary, `#6366f1` (indigo-500) secondary, `#F9F9FB` surface, `#1F2937` text
+  - **Kore.ai easing**: Added `--ease-kore: cubic-bezier(0.22, 0.6, 0.36, 1)` and helper classes `.ease-kore`, `.duration-kore`, `.transition-kore` to `globals.css` and `motion.ts`
+  - **Premium design system extensions** in `globals.css`: grain-overlay (SVG feTurbulence noise at 3.5% opacity), aurora-bg (conic gradient 52s rotation), shimmer-text utility, organic blob-drift-6 keyframe with asymmetric timing
+  - **New component `FloatingIcons.tsx`**: SSR-safe ambient backdrop icons with slow Framer Motion drift (12–20s, 4–9% opacity)
+  - **Feature cards redesign**: Circular pastel-colored icon backdrops (amber/teal/rose/purple) with thin gray borders and white backgrounds on Section 2
+  - **Unified Workspaces section**: Merged recruiter and candidate sections into one tabbed block (`#workspaces`) with animated tab-switch transitions
+  - **Decision Flow SVG connector**: Animated dashed pipeline line in Section 5 with violet→indigo linear gradient
+  - **HeroConvergenceScene syntax fix**: Removed duplicate `/>  />` tag at line 401
+  - **Color consistency**: All `indigo-*` Tailwind class references replaced with `accent-primary` / `purple-*` equivalents
+  - **TypeScript**: Zero compile errors (`npx tsc --noEmit` clean)
+  - **Production build**: ✅ Compiled in 3.5s, all 7 routes generated, zero warnings
 - **Current blockers:** None.
 - **Known risks:** None.
+
 
 ## Design System (v3 — Indigo/Violet)
 
@@ -55,6 +58,29 @@ This file is the persistent project memory for AI agents and human contributors.
 ---
 
 ## Session Updates
+
+### Session Update - 2026-06-11 (Design Overhaul v4 — HiringAgents.ai Palette + Kore.ai Transitions)
+
+#### Objective
+- Migrate the entire design system to the HiringAgents.ai violet/indigo color palette.
+- Apply Kore.ai Power-3 cubic-bezier easing to all transitions.
+- Add floating ambient backdrop icons using Framer Motion.
+- Fix JSX syntax error in HeroConvergenceScene (`/>  />` duplicate tag).
+- Clean up all `indigo-*` Tailwind class references to match new `accent-primary` token.
+- Unify the recruiter and candidate sections into a single tabbed workspace block.
+- Achieve zero TypeScript errors and a clean production build.
+
+#### Completions
+- **globals.css**: Complete color token migration — `#7c3aed` (violet-600) as primary accent, `#F9F9FB` surface background, Kore.ai easing variables, grain overlay, aurora-bg, shimmer-text, asymmetric blob-drift-6 animation
+- **FloatingIcons.tsx** (new): SSR-safe ambient icon component with 12–20s drift cycles and sub-10% opacity for background depth
+- **page.tsx**: Feature card pastel icon redesign, unified `#workspaces` tabbed section with Framer AnimatePresence switcher, SVG animated decision flow connector, color cleanup
+- **HeroConvergenceScene.tsx**: Syntax fix (removed duplicate self-closing tag), color migration, FloatingIcons integration
+- **motion.ts**: `koreTransition()` helper added
+- **FloatingIcons.tsx TS fix**: Added `strokeWidth?: number` to icon prop type interface
+- **Git**: Committed and pushed as `8bd86c0` to `origin/main`
+- **Verification**: `npx tsc --noEmit` → zero errors; `npm run build` → ✅ 3.5s compile, all 7 routes
+
+---
 
 ### Session Update - 2026-06-11 (Visual Refinement & Scroll Flow Softening)
 
