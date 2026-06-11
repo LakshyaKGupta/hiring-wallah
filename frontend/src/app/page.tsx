@@ -549,6 +549,11 @@ export default function LandingPage() {
     }
   }, [])
 
+  const activeSectionRef = useRef(activeSection)
+  useEffect(() => {
+    activeSectionRef.current = activeSection
+  }, [activeSection])
+
   useEffect(() => {
     const handleWindowScroll = () => {
       if (typeof window === 'undefined') return
@@ -566,16 +571,14 @@ export default function LandingPage() {
         }
       }
 
-      setActiveSection((prev) => {
-        if (currentSectionIdx !== prev) {
-          const section = LANDING_SECTIONS[currentSectionIdx]
-          if (section) {
-            window.history.replaceState(null, '', `#${section.id}`)
-          }
-          return currentSectionIdx
+      const prevSectionIdx = activeSectionRef.current
+      if (currentSectionIdx !== prevSectionIdx) {
+        setActiveSection(currentSectionIdx)
+        const section = LANDING_SECTIONS[currentSectionIdx]
+        if (section) {
+          window.history.replaceState(null, '', `#${section.id}`)
         }
-        return prev
-      })
+      }
     }
 
     window.addEventListener('scroll', handleWindowScroll, { passive: true })
