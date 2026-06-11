@@ -61,8 +61,20 @@ This file is the persistent project memory for AI agents and human contributors.
 #### Objective
 - Remove the specific agent names (Strategist, Analyst, Evaluator, Advocate, Parser, Committee) from the hero visualization and badges.
 - Transition the page from forced scroll snapping to a premium, smooth-flowing scrolling layout.
+- Improve Navbar navigation icons with clean, contextual shapes.
+- Restore text selection/copying usability across the landing page.
 
 #### Completions
+- **Navbar Icon Upgrade** (`Navbar.tsx`):
+  - Replaced generic/mismatched icons with intuitive, contextual symbols:
+    - Home: `Home`
+    - Features: `Sparkles`
+    - How It Works: `Network` (Decision flow/AI consensus network)
+    - Recruiter: `ClipboardCheck` (Scorecards/evaluations)
+    - Candidate: `FileText` (Dossiers/resumes)
+- **Text Selection & Copy Usability** (`HeroConvergenceScene.tsx`, `ScoreCard.tsx`, `page.tsx`):
+  - Enabled `pointer-events-auto` and `select-text` on the hero overlay text container so the headline, subheadline, and stats cards can be highlighted and copied.
+  - Replaced CSS class `select-none` with `select-text` on candidate `ScoreCard` components and reasoning flow `AgentCard` components, allowing recruiters and candidates to copy text content easily.
 - **De-Branded 3D Hero Nodes** (`HeroConvergenceScene.tsx`):
   - Removed floating agent badges from the bottom right of the hero.
   - Replaced the six agent-branded nodes with abstract glowing data nodes using a premium AI accent palette: Indigo (`#4F46E5`), Purple (`#7C3AED`), and Cyan (`#06B6D4`).
