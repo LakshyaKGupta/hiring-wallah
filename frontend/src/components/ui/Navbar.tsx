@@ -1,6 +1,6 @@
 'use client'
 
-import React, { Suspense } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
@@ -21,6 +21,10 @@ const navLinks = [
   { href: '/#how-it-works', label: 'Process', icon: Network, match: () => false },
   { href: '/#cta', label: 'Start', icon: FileText, match: () => false },
 ]
+
+const sectionIds = navLinks
+  .map((item) => item.href.startsWith('/#') ? item.href.slice(2) : null)
+  .filter((item): item is string => Boolean(item))
 
 function NavLink({
   href,
@@ -58,7 +62,11 @@ function NavLink({
       <Link
         href={href}
         onClick={handleClick}
-        className={`px-2.5 sm:px-3 py-1.5 rounded-lg flex items-center gap-1.5 sm:gap-2 type-label font-medium select-none text-text-secondary hover:text-text-primary group/nav ${className}`}
+        className={`px-2.5 sm:px-3 py-1.5 rounded-lg flex items-center gap-1.5 sm:gap-2 type-label font-medium select-none border transition-all duration-200 group/nav ${
+          isActive
+            ? 'border-accent-primary/20 bg-accent-primary/5 text-text-primary shadow-sm'
+            : 'border-transparent text-text-secondary hover:border-border-subtle hover:text-text-primary'
+        } ${className}`}
       >
         <div className="p-0.5 rounded border border-border-subtle bg-bg-deep transition-transform duration-300 group-hover/nav:scale-110 group-hover/nav:rotate-6">
           <Icon className={`w-3 h-3 ${isActive ? 'text-accent-primary' : 'text-text-tertiary'}`} />
@@ -81,6 +89,45 @@ function NavbarContent() {
   const searchParams = useSearchParams()
   const mode = searchParams?.get('mode')
   const isAuthPage = pathname === '/auth'
+  const [activeHash, setActiveHash] = useState('')
+
+  useEffect(() => {
+    const syncHash = () => {
+      setActiveHash(window.location.hash || '')
+    }
+
+    syncHash()
+    window.addEventListener('hashchange', syncHash)
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleEntry = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+
+        if (visibleEntry?.target.id) {
+          const nextHash = `#${visibleEntry.target.id}`
+          setActiveHash(nextHash)
+          window.history.replaceState(null, '', nextHash)
+        }
+      },
+      {
+        root: null,
+        rootMargin: '-35% 0px -45% 0px',
+        threshold: [0.2, 0.45, 0.7],
+      },
+    )
+
+    sectionIds.forEach((id) => {
+      const element = document.getElementById(id)
+      if (element) observer.observe(element)
+    })
+
+    return () => {
+      window.removeEventListener('hashchange', syncHash)
+      observer.disconnect()
+    }
+  }, [])
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border-subtle bg-bg-surface/75 backdrop-blur-md">
@@ -112,7 +159,7 @@ function NavbarContent() {
               href={item.href}
               label={item.label}
               icon={item.icon}
-              isActive={item.match(pathname ?? '')}
+              isActive={item.href.startsWith('/#') ? activeHash === item.href.slice(1) : item.match(pathname ?? '') && (!activeHash || activeHash === '#hero')}
             />
           ))}
         </nav>

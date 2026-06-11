@@ -1098,3 +1098,35 @@ This file is the persistent project memory for AI agents and human contributors.
 - If visual polish continues, focus next on the lower Workspaces/Decision Protocol sections so they match the new hero's lighter evidence-led visual system.
 - Browser screenshot capture in the in-app browser intermittently timed out on the animated page; rely on lint/build plus DOM metrics or external Playwright capture if image evidence is required.
 
+### Session Update - 2026-06-11 (Award-Style Hero Motion & One-Viewport Polish)
+
+#### Objective
+- Improve the landing page after visual QA: hero still felt too static, section height was inconsistent, navbar did not clearly show the active section, and the CTA footer links felt misaligned with the last page.
+
+#### Completed
+- Removed the "Evidence-first hiring OS" badge from the hero.
+- Changed the hero headline to "Hiring decisions with receipts." and added more premium product-scene motion:
+  - Floating animated evidence icons in the hero background.
+  - Moving scan beam on the product panel.
+  - Subtle orbital rail around the evidence workspace.
+  - More natural card drift and evidence row motion.
+- Hid the heavy hero evidence panel on mobile so the hero remains one viewport instead of a long stacked scene.
+- Tightened all major landing sections to `calc(100vh - 64px)` on desktop:
+  - Hero, Outcomes, Workspaces, Process, and CTA rendered as 936px each in a 1440x1000 browser QA pass.
+- Added visibly active navbar states for the current page/section.
+- Removed the footer Protocol/Workspaces/Privacy strip from the CTA section so the last page aligns as a clean closing panel.
+
+#### Verification
+- `npm run lint` in `frontend`: passed.
+- `npm run build` in `frontend`: passed.
+- Browser DOM QA:
+  - Desktop sections each measured 936px at 1440x1000 viewport.
+  - Hero badge removed.
+  - CTA footer strip removed.
+  - Navbar Home active state visible on hero.
+  - Signup button remains white text on dark background.
+  - Mobile hero measured 780px high with no horizontal overflow (`scrollWidth` 384 vs viewport 390).
+
+#### Notes For Next Agent
+- Keep hero animation tied to hiring artifacts: resumes, rubric, score, fingerprint, signed ledger. Avoid decorative blobs as the primary visual.
+- Lower sections are now one-screen on desktop; if adding content, compress or move it into interaction states instead of increasing page height.

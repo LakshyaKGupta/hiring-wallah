@@ -404,7 +404,7 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 2: FEATURES */}
-      <section id="features" className="w-full min-h-screen flex flex-col justify-center py-24 relative overflow-hidden bg-white border-b border-gray-100 scroll-mt-16">
+      <section id="features" className="w-full min-h-[calc(100vh-64px)] lg:h-[calc(100vh-64px)] flex flex-col justify-center py-14 lg:py-10 relative overflow-hidden bg-white border-b border-gray-100 scroll-mt-16">
         <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-white pointer-events-none" />
         <FloatingIcons count={12} />
 
@@ -415,8 +415,8 @@ export default function LandingPage() {
           viewport={{ once: true, amount: 0.15 }}
           className="relative z-10 mx-auto w-full max-w-7xl px-6"
         >
-          <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 items-start">
-            <motion.div variants={sectionContainerVariants} className="space-y-6 lg:w-1/3 sticky top-32">
+          <div className="flex flex-col lg:flex-row gap-10 lg:gap-14 items-start">
+            <motion.div variants={sectionContainerVariants} className="space-y-5 lg:w-1/3">
               <motion.div variants={sectionItemVariants} className="inline-flex bg-accent-primary/10 border border-accent-primary/20 text-accent-primary rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider">
                 Product Outcomes
               </motion.div>
@@ -438,7 +438,7 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 3: WORKSPACES */}
-      <section id="workspaces" className="w-full min-h-screen flex flex-col justify-center py-24 relative overflow-hidden bg-[#F4F4F6] border-b border-gray-200 scroll-mt-16">
+      <section id="workspaces" className="w-full min-h-[calc(100vh-64px)] lg:h-[calc(100vh-64px)] flex flex-col justify-center py-14 lg:py-10 relative overflow-hidden bg-[#F4F4F6] border-b border-gray-200 scroll-mt-16">
         <MeshBackground opacity={0.04} />
         <FloatingIcons count={10} />
 
@@ -447,10 +447,10 @@ export default function LandingPage() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.15 }}
-          className="max-w-7xl mx-auto px-6 w-full relative z-10 space-y-16"
+          className="max-w-7xl mx-auto px-6 w-full relative z-10 space-y-8 lg:space-y-10"
         >
           {/* Header & Tabs */}
-          <div className="text-center space-y-6 max-w-2xl mx-auto">
+          <div className="text-center space-y-4 max-w-2xl mx-auto">
             <motion.div variants={sectionItemVariants} className="inline-flex bg-accent-secondary/10 border border-accent-secondary/20 text-accent-secondary rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider">
               Workspace Portals
             </motion.div>
@@ -495,9 +495,9 @@ export default function LandingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={appleTransition(0.4)}
-                className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center"
+                className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center"
               >
-                <div className="lg:col-span-5 space-y-8">
+                <div className="lg:col-span-5 space-y-6">
                   <div className="space-y-4">
                     <h3 className="text-3xl lg:text-4xl font-display font-extrabold text-gray-900 tracking-tight leading-tight">
                       See exactly why a candidate was recommended.
@@ -507,7 +507,7 @@ export default function LandingPage() {
                     </p>
                   </div>
 
-                  <div className="space-y-6">
+                  <div className="space-y-4">
                     {[
                       { num: '01', title: 'Generative Job Descriptions', desc: 'Create tailored rubrics with explicit skill and experience limits.' },
                       { num: '02', title: 'Automated Scheduling', desc: 'Book recruiter & manager interviews in single or bulk batches.' },
@@ -535,7 +535,7 @@ export default function LandingPage() {
 
                 <div className="lg:col-span-7 relative">
                   <div className="absolute -inset-4 bg-gradient-to-r from-accent-primary/20 to-accent-secondary/20 blur-3xl opacity-50 rounded-[3rem]" />
-                  <div className="bg-white border border-gray-200/60 rounded-2xl shadow-2xl overflow-hidden relative z-10 flex flex-col h-[500px]">
+                  <div className="bg-white border border-gray-200/60 rounded-2xl shadow-2xl overflow-hidden relative z-10 flex flex-col h-[440px]">
                     <div className="bg-gray-50/80 border-b border-gray-200 px-4 py-3 flex items-center gap-3">
                       <div className="flex gap-1.5">
                         <div className="w-3 h-3 rounded-full bg-gray-300" />
@@ -599,9 +599,9 @@ export default function LandingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={appleTransition(0.4)}
-                className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center"
+                className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center"
               >
-                <div className="lg:col-span-6 space-y-8">
+                <div className="lg:col-span-6 space-y-6">
                   <div className="space-y-4">
                     <h3 className="text-3xl lg:text-4xl font-display font-extrabold text-gray-900 tracking-tight leading-tight">
                       Know your score before recruiters do.
@@ -719,7 +719,7 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 4: HOW IT WORKS */}
-      <section id="how-it-works" className="w-full min-h-screen flex flex-col justify-center py-24 relative overflow-hidden bg-white border-b border-gray-100 scroll-mt-16">
+      <section id="how-it-works" className="w-full min-h-[calc(100vh-64px)] lg:h-[calc(100vh-64px)] flex flex-col justify-center py-14 lg:py-10 relative overflow-hidden bg-white border-b border-gray-100 scroll-mt-16">
         <FloatingIcons count={10} />
 
         <motion.div 
@@ -727,9 +727,9 @@ export default function LandingPage() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.15 }}
-          className="max-w-7xl mx-auto px-6 w-full relative z-10 space-y-16"
+          className="max-w-7xl mx-auto px-6 w-full relative z-10 space-y-8 lg:space-y-10"
         >
-          <div className="text-center max-w-2xl mx-auto space-y-6">
+          <div className="text-center max-w-2xl mx-auto space-y-4">
             <motion.div variants={sectionItemVariants} className="inline-flex bg-gray-100 border border-gray-200 text-gray-600 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider">
               Decision Protocol
             </motion.div>
@@ -743,7 +743,7 @@ export default function LandingPage() {
 
           <motion.div 
             variants={sectionContainerVariants}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto relative"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto relative"
           >
             {/* Connecting line behind cards */}
             <div className="absolute top-[80px] left-10 right-10 h-0.5 bg-gradient-to-r from-accent-primary/20 via-accent-secondary/30 to-emerald-500/20 hidden lg:block z-0" />
@@ -813,7 +813,7 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 5: CTA */}
-      <section id="cta" className="w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-24 relative overflow-hidden bg-white border-t border-gray-100 scroll-mt-16">
+      <section id="cta" className="w-full min-h-[calc(100vh-64px)] lg:h-[calc(100vh-64px)] flex flex-col justify-center py-14 lg:py-10 relative overflow-hidden bg-white border-t border-gray-100 scroll-mt-16">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(124,58,237,0.05),transparent_70%)]" />
 
         <motion.div 
@@ -821,9 +821,9 @@ export default function LandingPage() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.15 }}
-          className="max-w-7xl mx-auto px-6 w-full flex-1 flex flex-col justify-center relative z-10 space-y-16"
+          className="max-w-7xl mx-auto px-6 w-full flex flex-col justify-center relative z-10 space-y-8 lg:space-y-10"
         >
-          <div className="text-center max-w-2xl mx-auto space-y-6">
+          <div className="text-center max-w-2xl mx-auto space-y-4">
             <motion.h2 variants={sectionItemVariants} className="text-4xl md:text-5xl lg:text-6xl font-display font-extrabold tracking-tight leading-tight text-gray-900">
               <TextReveal effect="scale" staggerDelay={0.04}>Ready to transform your hiring?</TextReveal>
             </motion.h2>
@@ -859,7 +859,7 @@ export default function LandingPage() {
 
           <motion.div 
             variants={sectionContainerVariants}
-            className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto pt-8"
+            className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto"
           >
             <div className="bg-white border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1">
               <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center mb-6 shadow-sm">
@@ -884,23 +884,6 @@ export default function LandingPage() {
           </motion.div>
         </motion.div>
 
-        {/* Footer */}
-        <footer className="w-full border-t border-gray-200 bg-gray-50 py-8 mt-auto relative z-10">
-          <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-gray-500 font-bold uppercase tracking-wider">
-            <div className="flex items-center gap-3">
-              <div className="w-6 h-6 rounded-md bg-gray-900 flex items-center justify-center text-[14px] text-white">
-                W
-              </div>
-              <span className="text-gray-900">Hiring Wallah</span>
-            </div>
-            
-            <div className="flex flex-wrap justify-center gap-6">
-              <Link href="/#how-it-works" className="hover:text-gray-900 transition-colors">Protocol</Link>
-              <Link href="/#workspaces" className="hover:text-gray-900 transition-colors">Workspaces</Link>
-              <Link href="/auth?mode=signup" className="hover:text-gray-900 transition-colors">Privacy</Link>
-            </div>
-          </div>
-        </footer>
       </section>
     </div>
   )
