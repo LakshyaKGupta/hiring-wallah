@@ -1130,3 +1130,29 @@ This file is the persistent project memory for AI agents and human contributors.
 #### Notes For Next Agent
 - Keep hero animation tied to hiring artifacts: resumes, rubric, score, fingerprint, signed ledger. Avoid decorative blobs as the primary visual.
 - Lower sections are now one-screen on desktop; if adding content, compress or move it into interaction states instead of increasing page height.
+
+### Session Update - 2026-06-11 (Home URL Cleanup & 3D Orbit Hero)
+
+#### Objective
+- Fix the homepage URL showing `/#hero`; Home should remain `/`.
+- Make the hero animation more clearly 3D and closer to the discussed award-style product scene.
+
+#### Completed
+- Updated homepage hash behavior:
+  - Direct visits to `/#hero` normalize back to `/`.
+  - Scroll state no longer writes `#hero` into the URL.
+  - Home stays active on the first section.
+- Added a stronger 3D orbit layer in `HeroConvergenceScene`:
+  - Resume, Rubric, Score, and Signed cards orbit around the central evidence workspace.
+  - Central workspace uses perspective/translateZ with orbit rail and scan beam.
+  - Existing floating artifact icons remain in the hero background.
+
+#### Verification
+- `npm run lint` in `frontend`: passed.
+- `npm run build` in `frontend`: passed.
+- Browser DOM QA:
+  - `http://127.0.0.1:3000/#hero` normalized to `http://127.0.0.1:3000/`.
+  - Hash was empty after load.
+  - Home nav active state visible.
+  - Hero badge text absent.
+  - Four orbit cards rendered in the hero scene.

@@ -34,6 +34,13 @@ const floatingGlyphs = [
   { Icon: Sparkles, label: 'signal', className: 'right-[16%] bottom-[16%]', delay: 1.2 },
 ]
 
+const orbitCards = [
+  { label: 'Resume', value: '42 claims', className: 'left-[-7%] top-[15%]', delay: 0, icon: FileCheck2 },
+  { label: 'Rubric', value: 'weighted', className: 'right-[-8%] top-[20%]', delay: 0.7, icon: BarChart3 },
+  { label: 'Score', value: '91%', className: 'left-[-4%] bottom-[14%]', delay: 1.4, icon: CheckCircle2 },
+  { label: 'Signed', value: '7c2e...', className: 'right-[-6%] bottom-[12%]', delay: 2.1, icon: Fingerprint },
+]
+
 function HeroFloatingGlyphs() {
   return (
     <div className="pointer-events-none absolute inset-0 z-[1] hidden md:block">
@@ -61,6 +68,41 @@ function HeroFloatingGlyphs() {
   )
 }
 
+function DecisionOrbit() {
+  return (
+    <div className="pointer-events-none absolute inset-0 hidden lg:block [transform-style:preserve-3d]">
+      <motion.div
+        aria-hidden
+        animate={{ rotate: [0, 360] }}
+        transition={{ duration: 18, repeat: Infinity, ease: heroEase }}
+        className="absolute left-1/2 top-1/2 h-[460px] w-[460px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-blue-200/70"
+      />
+      {orbitCards.map(({ label, value, className, delay, icon: Icon }) => (
+        <motion.div
+          key={label}
+          initial={false}
+          animate={{
+            y: [0, -16, 0],
+            rotateX: [12, 18, 12],
+            rotateY: [-18, -8, -18],
+            scale: [1, 1.035, 1],
+          }}
+          transition={{ duration: 5.5, delay, repeat: Infinity, ease: heroEase }}
+          className={`absolute ${className} z-30 flex min-w-[128px] items-center gap-3 rounded-2xl border border-white/80 bg-white/75 px-3.5 py-3 shadow-[0_24px_55px_rgba(15,23,42,0.16)] backdrop-blur-xl [transform-style:preserve-3d]`}
+        >
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+            <Icon className="h-4 w-4" />
+          </span>
+          <span>
+            <span className="block text-xs font-black text-slate-900">{label}</span>
+            <span className="block text-[11px] font-semibold text-slate-500">{value}</span>
+          </span>
+        </motion.div>
+      ))}
+    </div>
+  )
+}
+
 function EvidencePanel() {
   return (
     <motion.div
@@ -72,9 +114,10 @@ function EvidencePanel() {
         ease: heroEase,
       }}
       whileHover={{ rotateY: -2, rotateX: 2, scale: 1.015 }}
-      className="relative mx-auto w-full max-w-[560px] [transform-style:preserve-3d]"
+      className="relative mx-auto w-full max-w-[560px] [perspective:1200px] [transform-style:preserve-3d]"
     >
       <div className="absolute -inset-8 rounded-[3rem] bg-[radial-gradient(circle_at_50%_30%,rgba(37,99,235,0.18),transparent_58%)] blur-2xl" />
+      <DecisionOrbit />
       <motion.div
         animate={{ rotate: 360 }}
         transition={{ duration: 24, repeat: Infinity, ease: heroEase }}
@@ -83,7 +126,7 @@ function EvidencePanel() {
       <div className="absolute -right-4 top-14 h-44 w-44 rounded-full border border-blue-200/70 bg-blue-50/60 blur-sm" />
       <div className="absolute -left-5 bottom-16 h-36 w-36 rounded-full border border-emerald-200/70 bg-emerald-50/60 blur-sm" />
 
-      <div className="relative rounded-[2rem] border border-slate-200/80 bg-white/88 p-3 shadow-[0_38px_100px_rgba(15,23,42,0.16)] backdrop-blur-xl">
+      <div className="relative z-20 rounded-[2rem] border border-slate-200/80 bg-white/88 p-3 shadow-[0_38px_100px_rgba(15,23,42,0.16)] backdrop-blur-xl [transform:translateZ(40px)]">
         <motion.div
           aria-hidden
           initial={false}

@@ -338,6 +338,10 @@ export default function LandingPage() {
     const scrollToHash = () => {
       const sectionId = window.location.hash.replace('#', '')
       if (!sectionId) return
+      if (sectionId === 'hero') {
+        window.history.replaceState(null, '', window.location.pathname)
+        return
+      }
 
       window.requestAnimationFrame(() => {
         const element = document.getElementById(sectionId)
@@ -384,7 +388,11 @@ export default function LandingPage() {
       if (currentSectionIdx !== prevSectionIdx) {
         setActiveSection(currentSectionIdx)
         const section = LANDING_SECTIONS[currentSectionIdx]
-        if (section) {
+        if (section?.id === 'hero') {
+          if (window.location.hash) {
+            window.history.replaceState(null, '', window.location.pathname)
+          }
+        } else if (section) {
           window.history.replaceState(null, '', `#${section.id}`)
         }
       }

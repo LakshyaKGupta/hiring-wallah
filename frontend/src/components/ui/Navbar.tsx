@@ -93,6 +93,11 @@ function NavbarContent() {
 
   useEffect(() => {
     const syncHash = () => {
+      if (window.location.hash === '#hero') {
+        window.history.replaceState(null, '', window.location.pathname)
+        setActiveHash('')
+        return
+      }
       setActiveHash(window.location.hash || '')
     }
 
