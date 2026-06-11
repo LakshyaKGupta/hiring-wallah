@@ -63,8 +63,16 @@ This file is the persistent project memory for AI agents and human contributors.
 - Transition the page from forced scroll snapping to a premium, smooth-flowing scrolling layout.
 - Improve Navbar navigation icons with clean, contextual shapes.
 - Restore text selection/copying usability across the landing page.
+- **Hero Section Redesign**: Replace the generic 3D sphere canvas with an **Interactive AI Screening Playground** that simulates the core product loop.
 
 #### Completions
+- **Interactive AI Screening Playground** (`HeroConvergenceScene.tsx`):
+  - Removed WebGL/Three.js 3D sphere canvas.
+  - Implemented a macOS-style split-pane dashboard workspace.
+  - Users can select between three candidates (*Lakshya Gupta*, *Sasha Chen*, *Derrick Vance*) in the sidebar.
+  - Simulates the multi-agent consensus process with a real-time console log typing animation (1.5s processing state).
+  - Displays the completed scorecard: overall Match Score, Verdict badge, verified highlights, and contested risks.
+  - Features an interactive **Tenure vs. Skills Weight** slider that recalculates the candidate's suitability score and redraws the SVG gauge dynamically.
 - **Navbar Icon Upgrade** (`Navbar.tsx`):
   - Replaced generic/mismatched icons with intuitive, contextual symbols:
     - Home: `Home`
