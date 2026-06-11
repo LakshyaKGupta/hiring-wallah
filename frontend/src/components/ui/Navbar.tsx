@@ -16,6 +16,8 @@ import {
 
 const navLinks = [
   { href: '/', label: 'Home', icon: Home, match: (pathname: string) => pathname === '/' },
+  { href: '/#features', label: 'Features', icon: Sparkles, match: () => false },
+  { href: '/#how-it-works', label: 'How It Works', icon: Network, match: () => false },
 ]
 
 function NavLink({
@@ -114,8 +116,8 @@ function NavbarContent() {
               href="/auth?mode=signup"
               className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 type-label font-medium font-bold transition-all duration-200 ${
                 isAuthPage && mode === 'signup'
-                  ? 'bg-accent-primary/90 text-white border border-accent-primary'
-                  : 'bg-accent-primary hover:bg-accent-primary/95 text-white border border-accent-primary shadow-sm'
+                  ? 'bg-gray-800 text-white border border-gray-900'
+                  : 'bg-gray-900 hover:bg-gray-800 text-white border border-gray-900 shadow-sm'
               }`}
             >
               <UserPlus className="w-3.5 h-3.5" />
@@ -165,7 +167,7 @@ function NavbarFallback() {
           </Link>
           <Link
             href="/auth?mode=signup"
-            className="px-3 py-1.5 rounded-lg flex items-center gap-1.5 type-label font-medium font-bold bg-accent-primary text-white"
+            className="px-3 py-1.5 rounded-lg flex items-center gap-1.5 type-label font-medium font-bold bg-gray-900 hover:bg-gray-800 transition-colors text-white"
           >
             <UserPlus className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Sign Up</span>
