@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { motion, AnimatePresence, Variants } from 'framer-motion'
-import { Briefcase, Plus, Upload, Play, CheckCircle2, Loader2, Sparkles, AlertTriangle } from 'lucide-react'
+import { Briefcase, Plus, Upload, Play, Loader2, Sparkles } from 'lucide-react'
 import MeshBackground from '@/components/ui/MeshBackground'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
@@ -152,7 +152,7 @@ export default function RecruiterDashboard() {
         const err = await res.json()
         setErrorMsg(err.detail || 'Failed to create job rubric.')
       }
-    } catch (e) {
+    } catch {
       clearInterval(interval)
       setErrorMsg('Server connection failed.')
     } finally {
@@ -232,7 +232,7 @@ export default function RecruiterDashboard() {
         setErrorMsg(err.detail || 'Evaluation pipeline failed.')
         setIsRunning(false)
       }
-    } catch (e) {
+    } catch {
       clearInterval(interval)
       setErrorMsg('Connection to backend failed.')
       setIsRunning(false)

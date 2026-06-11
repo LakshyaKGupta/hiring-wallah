@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, Suspense } from 'react'
+import React, { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Mail, Lock, User, Briefcase, ArrowRight, Loader2, CheckCircle2, ShieldCheck } from 'lucide-react'
@@ -9,7 +9,8 @@ import MeshBackground from '@/components/ui/MeshBackground'
 function AuthForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signin')
+  const mode = searchParams.get('mode')
+  const activeTab: 'signin' | 'signup' = mode === 'signup' ? 'signup' : 'signin'
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
@@ -17,16 +18,10 @@ function AuthForm() {
 
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
-
-  useEffect(() => {
-    const mode = searchParams.get('mode')
-    if (mode === 'signin' || mode === 'signup') {
-      setActiveTab(mode)
-    }
-  }, [searchParams])
+  const [authNotice, setAuthNotice] = useState('')
 
   const switchTab = (tab: 'signin' | 'signup') => {
-    setActiveTab(tab)
+    setAuthNotice('')
     router.replace(`/auth?mode=${tab}`, { scroll: false })
   }
 
@@ -238,11 +233,27 @@ function AuthForm() {
           </div>
 
           {activeTab === 'signin' && (
-            <p className="text-[10px] text-text-tertiary text-right type-label">
-              <button type="button" className="hover:text-accent-primary transition-colors cursor-pointer">
+            <div className="space-y-2 text-right">
+              <button
+                type="button"
+                onClick={() => setAuthNotice('Password reset is mocked for this demo. Use any email and password to enter a workspace.')}
+                className="type-label text-[10px] text-text-tertiary hover:text-accent-primary transition-colors cursor-pointer"
+              >
                 Forgot password?
               </button>
-            </p>
+              <AnimatePresence>
+                {authNotice && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    className="rounded-lg border border-accent-primary/15 bg-accent-primary/5 px-3 py-2 text-left text-[10px] leading-relaxed text-text-secondary"
+                  >
+                    {authNotice}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </div>
           )}
 
           <motion.button

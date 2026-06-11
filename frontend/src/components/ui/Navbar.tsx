@@ -71,9 +71,15 @@ function NavbarContent() {
             whileHover={{ scale: 1.08, rotate: -4 }}
             whileTap={{ scale: 0.94 }}
             transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-            className="w-8 h-8 rounded-lg bg-accent-primary flex items-center justify-center font-display font-bold text-base text-white shadow-sm"
+            className="w-8 h-8 rounded-lg bg-accent-primary flex items-center justify-center font-display font-bold text-base text-white shadow-sm relative overflow-hidden"
           >
-            W
+            <span className="relative z-10">W</span>
+            <motion.div
+              className="absolute inset-0 bg-accent-primary/20"
+              initial={{ x: '-100%' }}
+              whileHover={{ x: '100%' }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            />
           </motion.div>
           <span className="font-display font-extrabold text-base sm:text-lg text-text-primary tracking-tight transition-all duration-200 group-hover:text-accent-primary">
             Hiring Wallah

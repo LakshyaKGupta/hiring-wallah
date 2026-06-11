@@ -1,9 +1,8 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
-import { ArrowLeft, RefreshCw, Copy, Check, MessageSquare, Briefcase, Calendar, GraduationCap, Award, Compass } from 'lucide-react'
+import { ArrowLeft, RefreshCw, Copy, Check, MessageSquare, Calendar, GraduationCap, Award } from 'lucide-react'
 import ScoreBar from '@/components/ui/ScoreBar'
 import DAPanel from '@/components/ui/DAPanel'
 import VerdictReveal from '@/components/ui/VerdictReveal'

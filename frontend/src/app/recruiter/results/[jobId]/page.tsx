@@ -74,7 +74,7 @@ export default function ResultsPage() {
       } else {
         setErrorMsg('Failed to load assessment results.')
       }
-    } catch (e) {
+    } catch {
       setErrorMsg('Could not connect to the backend server.')
     } finally {
       setLoading(false)

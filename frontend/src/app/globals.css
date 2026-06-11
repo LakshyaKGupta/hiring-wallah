@@ -420,3 +420,89 @@ body {
     display: none !important;
   }
 }
+
+/* Border beam animation */
+@keyframes border-beam {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Noise grain texture */
+@keyframes noise-grain {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  10% {
+    transform: translate(-5%, -5%);
+  }
+  20% {
+    transform: translate(5%, 5%);
+  }
+  30% {
+    transform: translate(-5%, 5%);
+  }
+  40% {
+    transform: translate(5%, -5%);
+  }
+  50% {
+    transform: translate(-5%, -5%);
+  }
+  60% {
+    transform: translate(5%, 5%);
+  }
+  70% {
+    transform: translate(-5%, 5%);
+  }
+  80% {
+    transform: translate(5%, -5%);
+  }
+  90% {
+    transform: translate(-5%, -5%);
+  }
+}
+
+/* Underline grow animation */
+@keyframes underline-grow {
+  0% {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  100% {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+/* Float animation for cards */
+@keyframes float-gentle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Pulse glow */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 103, 255, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(0, 103, 255, 0);
+  }
+}
+
+/* Living background grid dots */
+@keyframes dot-pulse {
+  0%, 100% {
+    opacity: 0.04;
+  }
+  50% {
+    opacity: 0.12;
+  }
+}

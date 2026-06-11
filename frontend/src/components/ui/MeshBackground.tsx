@@ -5,22 +5,18 @@ import React, { useEffect, useRef, useState, useCallback } from 'react'
 interface MeshBackgroundProps {
   opacity?: number
   className?: string
-  /** Pin behind the entire viewport (use in root layout) */
   fixed?: boolean
-  /** `full` = all layers; `grid-only` = grid overlay for section scoping */
   mode?: 'full' | 'grid-only'
-  /** Show subtle paper grid — off by default to avoid wallpaper feel */
   showGrid?: boolean
 }
 
-const PARTICLE_COUNT = 18
-
 function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(false)
+  const [reduced, setReduced] = useState(() => (
+    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  ))
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setReduced(mq.matches)
     const handler = (e: MediaQueryListEvent) => setReduced(e.matches)
     mq.addEventListener('change', handler)
     return () => mq.removeEventListener('change', handler)
@@ -37,57 +33,118 @@ export default function MeshBackground({
   showGrid = false,
 }: MeshBackgroundProps) {
   const reducedMotion = usePrefersReducedMotion()
+  const canvasRef = useRef<HTMLCanvasElement>(null)
   const rafRef = useRef<number>(0)
-  const scrollYRef = useRef(0)
-  const [parallax, setParallax] = useState({ far: { x: 0, y: 0 }, near: { x: 0, y: 0 } })
+  const mouseRef = useRef({ x: 0, y: 0 })
+  const timeRef = useRef(0)
 
-  const applyParallax = useCallback(
-    (mouseX: number, mouseY: number) => {
-      const scrollY = scrollYRef.current
-      setParallax({
-        far: { x: mouseX * 12, y: mouseY * 10 + scrollY * 0.025 },
-        near: { x: mouseX * 28, y: mouseY * 22 + scrollY * 0.05 },
-      })
-    },
-    []
-  )
+  // Draw animated mesh gradient on canvas
+  const draw = useCallback(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
 
-  const onMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (reducedMotion) return
-      cancelAnimationFrame(rafRef.current)
-      rafRef.current = requestAnimationFrame(() => {
-        const nx = (e.clientX / window.innerWidth - 0.5) * 2
-        const ny = (e.clientY / window.innerHeight - 0.5) * 2
-        applyParallax(nx, ny)
-      })
-    },
-    [reducedMotion, applyParallax]
-  )
+    const w = canvas.width
+    const h = canvas.height
+    const t = timeRef.current
 
+    ctx.clearRect(0, 0, w, h)
+
+    // Create radial gradient points that drift over time
+    const centerX = w / 2 + Math.sin(t * 0.0003) * w * 0.15 + mouseRef.current.x * 20
+    const centerY = h / 2 + Math.cos(t * 0.0004) * h * 0.1 + mouseRef.current.y * 20
+
+    const gradient = ctx.createRadialGradient(
+      centerX, centerY, 0,
+      centerX, centerY, w * 0.8
+    )
+
+    // Zoho palette colors with very low opacity
+    const colors = [
+      `rgba(0, 103, 255, ${0.06 * opacity})`,
+      `rgba(74, 93, 120, ${0.04 * opacity})`,
+      `rgba(13, 27, 46, ${0.03 * opacity})`,
+      `rgba(250, 250, 248, ${0.5 * opacity})`,
+    ]
+
+    gradient.addColorStop(0, colors[0])
+    gradient.addColorStop(0.4, colors[1])
+    gradient.addColorStop(0.7, colors[2])
+    gradient.addColorStop(1, colors[3])
+
+    ctx.fillStyle = gradient
+    ctx.fillRect(0, 0, w, h)
+
+    // Draw second, smaller orb
+    const orb2X = w * 0.7 + Math.cos(t * 0.0005) * w * 0.2
+    const orb2Y = h * 0.3 + Math.sin(t * 0.0006) * h * 0.15
+    const orb2 = ctx.createRadialGradient(orb2X, orb2Y, 0, orb2X, orb2Y, w * 0.4)
+    orb2.addColorStop(0, `rgba(0, 103, 255, ${0.04 * opacity})`)
+    orb2.addColorStop(1, 'rgba(250, 250, 248, 0)')
+    ctx.fillStyle = orb2
+    ctx.fillRect(0, 0, w, h)
+
+    // Draw third, warm orb
+    const orb3X = w * 0.2 + Math.sin(t * 0.0004) * w * 0.15
+    const orb3Y = h * 0.8 + Math.cos(t * 0.0007) * h * 0.2
+    const orb3 = ctx.createRadialGradient(orb3X, orb3Y, 0, orb3X, orb3Y, w * 0.3)
+    orb3.addColorStop(0, `rgba(227, 116, 0, ${0.025 * opacity})`)
+    orb3.addColorStop(1, 'rgba(250, 250, 248, 0)')
+    ctx.fillStyle = orb3
+    ctx.fillRect(0, 0, w, h)
+  }, [opacity])
+
+  // Animation loop
   useEffect(() => {
     if (reducedMotion || mode === 'grid-only') return
-    window.addEventListener('mousemove', onMouseMove, { passive: true })
+
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio, 2)
+      canvas.width = window.innerWidth * dpr
+      canvas.height = window.innerHeight * dpr
+      canvas.style.width = '100%'
+      canvas.style.height = '100%'
+      const ctx = canvas.getContext('2d')
+      if (ctx) ctx.scale(dpr, dpr)
+    }
+
+    resize()
+    window.addEventListener('resize', resize)
+
+    let startTime: number | null = null
+    const animate = (timestamp: number) => {
+      if (startTime === null) startTime = timestamp
+      timeRef.current = timestamp - startTime
+      draw()
+      rafRef.current = requestAnimationFrame(animate)
+    }
+
+    rafRef.current = requestAnimationFrame(animate)
+
     return () => {
-      window.removeEventListener('mousemove', onMouseMove)
+      window.removeEventListener('resize', resize)
       cancelAnimationFrame(rafRef.current)
     }
-  }, [onMouseMove, reducedMotion, mode])
+  }, [reducedMotion, mode, draw])
 
+  // Mouse tracking
   useEffect(() => {
-    if (reducedMotion || !fixed || mode === 'grid-only') return
+    if (reducedMotion || mode === 'grid-only') return
 
-    const onScroll = () => {
-      scrollYRef.current = window.scrollY
-      cancelAnimationFrame(rafRef.current)
-      rafRef.current = requestAnimationFrame(() => {
-        applyParallax(0, 0)
-      })
+    const onMouseMove = (e: MouseEvent) => {
+      mouseRef.current = {
+        x: (e.clientX / window.innerWidth - 0.5) * 2,
+        y: (e.clientY / window.innerHeight - 0.5) * 2,
+      }
     }
 
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [reducedMotion, fixed, mode, applyParallax])
+    window.addEventListener('mousemove', onMouseMove, { passive: true })
+    return () => window.removeEventListener('mousemove', onMouseMove)
+  }, [reducedMotion, mode])
 
   const positionClass = fixed ? 'fixed inset-0' : 'absolute inset-0'
 
@@ -110,35 +167,26 @@ export default function MeshBackground({
       className={`${positionClass} overflow-hidden pointer-events-none z-0 mesh-background ${className}`}
       aria-hidden
     >
-      {/* Layer 0 — shifting base gradient wash */}
-      <div className="mesh-base-gradient" />
+      {/* Layer 0 — animated canvas mesh gradient */}
+      {!reducedMotion && (
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 w-full h-full"
+          style={{ opacity: 1 }}
+        />
+      )}
+
+      {/* Fallback for reduced motion */}
+      {reducedMotion && <div className="mesh-base-gradient" />}
 
       {/* Layer 1 — far parallax blobs (slow drift) */}
-      <div
-        className="mesh-parallax-layer mesh-parallax-far"
-        style={
-          reducedMotion
-            ? undefined
-            : {
-                transform: `translate3d(${parallax.far.x}px, ${parallax.far.y}px, 0)`,
-              }
-        }
-      >
+      <div className="mesh-parallax-layer mesh-parallax-far">
         <div className="animate-blob-1 -top-[22%] -left-[12%] w-[62vw] h-[62vw] max-w-[680px] max-h-[680px] min-w-[280px] min-h-[280px]" />
         <div className="animate-blob-4 top-[55%] right-[5%] w-[45vw] h-[45vw] max-w-[500px] max-h-[500px] min-w-[220px] min-h-[220px]" />
       </div>
 
       {/* Layer 2 — near parallax blobs (faster drift) */}
-      <div
-        className="mesh-parallax-layer mesh-parallax-near"
-        style={
-          reducedMotion
-            ? undefined
-            : {
-                transform: `translate3d(${parallax.near.x}px, ${parallax.near.y}px, 0)`,
-              }
-        }
-      >
+      <div className="mesh-parallax-layer mesh-parallax-near">
         <div className="animate-blob-2 -bottom-[18%] -right-[8%] w-[72vw] h-[72vw] max-w-[760px] max-h-[760px] min-w-[340px] min-h-[340px]" />
         <div className="animate-blob-3 top-[28%] left-[18%] w-[52vw] h-[52vw] max-w-[560px] max-h-[560px] min-w-[240px] min-h-[240px]" />
         <div className="animate-blob-5 top-[8%] right-[25%] w-[38vw] h-[38vw] max-w-[420px] max-h-[420px] min-w-[180px] min-h-[180px]" />
@@ -153,7 +201,7 @@ export default function MeshBackground({
       {/* Layer 5 — floating particles */}
       {!reducedMotion && (
         <div className="mesh-particles">
-          {Array.from({ length: PARTICLE_COUNT }, (_, i) => (
+          {Array.from({ length: 24 }, (_, i) => (
             <span
               key={i}
               className="mesh-particle"
