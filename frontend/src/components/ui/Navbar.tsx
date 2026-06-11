@@ -16,10 +16,6 @@ import {
 
 const navLinks = [
   { href: '/', label: 'Home', icon: Home, match: (pathname: string) => pathname === '/' },
-  { href: '/#features', label: 'Features', icon: Sparkles, match: () => false },
-  { href: '/#how-it-works', label: 'How It Works', icon: Network, match: () => false },
-  { href: '/recruiter', label: 'Recruiter', icon: ClipboardCheck, match: (pathname: string) => pathname.startsWith('/recruiter') },
-  { href: '/candidate', label: 'Candidate', icon: FileText, match: (pathname: string) => pathname.startsWith('/candidate') },
 ]
 
 function NavLink({

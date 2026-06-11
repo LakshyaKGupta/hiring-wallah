@@ -9,11 +9,11 @@ This file is the persistent project memory for AI agents and human contributors.
   - Private GitHub repository at `LakshyaKGupta/hiring-wallah` — latest commit: `8bd86c0`.
   - FastAPI Backend service fully operational on port 8000.
   - Next.js 16 Frontend fully built and type checked, running on port 3000.
-- **Recent progress (Design Overhaul v5.1 — Layout & UI Polish):**
-  - **Full-Page Snapping**: Converted main layout to strict 100vh scroll snapping (`snap-y snap-mandatory` on container, `snap-start h-screen` on sections).
-  - **Icon Normalization**: Stripped pastel gradients from feature/agent cards, moving to a clean standard SaaS icon style.
-  - **CTA Redesign**: Re-themed the final CTA section from dark mode to a light theme matching Zoho Cloud, including ghost buttons and subtle borders.
-  - **Hero Enhancements**: Increased contrast of the trust marquee, added continuous floating keyframes to the UI mockups, and enlarged the signup button.
+- **Recent progress (Design Overhaul v5.2 — Revert Snap Scrolling & Polish):**
+  - **Reverted Scroll Snapping**: Removed forced 100vh snapping layout (`snap-y snap-mandatory`), restoring natural smooth scrolling and standard vertical padding to all sections.
+  - **Removed Marquee**: Removed the "Evidence-Based Scoring" marquee from the hero section to reduce visual noise.
+  - **Navbar Fixes**: Hid protected workspace links (`/recruiter`, `/candidate`) and in-page anchor links from unauthenticated users in the navigation bar.
+  - **Hero Button Enhancements**: Upgraded the "Create account" button to a high-contrast dark theme (`bg-gray-900 text-white`) for maximum visibility against the light background.
   - **Floating Icons**: Boosted ambient icon opacity to 15-25% and adjusted random distribution to fill edge-to-edge space.
   - **GitHub sync**: Changes successfully committed and pushed to `main`.
 - **Current blockers:** None.

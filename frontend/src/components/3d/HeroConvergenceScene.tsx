@@ -67,7 +67,7 @@ export function HeroConvergenceScene() {
   const strokeDashoffset = circumference - (0.91) * circumference
 
   return (
-    <section className="relative flex h-screen snap-start w-full items-center justify-center overflow-hidden bg-bg-deep pt-16 pb-12">
+    <section className="relative flex min-h-[calc(100vh-64px)] w-full items-center justify-center overflow-hidden bg-bg-deep pt-16 pb-12">
       {/* Dynamic Aurora Glow & Grain Texture */}
       <div className="absolute inset-0 aurora-bg opacity-30" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(124,58,237,0.15),transparent_50%)]" />
@@ -93,35 +93,14 @@ export function HeroConvergenceScene() {
           </div>
 
           <div className="flex flex-col gap-4 sm:flex-row pointer-events-auto">
-            <Link href="/auth?mode=signup" className="group inline-flex items-center justify-center gap-2 rounded-xl border border-accent-primary bg-accent-primary px-8 py-4 text-base font-bold text-white shadow-[0_12px_24px_rgba(124,58,237,0.3)] transition-apple hover:bg-accent-primary/95 hover:shadow-[0_16px_32px_rgba(124,58,237,0.4)] hover:-translate-y-1">
+            <Link href="/auth?mode=signup" className="group inline-flex items-center justify-center gap-2 rounded-xl border border-gray-900 bg-gray-900 px-8 py-4 text-base font-bold text-white shadow-[0_12px_24px_rgba(0,0,0,0.15)] transition-apple hover:bg-gray-800 hover:shadow-[0_16px_32px_rgba(0,0,0,0.2)] hover:-translate-y-1">
               Create account
               <ArrowRight className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1" />
             </Link>
-            <Link href="/recruiter" className="inline-flex items-center justify-center gap-2 rounded-xl border border-border-subtle bg-bg-surface/80 px-8 py-4 text-base font-bold text-text-primary shadow-sm backdrop-blur-md transition-apple hover:border-accent-primary/30 hover:bg-bg-raised hover:-translate-y-1">
+            <Link href="/recruiter" className="inline-flex items-center justify-center gap-2 rounded-xl border border-border-subtle bg-bg-surface/80 px-8 py-4 text-base font-bold text-text-primary shadow-sm backdrop-blur-md transition-apple hover:border-gray-300 hover:bg-bg-raised hover:-translate-y-1">
               <Briefcase className="h-5 w-5 text-accent-primary" />
               Open recruiter demo
             </Link>
-          </div>
-
-          {/* Marquee Trust Bar */}
-          <div className="pt-6 overflow-hidden max-w-lg border-t border-gray-200 relative">
-            <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-bg-deep to-transparent z-10" />
-            <div className="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-bg-deep to-transparent z-10" />
-            <div className="flex whitespace-nowrap animate-[marquee_20s_linear_infinite] gap-6 text-[12px] font-extrabold text-gray-800 uppercase tracking-widest">
-              <span>Evidence-Based Scoring</span>
-              <span className="text-gray-400">•</span>
-              <span>SHA-256 Signed Reports</span>
-              <span className="text-gray-400">•</span>
-              <span>Multi-Agent Consensus</span>
-              <span className="text-gray-400">•</span>
-              <span>6× Faster Screening</span>
-              <span className="text-gray-400">•</span>
-              <span>Zero Black Box</span>
-              <span className="text-gray-400">•</span>
-              <span>Evidence-Based Scoring</span>
-              <span className="text-gray-400">•</span>
-              <span>SHA-256 Signed Reports</span>
-            </div>
           </div>
         </div>
 

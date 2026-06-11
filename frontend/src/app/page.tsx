@@ -398,16 +398,16 @@ export default function LandingPage() {
   }, [])
 
   return (
-    <div ref={containerRef} className="relative w-full bg-white h-screen overflow-y-auto snap-y snap-mandatory scroll-smooth">
+    <div ref={containerRef} className="relative w-full bg-white scroll-smooth">
       <ScrollProgress />
       
       {/* SECTION 1: HERO */}
-      <section id="hero" className="w-full h-screen snap-start relative overflow-hidden">
+      <section id="hero" className="w-full relative overflow-hidden">
         <HeroConvergenceScene />
       </section>
 
       {/* SECTION 2: FEATURES */}
-      <section id="features" className="w-full h-screen snap-start flex flex-col justify-center relative overflow-hidden bg-white border-b border-gray-100">
+      <section id="features" className="w-full py-24 md:py-32 relative overflow-hidden bg-white border-b border-gray-100">
         <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-white pointer-events-none" />
         <FloatingIcons count={12} />
 
@@ -722,7 +722,7 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 4: HOW IT WORKS */}
-      <section id="how-it-works" className="w-full h-screen snap-start flex flex-col justify-center relative overflow-hidden bg-white border-b border-gray-100">
+      <section id="how-it-works" className="w-full py-24 md:py-32 relative overflow-hidden bg-white border-b border-gray-100">
         <FloatingIcons count={10} />
 
         <motion.div 
@@ -816,7 +816,7 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 5: CTA */}
-      <section id="cta" className="w-full h-screen snap-start flex flex-col relative overflow-hidden bg-white border-t border-gray-100">
+      <section id="cta" className="w-full py-24 md:py-32 flex flex-col relative overflow-hidden bg-white border-t border-gray-100">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(124,58,237,0.05),transparent_70%)]" />
 
         <motion.div 
