@@ -197,7 +197,7 @@ function FeatureReasoningCard({
 
       <div className="relative z-10 flex flex-col h-full gap-6">
         <div className="flex items-start justify-between">
-          <div className={`flex h-14 w-14 items-center justify-center rounded-2xl shrink-0 shadow-sm ${bgClass} ${colorClass}`}>
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-50 border border-gray-100 text-accent-primary shrink-0 shadow-sm">
             <Icon className="h-6 w-6" strokeWidth={2} />
           </div>
           <div className="bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100 flex items-center gap-2">
@@ -398,16 +398,16 @@ export default function LandingPage() {
   }, [])
 
   return (
-    <div ref={containerRef} className="relative w-full bg-white">
+    <div ref={containerRef} className="relative w-full bg-white h-screen overflow-y-auto snap-y snap-mandatory scroll-smooth">
       <ScrollProgress />
       
       {/* SECTION 1: HERO */}
-      <section id="hero" className="w-full relative overflow-hidden">
+      <section id="hero" className="w-full h-screen snap-start relative overflow-hidden">
         <HeroConvergenceScene />
       </section>
 
       {/* SECTION 2: FEATURES */}
-      <section id="features" className="w-full py-24 md:py-32 relative overflow-hidden bg-white border-b border-gray-100">
+      <section id="features" className="w-full h-screen snap-start flex flex-col justify-center relative overflow-hidden bg-white border-b border-gray-100">
         <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-white pointer-events-none" />
         <FloatingIcons count={12} />
 
@@ -722,7 +722,7 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 4: HOW IT WORKS */}
-      <section id="how-it-works" className="w-full py-24 md:py-32 relative overflow-hidden bg-white border-b border-gray-100">
+      <section id="how-it-works" className="w-full h-screen snap-start flex flex-col justify-center relative overflow-hidden bg-white border-b border-gray-100">
         <FloatingIcons count={10} />
 
         <motion.div 
@@ -816,22 +816,21 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 5: CTA */}
-      <section id="cta" className="w-full py-24 md:py-32 relative overflow-hidden bg-[#0f0f11] text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(124,58,237,0.15),transparent_70%)]" />
-        <MeshBackground opacity={0.03} />
+      <section id="cta" className="w-full h-screen snap-start flex flex-col relative overflow-hidden bg-white border-t border-gray-100">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(124,58,237,0.05),transparent_70%)]" />
 
         <motion.div 
           variants={sectionContainerVariants}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.15 }}
-          className="max-w-7xl mx-auto px-6 w-full relative z-10 space-y-16"
+          className="max-w-7xl mx-auto px-6 w-full flex-1 flex flex-col justify-center relative z-10 space-y-16"
         >
           <div className="text-center max-w-2xl mx-auto space-y-6">
-            <motion.h2 variants={sectionItemVariants} className="text-4xl md:text-5xl lg:text-6xl font-display font-extrabold tracking-tight leading-tight">
+            <motion.h2 variants={sectionItemVariants} className="text-4xl md:text-5xl lg:text-6xl font-display font-extrabold tracking-tight leading-tight text-gray-900">
               <TextReveal effect="scale" staggerDelay={0.04}>Ready to transform your hiring?</TextReveal>
             </motion.h2>
-            <motion.p variants={sectionItemVariants} className="text-lg text-gray-400 leading-relaxed font-medium">
+            <motion.p variants={sectionItemVariants} className="text-lg text-gray-500 leading-relaxed font-medium">
               Create a free account or sign in to access your workspace. No credit card required.
             </motion.p>
           </div>
@@ -844,7 +843,7 @@ export default function LandingPage() {
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-10 py-4 bg-white text-gray-900 font-bold rounded-xl flex items-center justify-center gap-3 shadow-[0_0_40px_rgba(255,255,255,0.1)] hover:shadow-[0_0_60px_rgba(255,255,255,0.2)] transition-all cursor-pointer"
+                className="px-10 py-4 bg-accent-primary text-white font-bold rounded-xl flex items-center justify-center gap-3 shadow-[0_8px_16px_rgba(124,58,237,0.2)] hover:shadow-[0_12px_24px_rgba(124,58,237,0.3)] transition-all cursor-pointer"
               >
                 <span>Create Free Account</span>
                 <ArrowRight className="w-4 h-4" />
@@ -854,7 +853,7 @@ export default function LandingPage() {
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-10 py-4 bg-transparent border border-gray-700 hover:bg-gray-800 text-white font-bold rounded-xl flex items-center justify-center cursor-pointer transition-colors"
+                className="px-10 py-4 bg-white border border-gray-200 hover:bg-gray-50 text-gray-900 font-bold rounded-xl flex items-center justify-center cursor-pointer shadow-sm transition-all"
               >
                 <span>Sign In</span>
               </motion.div>
@@ -865,22 +864,22 @@ export default function LandingPage() {
             variants={sectionContainerVariants}
             className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto pt-8"
           >
-            <div className="bg-gray-900/50 backdrop-blur-md border border-gray-800 hover:border-gray-700 rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1">
-              <div className="w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center mb-6">
-                <Briefcase className="w-6 h-6 text-gray-300" />
+            <div className="bg-white border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1">
+              <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center mb-6 shadow-sm">
+                <Briefcase className="w-6 h-6 text-accent-primary" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-3">Recruiter Workspace</h3>
-              <p className="text-gray-400 text-sm leading-relaxed mb-8">Define evaluation rubrics, upload multiple resumes, inspect security hashes, and download forensic reports.</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Recruiter Workspace</h3>
+              <p className="text-gray-500 text-sm leading-relaxed mb-8">Define evaluation rubrics, upload multiple resumes, inspect security hashes, and download forensic reports.</p>
               <Link href="/recruiter" className="text-accent-primary font-bold text-sm flex items-center gap-2 group">
                 Enter Recruiter Portal <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
-            <div className="bg-gray-900/50 backdrop-blur-md border border-gray-800 hover:border-gray-700 rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1">
-              <div className="w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center mb-6">
-                <User className="w-6 h-6 text-gray-300" />
+            <div className="bg-white border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1">
+              <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center mb-6 shadow-sm">
+                <User className="w-6 h-6 text-accent-secondary" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-3">Candidate Workspace</h3>
-              <p className="text-gray-400 text-sm leading-relaxed mb-8">Identify alignment leaks, formatting blocks, verify skill matches, and optimize credentials before applying.</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Candidate Workspace</h3>
+              <p className="text-gray-500 text-sm leading-relaxed mb-8">Identify alignment leaks, formatting blocks, verify skill matches, and optimize credentials before applying.</p>
               <Link href="/candidate" className="text-accent-secondary font-bold text-sm flex items-center gap-2 group">
                 Enter Candidate Portal <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -889,24 +888,19 @@ export default function LandingPage() {
         </motion.div>
 
         {/* Footer */}
-        <footer className="w-full border-t border-gray-800 bg-[#0f0f11] py-8 mt-24 relative z-10">
+        <footer className="w-full border-t border-gray-200 bg-gray-50 py-8 mt-auto relative z-10">
           <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-gray-500 font-bold uppercase tracking-wider">
             <div className="flex items-center gap-3">
-              <div className="w-6 h-6 rounded-md bg-white flex items-center justify-center text-[14px] text-gray-900">
+              <div className="w-6 h-6 rounded-md bg-gray-900 flex items-center justify-center text-[14px] text-white">
                 W
               </div>
-              <span className="text-gray-300">Hiring Wallah</span>
+              <span className="text-gray-900">Hiring Wallah</span>
             </div>
             
             <div className="flex flex-wrap justify-center gap-6">
-              <Link href="/#how-it-works" className="hover:text-white transition-colors">Protocol</Link>
-              <Link href="/#workspaces" className="hover:text-white transition-colors">Workspaces</Link>
-              <Link href="/auth?mode=signup" className="hover:text-white transition-colors">Privacy</Link>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-emerald-500">Systems Operational</span>
+              <Link href="/#how-it-works" className="hover:text-gray-900 transition-colors">Protocol</Link>
+              <Link href="/#workspaces" className="hover:text-gray-900 transition-colors">Workspaces</Link>
+              <Link href="/auth?mode=signup" className="hover:text-gray-900 transition-colors">Privacy</Link>
             </div>
           </div>
         </footer>

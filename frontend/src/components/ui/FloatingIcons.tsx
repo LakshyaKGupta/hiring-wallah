@@ -55,25 +55,25 @@ export default function FloatingIcons({ count = 8 }: { count?: number }) {
     const generated = Array.from({ length: count }).map((_, i) => {
       const Icon = iconsList[i % iconsList.length]
       
-      // Distribute coordinates across sections
-      const xPercent = 5 + (i * (90 / count)) + (Math.random() * 8 - 4)
-      const yPercent = 10 + (Math.random() * 80)
+      // Distribute coordinates across sections with wider margins
+      const xPercent = Math.random() * 100
+      const yPercent = Math.random() * 100
       
       const scale = 0.6 + Math.random() * 0.5
-      const opacity = 0.04 + Math.random() * 0.05 // Faint: between 4% and 9% opacity
+      const opacity = 0.15 + Math.random() * 0.10 // Visible: between 15% and 25% opacity
       
       const delay = Math.random() * 4
       const duration = 12 + Math.random() * 8 // Slow: 12s to 20s
       
-      const xDrift = [0, (Math.random() > 0.5 ? 1 : -1) * (15 + Math.random() * 15), 0]
-      const yDrift = [0, (Math.random() > 0.5 ? 1 : -1) * (20 + Math.random() * 20), 0]
-      const rotateDrift = [0, (Math.random() > 0.5 ? 1 : -1) * (10 + Math.random() * 15), 0]
+      const xDrift = [0, (Math.random() > 0.5 ? 1 : -1) * (20 + Math.random() * 30), 0]
+      const yDrift = [0, (Math.random() > 0.5 ? 1 : -1) * (25 + Math.random() * 35), 0]
+      const rotateDrift = [0, (Math.random() > 0.5 ? 1 : -1) * (15 + Math.random() * 20), 0]
 
       return {
         id: i,
         Icon,
-        x: `${Math.max(5, Math.min(95, xPercent))}%`,
-        y: `${Math.max(5, Math.min(95, yPercent))}%`,
+        x: `${Math.max(2, Math.min(98, xPercent))}%`,
+        y: `${Math.max(2, Math.min(98, yPercent))}%`,
         scale,
         opacity,
         delay,

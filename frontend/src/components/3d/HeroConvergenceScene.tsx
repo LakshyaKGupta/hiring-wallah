@@ -67,7 +67,7 @@ export function HeroConvergenceScene() {
   const strokeDashoffset = circumference - (0.91) * circumference
 
   return (
-    <div className="relative flex min-h-[calc(100vh-64px)] w-full items-center justify-center overflow-hidden bg-bg-deep pt-20 md:pt-16 pb-12">
+    <section className="relative flex h-screen snap-start w-full items-center justify-center overflow-hidden bg-bg-deep pt-16 pb-12">
       {/* Dynamic Aurora Glow & Grain Texture */}
       <div className="absolute inset-0 aurora-bg opacity-30" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(124,58,237,0.15),transparent_50%)]" />
@@ -93,33 +93,33 @@ export function HeroConvergenceScene() {
           </div>
 
           <div className="flex flex-col gap-4 sm:flex-row pointer-events-auto">
-            <Link href="/auth?mode=signup" className="group inline-flex items-center justify-center gap-2 rounded-xl border border-accent-primary bg-accent-primary px-7 py-3.5 text-sm font-bold text-white shadow-[0_8px_16px_rgba(124,58,237,0.2)] transition-apple hover:bg-accent-primary/95 hover:shadow-[0_12px_24px_rgba(124,58,237,0.3)] hover:-translate-y-0.5">
+            <Link href="/auth?mode=signup" className="group inline-flex items-center justify-center gap-2 rounded-xl border border-accent-primary bg-accent-primary px-8 py-4 text-base font-bold text-white shadow-[0_12px_24px_rgba(124,58,237,0.3)] transition-apple hover:bg-accent-primary/95 hover:shadow-[0_16px_32px_rgba(124,58,237,0.4)] hover:-translate-y-1">
               Create account
-              <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+              <ArrowRight className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1" />
             </Link>
-            <Link href="/recruiter" className="inline-flex items-center justify-center gap-2 rounded-xl border border-border-subtle bg-bg-surface/80 px-7 py-3.5 text-sm font-bold text-text-primary shadow-sm backdrop-blur-md transition-apple hover:border-accent-primary/30 hover:bg-bg-raised hover:-translate-y-0.5">
-              <Briefcase className="h-4 w-4 text-accent-primary" />
+            <Link href="/recruiter" className="inline-flex items-center justify-center gap-2 rounded-xl border border-border-subtle bg-bg-surface/80 px-8 py-4 text-base font-bold text-text-primary shadow-sm backdrop-blur-md transition-apple hover:border-accent-primary/30 hover:bg-bg-raised hover:-translate-y-1">
+              <Briefcase className="h-5 w-5 text-accent-primary" />
               Open recruiter demo
             </Link>
           </div>
 
           {/* Marquee Trust Bar */}
-          <div className="pt-6 overflow-hidden max-w-lg border-t border-border-subtle/50 relative">
+          <div className="pt-6 overflow-hidden max-w-lg border-t border-gray-200 relative">
             <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-bg-deep to-transparent z-10" />
             <div className="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-bg-deep to-transparent z-10" />
-            <div className="flex whitespace-nowrap animate-[marquee_20s_linear_infinite] gap-6 text-[11px] font-bold text-text-tertiary uppercase tracking-widest">
+            <div className="flex whitespace-nowrap animate-[marquee_20s_linear_infinite] gap-6 text-[12px] font-extrabold text-gray-800 uppercase tracking-widest">
               <span>Evidence-Based Scoring</span>
-              <span className="text-border-subtle">•</span>
+              <span className="text-gray-400">•</span>
               <span>SHA-256 Signed Reports</span>
-              <span className="text-border-subtle">•</span>
+              <span className="text-gray-400">•</span>
               <span>Multi-Agent Consensus</span>
-              <span className="text-border-subtle">•</span>
+              <span className="text-gray-400">•</span>
               <span>6× Faster Screening</span>
-              <span className="text-border-subtle">•</span>
+              <span className="text-gray-400">•</span>
               <span>Zero Black Box</span>
-              <span className="text-border-subtle">•</span>
+              <span className="text-gray-400">•</span>
               <span>Evidence-Based Scoring</span>
-              <span className="text-border-subtle">•</span>
+              <span className="text-gray-400">•</span>
               <span>SHA-256 Signed Reports</span>
             </div>
           </div>
@@ -131,8 +131,12 @@ export function HeroConvergenceScene() {
           
           <motion.div 
             initial={{ opacity: 0, y: 40, rotateX: 10 }}
-            animate={{ opacity: 1, y: 0, rotateX: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            animate={{ opacity: 1, y: [-4, 4, -4], rotateX: 0 }}
+            transition={{ 
+              opacity: { duration: 0.8, delay: 0.2 },
+              rotateX: { duration: 0.8, delay: 0.2 },
+              y: { duration: 8, repeat: Infinity, ease: "easeInOut" }
+            }}
             style={{ perspective: 1000 }}
             className="w-full max-w-[540px] bg-white border border-gray-150 rounded-2xl shadow-[0_24px_48px_rgba(0,0,0,0.06),0_12px_24px_rgba(0,0,0,0.04),0_0_0_1px_rgba(0,0,0,0.02)] overflow-hidden flex flex-col font-sans text-left relative z-20"
           >
@@ -282,6 +286,6 @@ export function HeroConvergenceScene() {
           </motion.div>
         </div>
       </div>
-    </div>
+    </section>
   )
 }

@@ -9,18 +9,13 @@ This file is the persistent project memory for AI agents and human contributors.
   - Private GitHub repository at `LakshyaKGupta/hiring-wallah` — latest commit: `8bd86c0`.
   - FastAPI Backend service fully operational on port 8000.
   - Next.js 16 Frontend fully built and type checked, running on port 3000.
-- **Recent progress (Design Overhaul v4 — HiringAgents.ai Palette + Kore.ai Transitions):**
-  - **Full design token migration**: Zoho blue → `#7c3aed` (violet-600) primary, `#6366f1` (indigo-500) secondary, `#F9F9FB` surface, `#1F2937` text
-  - **Kore.ai easing**: Added `--ease-kore: cubic-bezier(0.22, 0.6, 0.36, 1)` and helper classes `.ease-kore`, `.duration-kore`, `.transition-kore` to `globals.css` and `motion.ts`
-  - **Premium design system extensions** in `globals.css`: grain-overlay (SVG feTurbulence noise at 3.5% opacity), aurora-bg (conic gradient 52s rotation), shimmer-text utility, organic blob-drift-6 keyframe with asymmetric timing
-  - **New component `FloatingIcons.tsx`**: SSR-safe ambient backdrop icons with slow Framer Motion drift (12–20s, 4–9% opacity)
-  - **Feature cards redesign**: Circular pastel-colored icon backdrops (amber/teal/rose/purple) with thin gray borders and white backgrounds on Section 2
-  - **Unified Workspaces section**: Merged recruiter and candidate sections into one tabbed block (`#workspaces`) with animated tab-switch transitions
-  - **Decision Flow SVG connector**: Animated dashed pipeline line in Section 5 with violet→indigo linear gradient
-  - **HeroConvergenceScene syntax fix**: Removed duplicate `/>  />` tag at line 401
-  - **Color consistency**: All `indigo-*` Tailwind class references replaced with `accent-primary` / `purple-*` equivalents
-  - **TypeScript**: Zero compile errors (`npx tsc --noEmit` clean)
-  - **Production build**: ✅ Compiled in 3.5s, all 7 routes generated, zero warnings
+- **Recent progress (Design Overhaul v5.1 — Layout & UI Polish):**
+  - **Full-Page Snapping**: Converted main layout to strict 100vh scroll snapping (`snap-y snap-mandatory` on container, `snap-start h-screen` on sections).
+  - **Icon Normalization**: Stripped pastel gradients from feature/agent cards, moving to a clean standard SaaS icon style.
+  - **CTA Redesign**: Re-themed the final CTA section from dark mode to a light theme matching Zoho Cloud, including ghost buttons and subtle borders.
+  - **Hero Enhancements**: Increased contrast of the trust marquee, added continuous floating keyframes to the UI mockups, and enlarged the signup button.
+  - **Floating Icons**: Boosted ambient icon opacity to 15-25% and adjusted random distribution to fill edge-to-edge space.
+  - **GitHub sync**: Changes successfully committed and pushed to `main`.
 - **Current blockers:** None.
 - **Known risks:** None.
 
