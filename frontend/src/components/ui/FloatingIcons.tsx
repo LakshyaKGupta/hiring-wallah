@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import {
   FileText,
@@ -44,50 +44,39 @@ interface FloatingIconConfig {
   rotateDrift: number[]
 }
 
+function seededValue(seed: number) {
+  const value = Math.sin(seed * 9301 + 49297) * 233280
+  return value - Math.floor(value)
+}
+
+function createConfig(index: number): FloatingIconConfig {
+  const Icon = iconsList[index % iconsList.length]
+  const xPercent = seededValue(index + 1) * 100
+  const yPercent = seededValue(index + 11) * 100
+  const xSign = seededValue(index + 21) > 0.5 ? 1 : -1
+  const ySign = seededValue(index + 31) > 0.5 ? 1 : -1
+  const rotateSign = seededValue(index + 41) > 0.5 ? 1 : -1
+
+  return {
+    id: index,
+    Icon,
+    x: `${Math.max(2, Math.min(98, xPercent))}%`,
+    y: `${Math.max(2, Math.min(98, yPercent))}%`,
+    scale: 0.6 + seededValue(index + 51) * 0.5,
+    opacity: 0.15 + seededValue(index + 61) * 0.10,
+    delay: seededValue(index + 71) * 4,
+    duration: 12 + seededValue(index + 81) * 8,
+    xDrift: [0, xSign * (20 + seededValue(index + 91) * 30), 0],
+    yDrift: [0, ySign * (25 + seededValue(index + 101) * 35), 0],
+    rotateDrift: [0, rotateSign * (15 + seededValue(index + 111) * 20), 0],
+  }
+}
+
 export default function FloatingIcons({ count = 8 }: { count?: number }) {
-  const [mounted, setMounted] = useState(false)
-  const [configs, setConfigs] = useState<FloatingIconConfig[]>([])
-
-  useEffect(() => {
-    setMounted(true)
-    
-    // Generate random layout configs on mount to avoid SSR mismatch
-    const generated = Array.from({ length: count }).map((_, i) => {
-      const Icon = iconsList[i % iconsList.length]
-      
-      // Distribute coordinates across sections with wider margins
-      const xPercent = Math.random() * 100
-      const yPercent = Math.random() * 100
-      
-      const scale = 0.6 + Math.random() * 0.5
-      const opacity = 0.15 + Math.random() * 0.10 // Visible: between 15% and 25% opacity
-      
-      const delay = Math.random() * 4
-      const duration = 12 + Math.random() * 8 // Slow: 12s to 20s
-      
-      const xDrift = [0, (Math.random() > 0.5 ? 1 : -1) * (20 + Math.random() * 30), 0]
-      const yDrift = [0, (Math.random() > 0.5 ? 1 : -1) * (25 + Math.random() * 35), 0]
-      const rotateDrift = [0, (Math.random() > 0.5 ? 1 : -1) * (15 + Math.random() * 20), 0]
-
-      return {
-        id: i,
-        Icon,
-        x: `${Math.max(2, Math.min(98, xPercent))}%`,
-        y: `${Math.max(2, Math.min(98, yPercent))}%`,
-        scale,
-        opacity,
-        delay,
-        duration,
-        xDrift,
-        yDrift,
-        rotateDrift
-      }
-    })
-    
-    setConfigs(generated)
-  }, [count])
-
-  if (!mounted) return null
+  const configs = useMemo(
+    () => Array.from({ length: count }).map((_, index) => createConfig(index)),
+    [count],
+  )
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">

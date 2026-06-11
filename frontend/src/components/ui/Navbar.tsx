@@ -16,8 +16,10 @@ import {
 
 const navLinks = [
   { href: '/', label: 'Home', icon: Home, match: (pathname: string) => pathname === '/' },
-  { href: '/#features', label: 'Features', icon: Sparkles, match: () => false },
-  { href: '/#how-it-works', label: 'How It Works', icon: Network, match: () => false },
+  { href: '/#features', label: 'Outcomes', icon: Sparkles, match: () => false },
+  { href: '/#workspaces', label: 'Workspaces', icon: ClipboardCheck, match: () => false },
+  { href: '/#how-it-works', label: 'Process', icon: Network, match: () => false },
+  { href: '/#cta', label: 'Start', icon: FileText, match: () => false },
 ]
 
 function NavLink({
@@ -33,10 +35,29 @@ function NavLink({
   isActive: boolean
   className?: string
 }) {
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!href.startsWith('/#')) return
+
+    const sectionId = href.slice(2)
+    const element = document.getElementById(sectionId)
+    if (!element) return
+
+    event.preventDefault()
+    window.history.pushState(null, '', href)
+    const targetTop = Math.max(0, element.offsetTop - 64)
+    document.documentElement.scrollTop = targetTop
+    document.body.scrollTop = targetTop
+    window.scrollTo({
+      top: targetTop,
+      behavior: 'smooth',
+    })
+  }
+
   return (
     <motion.div whileTap={{ scale: 0.95 }} className="relative">
       <Link
         href={href}
+        onClick={handleClick}
         className={`px-2.5 sm:px-3 py-1.5 rounded-lg flex items-center gap-1.5 sm:gap-2 type-label font-medium select-none text-text-secondary hover:text-text-primary group/nav ${className}`}
       >
         <div className="p-0.5 rounded border border-border-subtle bg-bg-deep transition-transform duration-300 group-hover/nav:scale-110 group-hover/nav:rotate-6">
@@ -84,7 +105,7 @@ function NavbarContent() {
           </span>
         </Link>
 
-        <nav className="flex items-center gap-0.5 sm:gap-1">
+        <nav className="hidden md:flex items-center gap-0.5 sm:gap-1">
           {navLinks.map((item) => (
             <NavLink
               key={item.href}
@@ -116,8 +137,8 @@ function NavbarContent() {
               href="/auth?mode=signup"
               className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 type-label font-medium font-bold transition-all duration-200 ${
                 isAuthPage && mode === 'signup'
-                  ? 'bg-gray-800 text-white border border-gray-900'
-                  : 'bg-gray-900 hover:bg-gray-800 text-white border border-gray-900 shadow-sm'
+                  ? 'bg-gray-800 !text-white border border-gray-900'
+                  : 'bg-gray-900 hover:bg-gray-800 !text-white border border-gray-900 shadow-sm'
               }`}
             >
               <UserPlus className="w-3.5 h-3.5" />
@@ -145,7 +166,7 @@ function NavbarFallback() {
           </span>
         </Link>
 
-        <nav className="flex items-center gap-0.5 sm:gap-1">
+        <nav className="hidden md:flex items-center gap-0.5 sm:gap-1">
           {navLinks.map((item) => (
             <NavLink
               key={item.href}
@@ -167,7 +188,7 @@ function NavbarFallback() {
           </Link>
           <Link
             href="/auth?mode=signup"
-            className="px-3 py-1.5 rounded-lg flex items-center gap-1.5 type-label font-medium font-bold bg-gray-900 hover:bg-gray-800 transition-colors text-white"
+            className="px-3 py-1.5 rounded-lg flex items-center gap-1.5 type-label font-medium font-bold bg-gray-900 hover:bg-gray-800 transition-colors !text-white"
           >
             <UserPlus className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Sign Up</span>

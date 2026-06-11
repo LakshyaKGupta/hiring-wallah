@@ -1,8 +1,7 @@
 'use client'
 
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
 import { motion, AnimatePresence, useMotionValue, animate } from 'framer-motion'
 import { 
   Briefcase, 
@@ -14,17 +13,10 @@ import {
   CheckCircle2, 
   Check, 
   AlertOctagon, 
-  Terminal, 
   Search, 
   Sliders, 
   Users, 
-  Lock, 
-  Activity,
   Zap,
-  Network,
-  Fingerprint,
-  FileCheck2,
-  Waypoints,
   FileText,
   BarChart2,
   type LucideIcon,
@@ -86,7 +78,7 @@ interface AgentCardProps {
   stepNumber: string
 }
 
-function AgentCard({ title, role, mechanics, colorClass, borderColorClass, icon: Icon, index = 0, stepNumber }: AgentCardProps & { index?: number }) {
+function AgentCard({ title, role, mechanics, colorClass, borderColorClass, icon: Icon, stepNumber }: AgentCardProps & { index?: number }) {
   const [isHovered, setIsHovered] = useState(false)
 
   return (
@@ -175,7 +167,6 @@ function FeatureReasoningCard({
   detail,
   icon: Icon,
   colorClass,
-  bgClass,
   stat,
   index,
 }: {
@@ -343,22 +334,28 @@ export default function LandingPage() {
   const circumference = 2 * Math.PI * radius
   const strokeDashoffset = circumference - (suitabilityScore / 100) * circumference
 
-  const scrollToSection = useCallback((idx: number) => {
-    const section = LANDING_SECTIONS[idx]
-    if (section && typeof window !== 'undefined') {
-      const element = document.getElementById(section.id)
-      if (element) {
-        const navbarOffset = 64
-        const elementPosition = element.getBoundingClientRect().top + window.scrollY
-        const offsetPosition = elementPosition - navbarOffset
+  useEffect(() => {
+    const scrollToHash = () => {
+      const sectionId = window.location.hash.replace('#', '')
+      if (!sectionId) return
 
+      window.requestAnimationFrame(() => {
+        const element = document.getElementById(sectionId)
+        if (!element) return
+
+        const targetTop = Math.max(0, element.offsetTop - 64)
+        document.documentElement.scrollTop = targetTop
+        document.body.scrollTop = targetTop
         window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
+          top: targetTop,
+          behavior: 'smooth',
         })
-        setActiveSection(idx)
-      }
+      })
     }
+
+    scrollToHash()
+    window.addEventListener('hashchange', scrollToHash)
+    return () => window.removeEventListener('hashchange', scrollToHash)
   }, [])
 
   const activeSectionRef = useRef(activeSection)
@@ -402,12 +399,12 @@ export default function LandingPage() {
       <ScrollProgress />
       
       {/* SECTION 1: HERO */}
-      <section id="hero" className="w-full relative overflow-hidden">
+      <section id="hero" className="w-full relative overflow-hidden scroll-mt-16">
         <HeroConvergenceScene />
       </section>
 
       {/* SECTION 2: FEATURES */}
-      <section id="features" className="w-full min-h-screen flex flex-col justify-center py-24 relative overflow-hidden bg-white border-b border-gray-100">
+      <section id="features" className="w-full min-h-screen flex flex-col justify-center py-24 relative overflow-hidden bg-white border-b border-gray-100 scroll-mt-16">
         <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-white pointer-events-none" />
         <FloatingIcons count={12} />
 
@@ -441,7 +438,7 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 3: WORKSPACES */}
-      <section id="workspaces" className="w-full min-h-screen flex flex-col justify-center py-24 relative overflow-hidden bg-[#F4F4F6] border-b border-gray-200">
+      <section id="workspaces" className="w-full min-h-screen flex flex-col justify-center py-24 relative overflow-hidden bg-[#F4F4F6] border-b border-gray-200 scroll-mt-16">
         <MeshBackground opacity={0.04} />
         <FloatingIcons count={10} />
 
@@ -722,7 +719,7 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 4: HOW IT WORKS */}
-      <section id="how-it-works" className="w-full min-h-screen flex flex-col justify-center py-24 relative overflow-hidden bg-white border-b border-gray-100">
+      <section id="how-it-works" className="w-full min-h-screen flex flex-col justify-center py-24 relative overflow-hidden bg-white border-b border-gray-100 scroll-mt-16">
         <FloatingIcons count={10} />
 
         <motion.div 
@@ -816,7 +813,7 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 5: CTA */}
-      <section id="cta" className="w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-24 relative overflow-hidden bg-white border-t border-gray-100">
+      <section id="cta" className="w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-24 relative overflow-hidden bg-white border-t border-gray-100 scroll-mt-16">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(124,58,237,0.05),transparent_70%)]" />
 
         <motion.div 
@@ -843,7 +840,7 @@ export default function LandingPage() {
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-10 py-4 bg-accent-primary text-white font-bold rounded-xl flex items-center justify-center gap-3 shadow-[0_8px_16px_rgba(124,58,237,0.2)] hover:shadow-[0_12px_24px_rgba(124,58,237,0.3)] transition-all cursor-pointer"
+                className="px-10 py-4 bg-gray-900 text-white font-bold rounded-xl flex items-center justify-center gap-3 shadow-[0_10px_24px_rgba(15,23,42,0.18)] hover:bg-gray-800 hover:shadow-[0_16px_32px_rgba(15,23,42,0.24)] transition-all cursor-pointer"
               >
                 <span>Create Free Account</span>
                 <ArrowRight className="w-4 h-4" />

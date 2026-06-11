@@ -1057,4 +1057,44 @@ This file is the persistent project memory for AI agents and human contributors.
 - **Scroll Hash Synchronization**: Programmed scroll listener to silently write URL hashes and dispatch custom events to drive real-time active highlights.
 - **Production Build Verification**: Verified clean TypeScript checking and Next.js production builds with zero errors.
 
+### Session Update - 2026-06-11 (Evidence Workspace Hero & Natural Section Navigation)
+
+#### Objective
+- Replace the remaining AI-generated-looking hero treatment with a lighter, premium 3D/product-workspace direction.
+- Remove the cringe cursor behavior from the active layout path.
+- Keep each major landing section full-page in feel without forced snap scrolling.
+- Add navbar buttons that connect to the real landing sections.
+- Fix signup button contrast and smooth route/section transitions.
+
+#### Completed
+- Rebuilt `frontend/src/components/3d/HeroConvergenceScene.tsx` as a light "evidence workspace" hero:
+  - Clean grid canvas, restrained blue/emerald accents, and no aurora/particle clutter.
+  - Domain-specific 3D-style layered cards: candidate dossier, role rubric, consensus report, evidence trail, and signed decision ledger.
+  - Native cursor preserved; no global cursor overlay is mounted in `layout.tsx`.
+  - Hero content is visible by default so Framer hydration or reduced-motion behavior cannot leave the first screen blank.
+- Expanded navbar anchors in `frontend/src/components/ui/Navbar.tsx`:
+  - Home, Outcomes, Workspaces, Process, Start, Sign In, Sign Up.
+  - Signup button is forced to white text on dark background for contrast.
+  - Same-page section links now run explicit scroll handling and update the hash.
+- Updated `frontend/src/app/page.tsx`:
+  - Added `scroll-mt-16` to major sections for sticky-navbar offset.
+  - Replaced purple CTA signup button with the dark button system.
+  - Added hash-scroll fallback for direct section URLs.
+- Updated `frontend/src/app/template.tsx` with a calmer blur/fade route transition instead of the spring jump.
+- Fixed `frontend/src/components/ui/FloatingIcons.tsx` by replacing mount-time random state with deterministic icon configs, clearing the React hooks lint error and hydration risk.
+
+#### Verification
+- `npm run lint` in `frontend`: passed.
+- `npm run build` in `frontend`: passed.
+- Dev server running at `http://127.0.0.1:3000` via `npm run dev -- --hostname 127.0.0.1 --port 3000`.
+- Browser QA:
+  - Desktop hero rendered visible with final `h1` opacity `1`.
+  - Mobile DOM check showed no horizontal overflow: `scrollWidth` 384 vs viewport 390.
+  - Navbar signup computed color is white on dark background.
+  - No custom cursor overlay detected in the rendered DOM.
+
+#### Notes For Next Agent
+- Do not reintroduce forced scroll snapping. Sections should remain full-height/natural-flow, with anchor offsets and smooth scroll only.
+- If visual polish continues, focus next on the lower Workspaces/Decision Protocol sections so they match the new hero's lighter evidence-led visual system.
+- Browser screenshot capture in the in-app browser intermittently timed out on the animated page; rely on lint/build plus DOM metrics or external Playwright capture if image evidence is required.
 

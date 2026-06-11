@@ -1,268 +1,245 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowRight, Briefcase, RefreshCw, ChevronRight } from 'lucide-react'
-import Link from 'next/link'
-import FloatingIcons from '@/components/ui/FloatingIcons'
+'use client'
 
-const SIMULATED_CANDIDATES = [
-  { id: 'c1', name: 'Lakshya Gupta', experience: '5', avatar: 'LG', role: 'Lead Product Designer', logs: [
-    'PARSER: Ingesting application dossier candidate_4920.pdf',
-    'STRATEGIST: Applying rubric weight distribution: Experience (40%), Skills (60%)',
-    'ANALYST: Extracting target parameters: "React", "Design Systems"',
-    'EVALUATOR: Dimension Score for React: 92/100 (Level: High-Autonomy)',
-    'COMMITTEE: Consensus phase started. 6/6 Agents presenting evaluations...',
-    'COMMITTEE: Voting on verdict for candidate_4920... PASSED (5 Ayes, 1 Abstain)',
-  ]},
-  { id: 'c2', name: 'Derrick Vance', experience: '9', avatar: 'DV', role: 'Staff Engineer', logs: [
-    'PARSER: Ingesting application dossier candidate_1192.pdf',
-    'ANALYST: Extracting target parameters: "Python", "GraphQL"',
-    'DEVILS_ADVOCATE: WARNING: No native iOS details found for stated React Native role',
-    'EVALUATOR: Recalculating score with Devil\'s Advocate inputs: 89.5/100',
-  ]},
-  { id: 'c3', name: 'Sasha Chen', experience: '2.5', avatar: 'SC', role: 'Full-Stack Developer', logs: [
-    'PARSER: Ingesting application dossier candidate_3041.pdf',
-    'STRATEGIST: Applying rubric weight distribution: Experience (50%), Skills (50%)',
-    'COMMITTEE: Waiting on background verification check...',
-  ]}
+import React from 'react'
+import Link from 'next/link'
+import { motion } from 'framer-motion'
+import {
+  ArrowRight,
+  BarChart3,
+  Briefcase,
+  CheckCircle2,
+  FileCheck2,
+  Fingerprint,
+  Sparkles,
+} from 'lucide-react'
+
+const evidenceTrail = [
+  { label: 'Resume parsed', value: '42 claims', icon: FileCheck2 },
+  { label: 'Rubric matched', value: '91%', icon: BarChart3 },
+  { label: 'Report signed', value: 'sha256', icon: Fingerprint },
 ]
 
-export function HeroConvergenceScene() {
-  const [selectedCandId, setSelectedCandId] = useState('c1')
-  const [screeningState, setScreeningState] = useState<'idle' | 'processing' | 'done'>('idle')
-  const [consoleLogs, setConsoleLogs] = useState<string[]>([])
-  const logIntervalRef = useRef<NodeJS.Timeout | null>(null)
+const scoreRows = [
+  { label: 'System design', score: 94, color: 'bg-slate-900' },
+  { label: 'Role ownership', score: 88, color: 'bg-blue-600' },
+  { label: 'Evidence quality', score: 96, color: 'bg-emerald-500' },
+]
 
-  const activeCand = SIMULATED_CANDIDATES.find(c => c.id === selectedCandId) || SIMULATED_CANDIDATES[0]
-
-  const runScreening = (candId: string) => {
-    setSelectedCandId(candId)
-    setScreeningState('processing')
-    setConsoleLogs([])
-    
-    if (logIntervalRef.current) clearInterval(logIntervalRef.current)
-
-    const targetCand = SIMULATED_CANDIDATES.find(c => c.id === candId) || SIMULATED_CANDIDATES[0]
-    let logIdx = 0
-
-    logIntervalRef.current = setInterval(() => {
-      setConsoleLogs(prev => [...prev, targetCand.logs[logIdx]])
-      logIdx++
-      if (logIdx >= targetCand.logs.length) {
-        if (logIntervalRef.current) clearInterval(logIntervalRef.current)
-        setTimeout(() => setScreeningState('done'), 1000)
-      }
-    }, 600)
-  }
-
-  // Initial animation
-  useEffect(() => {
-    setTimeout(() => runScreening('c1'), 1500)
-    return () => {
-      if (logIntervalRef.current) clearInterval(logIntervalRef.current)
-    }
-  }, [])
-
-  const radius = 32
-  const circumference = 2 * Math.PI * radius
-  const strokeDashoffset = circumference - (0.91) * circumference
-
+function EvidencePanel() {
   return (
-    <section className="relative flex min-h-[calc(100vh-64px)] w-full items-center justify-center overflow-hidden bg-bg-deep pt-16 pb-12">
-      {/* Dynamic Aurora Glow & Grain Texture */}
-      <div className="absolute inset-0 aurora-bg opacity-30" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(124,58,237,0.15),transparent_50%)]" />
-      <div className="grain-overlay" />
+    <motion.div
+      initial={false}
+      animate={{ y: [0, -8, 0], rotateX: 0, rotateY: -6 }}
+      transition={{
+        rotateX: { duration: 0.7, delay: 0.15 },
+        y: { duration: 9, repeat: Infinity, ease: 'easeInOut' },
+      }}
+      whileHover={{ rotateY: -2, rotateX: 2, scale: 1.015 }}
+      className="relative mx-auto w-full max-w-[600px] [transform-style:preserve-3d]"
+    >
+      <div className="absolute -inset-8 rounded-[3rem] bg-[radial-gradient(circle_at_50%_30%,rgba(37,99,235,0.16),transparent_58%)] blur-2xl" />
+      <div className="absolute -right-4 top-14 h-44 w-44 rounded-full border border-blue-200/70 bg-blue-50/60 blur-sm" />
+      <div className="absolute -left-5 bottom-16 h-36 w-36 rounded-full border border-emerald-200/70 bg-emerald-50/60 blur-sm" />
 
-      {/* Increased Floating Icons with varied sizing and distances */}
-      <FloatingIcons count={12} />
-
-      <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 lg:gap-16 px-6 lg:grid-cols-12">
-        {/* Left Column: Core Copy */}
-        <div className="space-y-8 lg:col-span-6 text-left select-text">
-          <div className="space-y-6">
-            <h1 className="font-display text-6xl md:text-7xl lg:text-[5.5rem] font-extrabold leading-[0.92] tracking-[-0.04em] text-text-primary">
-              Forensic hiring,<br />
-              <span className="shimmer-text">without the black box.</span>
-            </h1>
-            <p className="max-w-xl text-lg md:text-xl leading-relaxed text-text-secondary font-medium">
-              Hiring Wallah converts resumes and job requirements into transparent agent reasoning, weighted consensus scores, and signed reports recruiters can defend.
-              <span className="block mt-4 text-sm font-bold text-accent-primary opacity-90">
-                <span className="mr-3">6× Faster Screening</span> • <span className="mx-3">10,000+ Screened</span> • <span className="ml-3">99% Accuracy</span>
-              </span>
-            </p>
+      <div className="relative rounded-[2rem] border border-slate-200/80 bg-white/88 p-3 shadow-[0_38px_100px_rgba(15,23,42,0.16)] backdrop-blur-xl">
+        <div className="rounded-[1.5rem] border border-slate-200 bg-slate-50/80 p-4">
+          <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
+              <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
+              <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
+            </div>
+            <div className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-semibold text-slate-500">
+              live evaluation
+            </div>
           </div>
 
-          <div className="flex flex-col gap-4 sm:flex-row pointer-events-auto">
-            <Link href="/auth?mode=signup" className="group inline-flex items-center justify-center gap-2 rounded-xl border border-gray-900 bg-gray-900 px-8 py-4 text-base font-bold text-white shadow-[0_12px_24px_rgba(0,0,0,0.15)] transition-apple hover:bg-gray-800 hover:shadow-[0_16px_32px_rgba(0,0,0,0.2)] hover:-translate-y-1">
+          <div className="grid gap-4 lg:grid-cols-[0.92fr_1.08fr]">
+            <div className="space-y-4">
+              <motion.div
+                animate={{ y: [0, -4, 0] }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+              >
+                <div className="mb-4 flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-semibold text-slate-500">Candidate dossier</p>
+                    <h3 className="mt-1 text-lg font-extrabold tracking-tight text-slate-950">Lakshya Gupta</h3>
+                  </div>
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-blue-100 bg-blue-50 font-extrabold text-blue-700">
+                    LG
+                  </div>
+                </div>
+                <div className="space-y-2.5">
+                  {['Design systems lead', '4 shipped product lines', 'Recruiter onboarding'].map((item) => (
+                    <div key={item} className="flex items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700">
+                      <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+
+              <motion.div
+                animate={{ y: [0, 5, 0] }}
+                transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
+                className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+              >
+                <div className="mb-3 flex items-center justify-between">
+                  <span className="text-xs font-semibold text-slate-500">Role rubric</span>
+                  <span className="rounded-full bg-slate-900 px-2.5 py-1 text-[10px] font-bold text-white">weighted</span>
+                </div>
+                <div className="space-y-3">
+                  {scoreRows.map((row) => (
+                    <div key={row.label}>
+                      <div className="mb-1.5 flex items-center justify-between text-xs font-semibold text-slate-600">
+                        <span>{row.label}</span>
+                        <span>{row.score}%</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-slate-100">
+                        <motion.div
+                          initial={false}
+                          animate={{ width: `${row.score}%` }}
+                          transition={{ duration: 1, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                          className={`h-full rounded-full ${row.color}`}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            </div>
+
+            <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="absolute left-8 top-20 h-[230px] w-px bg-gradient-to-b from-blue-200 via-slate-200 to-emerald-200" />
+              <div className="relative z-10 mb-7">
+                <p className="text-xs font-semibold text-slate-500">Consensus report</p>
+                <div className="mt-3 flex items-end justify-between">
+                  <div>
+                    <div className="text-6xl font-black tracking-[-0.06em] text-slate-950">91</div>
+                    <p className="-mt-1 text-sm font-bold text-emerald-600">Strong hire</p>
+                  </div>
+                  <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700">
+                    6/6 agents agree
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative z-10 space-y-3">
+                {evidenceTrail.map((item, index) => {
+                  const Icon = item.icon
+                  return (
+                    <motion.div
+                      key={item.label}
+                      initial={false}
+                      animate={{ x: 0 }}
+                      transition={{ duration: 0.5, delay: 0.25 + index * 0.12 }}
+                      className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/90 p-3"
+                    >
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white bg-white shadow-sm">
+                        <Icon className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-bold text-slate-900">{item.label}</p>
+                        <p className="text-xs font-medium text-slate-500">{item.value}</p>
+                      </div>
+                    </motion.div>
+                  )
+                })}
+              </div>
+
+              <div className="relative z-10 mt-5 rounded-2xl border border-slate-200 bg-slate-950 p-4 text-white">
+                <div className="mb-3 flex items-center justify-between">
+                  <span className="text-xs font-semibold text-slate-300">Decision ledger</span>
+                  <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_0_5px_rgba(52,211,153,0.18)]" />
+                </div>
+                <div className="h-2.5 w-4/5 rounded-full bg-white/18" />
+                <div className="mt-2 h-2.5 w-3/5 rounded-full bg-white/12" />
+                <div className="mt-4 text-xs font-semibold text-slate-300">Signed: 7c2e...94fa</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+export function HeroConvergenceScene() {
+  return (
+    <section className="relative flex min-h-[calc(100vh-64px)] w-full items-center overflow-hidden bg-[#f7f8fb] px-6 py-16 md:py-20">
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.045)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.045)_1px,transparent_1px)] bg-[size:44px_44px]" />
+      <div className="absolute left-1/2 top-0 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.13),transparent_68%)] blur-3xl" />
+      <div className="absolute bottom-0 left-0 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(16,185,129,0.12),transparent_68%)] blur-3xl" />
+
+      <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="space-y-8 text-left lg:col-span-5">
+          <motion.div
+            initial={false}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-3.5 py-2 text-xs font-bold text-slate-700 shadow-sm backdrop-blur"
+          >
+            <Sparkles className="h-3.5 w-3.5 text-blue-600" />
+            Evidence-first hiring OS
+          </motion.div>
+
+          <div className="space-y-5">
+            <motion.h1
+              initial={false}
+              animate={{ y: 0 }}
+              transition={{ duration: 0.6, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
+              className="font-display text-5xl font-black leading-[0.96] tracking-[-0.055em] text-slate-950 md:text-7xl lg:text-[5.45rem]"
+            >
+              Evidence-backed hiring, without the black box.
+            </motion.h1>
+            <motion.p
+              initial={false}
+              animate={{ y: 0 }}
+              transition={{ duration: 0.6, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+              className="max-w-xl text-lg font-medium leading-8 text-slate-600"
+            >
+              Hiring Wallah turns resumes, job requirements, and recruiter rules into defensible scorecards with visible evidence trails and signed consensus reports.
+            </motion.p>
+          </div>
+
+          <motion.div
+            initial={false}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.6, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col gap-3 sm:flex-row"
+          >
+            <Link href="/auth?mode=signup" className="group inline-flex items-center justify-center gap-2 rounded-xl border border-slate-950 bg-slate-950 px-7 py-4 text-base font-bold text-white shadow-[0_18px_35px_rgba(15,23,42,0.18)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-[0_22px_42px_rgba(15,23,42,0.22)]">
               Create account
               <ArrowRight className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1" />
             </Link>
-            <Link href="/recruiter" className="inline-flex items-center justify-center gap-2 rounded-xl border border-border-subtle bg-bg-surface/80 px-8 py-4 text-base font-bold text-text-primary shadow-sm backdrop-blur-md transition-apple hover:border-gray-300 hover:bg-bg-raised hover:-translate-y-1">
-              <Briefcase className="h-5 w-5 text-accent-primary" />
-              Open recruiter demo
+            <Link href="/#workspaces" className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white/85 px-7 py-4 text-base font-bold text-slate-900 shadow-sm backdrop-blur transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white">
+              <Briefcase className="h-5 w-5 text-blue-600" />
+              See workspaces
             </Link>
-          </div>
+          </motion.div>
+
+          <motion.div
+            initial={false}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.6, delay: 0.24, ease: [0.16, 1, 0.3, 1] }}
+            className="grid max-w-xl grid-cols-3 gap-3 pt-2"
+          >
+            {[
+              ['6x', 'faster screening'],
+              ['100%', 'explainable'],
+              ['SHA', 'signed reports'],
+            ].map(([stat, label]) => (
+              <div key={label} className="rounded-2xl border border-slate-200 bg-white/75 p-4 shadow-sm backdrop-blur">
+                <div className="text-2xl font-black tracking-[-0.04em] text-slate-950">{stat}</div>
+                <div className="mt-1 text-xs font-semibold leading-snug text-slate-500">{label}</div>
+              </div>
+            ))}
+          </motion.div>
         </div>
 
-        {/* Right Column: Interactive AI Screening Playground */}
-        <div className="lg:col-span-6 w-full flex justify-center lg:justify-end relative">
-          <div className="absolute -inset-10 bg-accent-primary/10 blur-[100px] rounded-full" />
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 40, rotateX: 10 }}
-            animate={{ opacity: 1, y: [-4, 4, -4], rotateX: 0 }}
-            transition={{ 
-              opacity: { duration: 0.8, delay: 0.2 },
-              rotateX: { duration: 0.8, delay: 0.2 },
-              y: { duration: 8, repeat: Infinity, ease: "easeInOut" }
-            }}
-            style={{ perspective: 1000 }}
-            className="w-full max-w-[540px] bg-white border border-gray-150 rounded-2xl shadow-[0_24px_48px_rgba(0,0,0,0.06),0_12px_24px_rgba(0,0,0,0.04),0_0_0_1px_rgba(0,0,0,0.02)] overflow-hidden flex flex-col font-sans text-left relative z-20"
-          >
-            {/* macOS Window Title Bar */}
-            <div className="bg-slate-50 border-b border-gray-150 px-4 py-3 flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 rounded-full bg-rose-400/90 shadow-sm" />
-                <div className="w-3 h-3 rounded-full bg-amber-400/90 shadow-sm" />
-                <div className="w-3 h-3 rounded-full bg-emerald-400/90 shadow-sm" />
-              </div>
-              <span className="text-[10px] font-mono text-gray-400 font-medium tracking-wide">screening.ai</span>
-              <div className="w-12" />
-            </div>
-
-            {/* Split Pane Workspace */}
-            <div className="flex grid grid-cols-1 md:grid-cols-12 h-[380px]">
-              {/* Left Pane: Candidate List */}
-              <div className="md:col-span-4 border-r border-gray-150 bg-slate-50/40 p-3 flex flex-col gap-2 relative">
-                <div className="text-[9px] font-bold text-gray-400 uppercase tracking-wider px-1 mb-1">
-                  Queue (3)
-                </div>
-                {SIMULATED_CANDIDATES.map((cand) => (
-                  <button
-                    key={cand.id}
-                    onClick={() => {
-                      if (screeningState !== 'processing') {
-                        runScreening(cand.id)
-                      }
-                    }}
-                    disabled={screeningState === 'processing'}
-                    className={`flex items-center justify-between p-2.5 rounded-lg border text-left transition-all duration-200 cursor-pointer ${
-                      selectedCandId === cand.id
-                        ? 'bg-white border-accent-primary/30 text-gray-900 shadow-sm scale-[1.02]'
-                        : 'bg-transparent border-transparent text-gray-500 hover:bg-white/60 hover:text-gray-900'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 truncate">
-                      <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 shadow-sm ${
-                        selectedCandId === cand.id ? 'bg-purple-50 text-accent-primary border border-purple-100' : 'bg-gray-100 text-gray-500 border border-border-subtle'
-                      }`}>
-                        {cand.avatar}
-                      </div>
-                      <div className="truncate">
-                        <div className="text-xs font-bold leading-tight tracking-tight">{cand.name.split(' ')[0]}</div>
-                        <div className="text-[9px] text-gray-400 font-medium truncate">{cand.experience} yr exp</div>
-                      </div>
-                    </div>
-                    {selectedCandId === cand.id && screeningState === 'processing' ? (
-                      <RefreshCw className="w-3 h-3 text-accent-primary animate-spin shrink-0 ml-1" />
-                    ) : (
-                      <ChevronRight className="w-3 h-3 text-gray-300 shrink-0" />
-                    )}
-                  </button>
-                ))}
-              </div>
-
-              {/* Right Pane: Workspace Board */}
-              <div className="md:col-span-8 p-4 bg-white flex flex-col justify-between">
-                <AnimatePresence mode="wait">
-                  {screeningState === 'processing' ? (
-                    <motion.div 
-                      key="processing"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="bg-[#0b0f19] font-mono text-[10px] text-gray-300 p-4 rounded-xl flex-1 flex flex-col gap-2 overflow-y-auto leading-relaxed shadow-inner border border-gray-800"
-                    >
-                      {consoleLogs.map((log, idx) => (
-                        <div key={idx} className={`${idx === consoleLogs.length - 1 ? 'text-[#8b5cf6] font-semibold' : 'text-gray-400'} flex items-start gap-2`}>
-                          <span className="text-gray-600 shrink-0">&gt;</span> 
-                          <span>{log}</span>
-                        </div>
-                      ))}
-                      {consoleLogs.length < activeCand.logs.length && (
-                        <div className="flex items-center gap-1 mt-1">
-                          <span className="text-gray-600 shrink-0">&gt;</span>
-                          <span className="w-1.5 h-3 bg-[#8b5cf6] animate-pulse inline-block" />
-                        </div>
-                      )}
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="result"
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      className="flex-1 flex flex-col justify-between"
-                    >
-                      <div className="flex items-start justify-between border-b border-border-subtle pb-4">
-                        <div>
-                          <h4 className="text-sm font-bold text-gray-900 tracking-tight">{activeCand.name}</h4>
-                          <p className="text-[10px] text-accent-primary font-bold mt-1 bg-accent-primary/10 px-2 py-0.5 rounded-full inline-block">{activeCand.role}</p>
-                        </div>
-                        
-                        <div className="relative w-16 h-16 flex items-center justify-center">
-                          <svg className="w-full h-full transform -rotate-90">
-                            <circle cx="32" cy="32" r={radius} className="stroke-gray-100" strokeWidth="4" fill="transparent" />
-                            <motion.circle
-                              cx="32"
-                              cy="32"
-                              r={radius}
-                              className="stroke-accent-primary"
-                              strokeWidth="4"
-                              strokeLinecap="round"
-                              fill="transparent"
-                              strokeDasharray={circumference}
-                              initial={{ strokeDashoffset: circumference }}
-                              animate={{ strokeDashoffset }}
-                              transition={{ duration: 1.5, ease: "easeOut" }}
-                            />
-                          </svg>
-                          <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <span className="text-lg font-extrabold text-gray-900">91</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex-1 py-4 space-y-4">
-                        <div className="space-y-2">
-                          <div className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Verified Strengths</div>
-                          <div className="bg-emerald-50/50 border border-emerald-100/50 rounded-lg p-2.5 flex items-start gap-2">
-                            <div className="w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5 text-emerald-600 font-bold text-[10px]">✓</div>
-                            <div className="text-xs text-gray-700 leading-tight">Led Design Systems implementation across 4 major product lines</div>
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <div className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Flagged Risks</div>
-                          <div className="bg-rose-50/50 border border-rose-100/50 rounded-lg p-2.5 flex items-start gap-2">
-                            <div className="w-4 h-4 rounded-full bg-rose-100 flex items-center justify-center shrink-0 mt-0.5 text-rose-600 font-bold text-[10px]">!</div>
-                            <div className="text-xs text-gray-700 leading-tight">Missing direct GraphQL enterprise scale exposure</div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="pt-3 border-t border-border-subtle flex items-center justify-between">
-                        <span className="text-[10px] font-mono text-gray-400">HASH: sha256:7c2e...</span>
-                        <span className="text-[10px] font-bold text-emerald-600 flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                          Consensus Reached
-                        </span>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </div>
-          </motion.div>
+        <div className="lg:col-span-7">
+          <EvidencePanel />
         </div>
       </div>
     </section>
