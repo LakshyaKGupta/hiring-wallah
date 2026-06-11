@@ -9,14 +9,14 @@ import * as THREE from 'three'
 import { motion } from 'framer-motion'
 import { ArrowRight, Briefcase, FileSearch, ShieldCheck, User } from 'lucide-react'
 
-// Agent node positions and colors (6 agents around the sphere)
-const AGENT_NODES = [
-  { name: 'Parser', color: '#0067FF', angle: 0 },
-  { name: 'Strategist', color: '#4A5D78', angle: Math.PI / 3 },
-  { name: 'Analyst', color: '#0D1B2E', angle: (2 * Math.PI) / 3 },
-  { name: 'Evaluator', color: '#E37400', angle: Math.PI },
-  { name: 'Advocate', color: '#D93025', angle: (4 * Math.PI) / 3 },
-  { name: 'Committee', color: '#0F9D58', angle: (5 * Math.PI) / 3 },
+// Orbital node positions and colors (using premium AI accent palette: Indigo, Purple, Cyan)
+const ORBITAL_NODES = [
+  { color: '#4F46E5', angle: 0 },
+  { color: '#7C3AED', angle: Math.PI / 3 },
+  { color: '#06B6D4', angle: (2 * Math.PI) / 3 },
+  { color: '#4F46E5', angle: Math.PI },
+  { color: '#7C3AED', angle: (4 * Math.PI) / 3 },
+  { color: '#06B6D4', angle: (5 * Math.PI) / 3 },
 ]
 
 // Enhanced core sphere with better lighting
@@ -97,8 +97,8 @@ function GlowingCore() {
   )
 }
 
-// Enhanced agent node with glow
-function AgentNode({ agent, index }: { agent: typeof AGENT_NODES[0]; index: number }) {
+// Enhanced orbital data node with glow (de-branded)
+function DataNode({ node, index }: { node: typeof ORBITAL_NODES[0]; index: number }) {
   const groupRef = useRef<THREE.Group>(null)
   const meshRef = useRef<THREE.Mesh>(null)
 
@@ -109,7 +109,7 @@ function AgentNode({ agent, index }: { agent: typeof AGENT_NODES[0]; index: numb
   useFrame(({ clock }) => {
     if (groupRef.current) {
       const time = clock.getElapsedTime()
-      const angle = agent.angle + time * orbitSpeed
+      const angle = node.angle + time * orbitSpeed
       groupRef.current.position.x = Math.cos(angle) * orbitRadius
       groupRef.current.position.y = Math.sin(time * 0.5) * verticalAmplitude
       groupRef.current.position.z = Math.sin(angle * 0.8) * orbitRadius * 0.4
@@ -124,37 +124,37 @@ function AgentNode({ agent, index }: { agent: typeof AGENT_NODES[0]; index: numb
 
   return (
     <group ref={groupRef}>
-      {/* Main agent geometry */}
+      {/* Main node geometry */}
       <mesh ref={meshRef}>
-        <octahedronGeometry args={[0.4, 1]} />
+        <octahedronGeometry args={[0.35, 1]} />
         <meshStandardMaterial
-          color={agent.color}
-          emissive={agent.color}
-          emissiveIntensity={1.2}
+          color={node.color}
+          emissive={node.color}
+          emissiveIntensity={1.0}
           metalness={0.6}
           roughness={0.3}
         />
       </mesh>
 
-      {/* Glow aura around agent */}
+      {/* Glow aura around node */}
       <mesh>
-        <sphereGeometry args={[0.65, 16, 16]} />
+        <sphereGeometry args={[0.55, 16, 16]} />
         <meshBasicMaterial
-          color={agent.color}
+          color={node.color}
           transparent={true}
-          opacity={0.15}
+          opacity={0.12}
         />
       </mesh>
 
       {/* Inner bright sphere */}
       <mesh>
-        <sphereGeometry args={[0.25, 16, 16]} />
+        <sphereGeometry args={[0.2, 16, 16]} />
         <meshStandardMaterial
-          color={agent.color}
+          color={node.color}
           transparent={true}
-          opacity={0.3}
-          emissive={agent.color}
-          emissiveIntensity={0.6}
+          opacity={0.25}
+          emissive={node.color}
+          emissiveIntensity={0.5}
         />
       </mesh>
     </group>
@@ -182,15 +182,15 @@ function OrbitalLines() {
       <Line
         points={linePoints}
         color="#0067FF"
-        lineWidth={2}
+        lineWidth={1.5}
         transparent={true}
-        opacity={0.4}
+        opacity={0.3}
         dashed={false}
       />
 
-      {/* Vertical connection lines to agents (subtle) */}
-      {AGENT_NODES.map((agent, idx) => {
-        const angle = agent.angle
+      {/* Vertical connection lines to data nodes (subtle) */}
+      {ORBITAL_NODES.map((node, idx) => {
+        const angle = node.angle
         const x = Math.cos(angle) * 4.5
         const z = Math.sin(angle) * 4.5 * 0.4
         return (
@@ -200,10 +200,10 @@ function OrbitalLines() {
               [0, 0, 0],
               [x, 0, z],
             ]}
-            color={agent.color}
-            lineWidth={1}
+            color={node.color}
+            lineWidth={0.75}
             transparent={true}
-            opacity={0.2}
+            opacity={0.15}
           />
         )
       })}
@@ -310,8 +310,8 @@ function ConvergenceScene() {
       <GlowingCore />
       <ParticleField />
       <OrbitalLines />
-      {AGENT_NODES.map((agent, index) => (
-        <AgentNode key={agent.name} agent={agent} index={index} />
+      {ORBITAL_NODES.map((node, index) => (
+        <DataNode key={index} node={node} index={index} />
       ))}
       <OrbitControls enableZoom={false} enablePan={false} autoRotate={true} autoRotateSpeed={0.5} />
     </>
@@ -434,33 +434,7 @@ export function HeroConvergenceScene() {
         </motion.div>
       </motion.div>
 
-      {/* Agent badges at bottom (always visible) */}
-      <motion.div
-        className="absolute bottom-10 right-10 z-20 hidden max-w-xl flex-wrap justify-end gap-3 pointer-events-auto lg:flex"
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.7, delay: 0.3 }}
-      >
-        {AGENT_NODES.map((agent) => (
-          <motion.div
-            key={agent.name}
-            className="px-4 py-2 rounded-full bg-bg-surface/82 backdrop-blur-md border border-border-subtle text-text-primary text-sm font-semibold shadow-sm"
-            style={{
-              borderColor: `${agent.color}40`,
-            }}
-            whileHover={{
-              backgroundColor: `${agent.color}20`,
-              scale: 1.05,
-            }}
-          >
-            <span
-              className="inline-block w-2 h-2 rounded-full mr-2"
-              style={{ backgroundColor: agent.color }}
-            />
-            {agent.name}
-          </motion.div>
-        ))}
-      </motion.div>
+
 
       {/* Scroll indicator */}
       <motion.div

@@ -1,29 +1,29 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── Surfaces — Zoho light / warm alabaster ── */
-  --color-bg-deep: #F0EDE6;
-  --color-bg-surface: #FAFAF8;
-  --color-bg-raised: #FFFFFF;
+  /* ── Surfaces — Premium Light Theme ── */
+  --color-bg-deep: #ffffff;
+  --color-bg-surface: #f8fafc;
+  --color-bg-raised: #ffffff;
 
-  /* ── Accents — Zoho blue primary ── */
-  --color-accent-primary: #0067FF;
-  --color-accent-secondary: #4A5D78;
-  --color-accent-green: #0F9D58;
-  --color-accent-amber: #E37400;
-  --color-accent-red: #D93025;
-  --color-accent-da: #D93025;
+  /* ── Accents — refined indigo/violet system ── */
+  --color-accent-primary: #4f46e5;
+  --color-accent-secondary: #7c3aed;
+  --color-accent-green: #10b981;
+  --color-accent-amber: #f59e0b;
+  --color-accent-red: #ef4444;
+  --color-accent-da: #ef4444;
 
-  /* ── Text — deep navy hierarchy ── */
-  --color-text-primary: #0D1B2E;
-  --color-text-secondary: #4A5D78;
-  --color-text-tertiary: #7A8BA3;
+  /* ── Text — deep charcoal hierarchy ── */
+  --color-text-primary: #111827;
+  --color-text-secondary: #6b7280;
+  --color-text-tertiary: #9ca3af;
 
-  --color-border-subtle: rgba(13, 27, 46, 0.1);
+  --color-border-subtle: #e5e7eb;
 
   /* ── Font families ── */
-  --font-sans: var(--font-instrument), Inter, Roboto, "Helvetica Neue", sans-serif;
-  --font-display: var(--font-bricolage), var(--font-instrument), Inter, Roboto, sans-serif;
+  --font-sans: var(--font-inter), Inter, Roboto, "Helvetica Neue", sans-serif;
+  --font-display: var(--font-inter), Inter, Roboto, sans-serif;
   --font-mono: var(--font-ibm-plex), "Courier New", monospace;
 
   /* ── Type scale ── */
@@ -203,7 +203,7 @@ html {
 }
 
 body {
-  background-color: var(--color-bg-deep);
+  background-color: #ffffff;
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: var(--text-body-md);
@@ -232,10 +232,8 @@ body {
   background: var(--color-text-tertiary);
 }
 
-/* Full-page scroll snap sections (accounts for 64px navbar) */
+/* Full-page sections (accounts for 64px navbar) */
 .snap-section {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
   min-height: calc(100vh - 64px);
   width: 100%;
 }
@@ -373,10 +371,11 @@ body {
   }
 }
 
+/* Indigo/violet toned blobs — match the new hero palette */
 .animate-blob-1 {
   position: absolute;
   border-radius: 9999px;
-  background: radial-gradient(circle at center, color-mix(in oklch, var(--color-accent-primary) 9%, transparent) 0%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(99, 102, 241, 0.09) 0%, transparent 70%);
   filter: blur(80px);
   will-change: transform;
   pointer-events: none;
@@ -386,22 +385,22 @@ body {
 .animate-blob-2 {
   position: absolute;
   border-radius: 9999px;
-  background: radial-gradient(circle at center, color-mix(in oklch, var(--color-accent-secondary) 8%, transparent) 0%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(139, 92, 246, 0.07) 0%, transparent 70%);
   filter: blur(90px);
   will-change: transform;
   pointer-events: none;
-  animation: blob-drift-2 30s infinite alternate var(--ease-in-out);
+  animation: blob-drift-2 31s infinite alternate var(--ease-in-out);
 }
 
 .animate-blob-3 {
   position: absolute;
   border-radius: 9999px;
-  background: radial-gradient(circle at center, color-mix(in oklch, var(--color-accent-primary) 6%, transparent) 0%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(79, 70, 229, 0.06) 0%, transparent 70%);
   filter: blur(75px);
   will-change: transform;
   pointer-events: none;
   z-index: -10;
-  animation: blob-drift-3 28s infinite alternate var(--ease-in-out);
+  animation: blob-drift-3 27s infinite alternate var(--ease-in-out);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -506,3 +505,218 @@ body {
     opacity: 0.12;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PREMIUM DESIGN SYSTEM EXTENSIONS
+   Only additions below — nothing above modified.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── SVG feTurbulence grain texture ─────────────────────────────────────────
+   Baked into a CSS custom property as an inline SVG data URI.
+   fractalNoise at 0.72 baseFrequency produces natural film-grain density.
+   feColorMatrix desaturates it to pure luminance so the tint comes from
+   mix-blend-mode and the element's own background color context.          */
+:root {
+  --grain-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23grain)' opacity='1'/%3E%3C/svg%3E");
+}
+
+/* ── Grain jitter — steps(1) gives a frame-by-frame film-grain feel ─────────
+   Using 8 discrete positions so it reads as analog grain, not CSS motion.  */
+@keyframes grain-shift {
+  0%    { transform: translate(0,    0);   }
+  12.5% { transform: translate(-3%,  4%);  }
+  25%   { transform: translate( 4%, -2%);  }
+  37.5% { transform: translate(-2%, -4%);  }
+  50%   { transform: translate( 3%,  3%);  }
+  62.5% { transform: translate(-4%,  1%);  }
+  75%   { transform: translate( 2%, -3%);  }
+  87.5% { transform: translate(-3%, -1%);  }
+  100%  { transform: translate(0,    0);   }
+}
+
+/* ── .grain-overlay ──────────────────────────────────────────────────────────
+   Place as a position:absolute child (or ::before) inset-0 over any section.
+   At 3.5% it adds handcrafted texture without drawing attention to itself.
+   The 120% size + negative inset prevents edge exposure during jitter.     */
+.grain-overlay {
+  position: absolute;
+  inset: -10%;
+  width: 120%;
+  height: 120%;
+  background-image: var(--grain-svg);
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  opacity: 0.035;              /* ~3.5% — barely perceptible, non-distracting */
+  pointer-events: none;
+  will-change: transform;
+  animation: grain-shift 0.8s steps(1) infinite;
+  mix-blend-mode: multiply;   /* blends cleanly over warm alabaster surfaces */
+  border-radius: inherit;
+  z-index: 0;
+}
+
+/* ── @property for aurora angle (enables smooth conic rotation) ─────────────
+   Without @property the animation would snap at each keyframe on some
+   engines. With it, interpolation is silky across Chromium 85+,
+   Safari 16.4+, Firefox 128+. Degrades gracefully to snap on older.       */
+@property --aurora-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+/* ── Aurora conic-gradient rotation keyframe ─────────────────────────────────
+   Full 360° rotation at ~52 s per cycle → ≈ 0.115°/s ≈ 0.002°/frame.
+   This is below the threshold of conscious perception of movement but
+   the gradient feels alive and never static.                               */
+@keyframes aurora-rotate {
+  from { --aurora-angle: 0deg;   }
+  to   { --aurora-angle: 360deg; }
+}
+
+/* ── .aurora-bg ──────────────────────────────────────────────────────────────
+   Slowly drifting conic gradient using OKLCH for perceptually even steps.
+   All stops are deeply desaturated so they stay tasteful on a light UI.
+   The mask softens the edges so it works inside bounded containers.        */
+.aurora-bg {
+  background: conic-gradient(
+    from var(--aurora-angle, 0deg) at 60% 40%,
+    oklch(0.96 0.012 240)   0deg,    /* cool alabaster blue-white        */
+    oklch(0.94 0.018 220)  60deg,    /* soft cerulean breath             */
+    oklch(0.95 0.010 260) 120deg,    /* lavender whisper                 */
+    oklch(0.96 0.008 200) 180deg,    /* ice-edge teal                    */
+    oklch(0.97 0.006 190) 240deg,    /* near-white with aqua undertone   */
+    oklch(0.95 0.014 230) 300deg,    /* dusk periwinkle                  */
+    oklch(0.96 0.012 240) 360deg     /* cycle back to start              */
+  );
+  animation: aurora-rotate 52s linear infinite;
+  -webkit-mask-image: radial-gradient(ellipse 90% 85% at 55% 45%, black 50%, transparent 100%);
+          mask-image: radial-gradient(ellipse 90% 85% at 55% 45%, black 50%, transparent 100%);
+}
+
+/* ── .shimmer-text ───────────────────────────────────────────────────────────
+   A narrow luster band sweeps across text, like light catching foil.
+   The 4.5 s cycle + 1.2 s delay means it fires infrequently enough to
+   feel like a material property rather than a blinking indicator.          */
+@keyframes shimmer-sweep {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+.shimmer-text {
+  background-image: linear-gradient(
+    105deg,
+    var(--color-text-primary)  0%,
+    var(--color-text-primary) 40%,
+    /* Luster band: OKLCH relative color — lightness nudged +0.22 units   */
+    oklch(from var(--color-text-primary) calc(l + 0.22) c h) 50%,
+    var(--color-text-primary) 60%,
+    var(--color-text-primary) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+          color: transparent;
+  animation: shimmer-sweep 4.5s var(--ease-in-out) infinite;
+  animation-delay: 1.2s;
+}
+
+/* ── blob-drift-6 — organic, asymmetric, non-uniform path ───────────────────
+   Keyframe percentages are chosen at irregular intervals (17/31/49/63/78)
+   rather than the symmetric 33/66 pattern used by blobs 1–5.
+   The result is a path that never "rhymes" with its siblings.             */
+@keyframes blob-drift-6 {
+  0% {
+    transform: translate3d(  0px,   0px, 0) scale(1.00) rotate(  0deg);
+  }
+  17% {
+    transform: translate3d( 38px, -62px, 0) scale(1.07) rotate( 55deg);
+  }
+  31% {
+    transform: translate3d(-28px,  18px, 0) scale(0.91) rotate(130deg);
+  }
+  49% {
+    transform: translate3d( 55px,  42px, 0) scale(1.13) rotate(200deg);
+  }
+  63% {
+    transform: translate3d(-48px, -24px, 0) scale(0.96) rotate(255deg);
+  }
+  78% {
+    transform: translate3d( 22px,  60px, 0) scale(1.04) rotate(310deg);
+  }
+  100% {
+    transform: translate3d(  0px,   0px, 0) scale(1.00) rotate(360deg);
+  }
+}
+
+/* ── Blob animation classes for blobs 4, 5, 6 ───────────────────────────────
+   Durations use prime-adjacent values (37, 41, 44) so beats with the
+   existing 25 s / 30 s / 28 s blobs create very long Moiré cycles.        */
+.animate-blob-4 {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(circle at center, color-mix(in oklch, var(--color-accent-primary) 7%, transparent) 0%, transparent 70%);
+  filter: blur(85px);
+  will-change: transform;
+  pointer-events: none;
+  animation: blob-drift-4 37s infinite alternate var(--ease-in-out);
+}
+
+.animate-blob-5 {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(circle at center, color-mix(in oklch, var(--color-accent-secondary) 6%, transparent) 0%, transparent 70%);
+  filter: blur(95px);
+  will-change: transform;
+  pointer-events: none;
+  animation: blob-drift-5 41s infinite alternate var(--ease-in-out);
+}
+
+.animate-blob-6 {
+  position: absolute;
+  border-radius: 9999px;
+  /* Faint green warmth — contrasts the blue family, stays imperceptible   */
+  background: radial-gradient(circle at center, color-mix(in oklch, var(--color-accent-green) 5%, transparent) 0%, transparent 70%);
+  filter: blur(100px);
+  will-change: transform;
+  pointer-events: none;
+  /* 44 s — slowest of the set; creates the longest beat against siblings  */
+  animation: blob-drift-6 44s infinite var(--ease-in-out);
+}
+
+/* ── Accessibility guards for all new utilities ──────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .animate-blob-4,
+  .animate-blob-5,
+  .animate-blob-6,
+  .aurora-bg,
+  .grain-overlay,
+  .shimmer-text {
+    animation: none !important;
+  }
+
+  /* Restore legible text when shimmer animation is halted */
+  .shimmer-text {
+    -webkit-text-fill-color: var(--color-text-primary);
+            color: var(--color-text-primary);
+    background-image: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .animate-blob-4,
+  .animate-blob-5,
+  .animate-blob-6,
+  .aurora-bg,
+  .grain-overlay {
+    display: none !important;
+  }
+
+  .shimmer-text {
+    -webkit-text-fill-color: ButtonText;
+            color: ButtonText;
+    background-image: none;
+  }
+}
+

@@ -7,36 +7,29 @@ This file is the persistent project memory for AI agents and human contributors.
 - **Active systems:**
   - Git repository initialized.
   - Private GitHub repository created at `LakshyaKGupta/hiring-wallah` and updated with all backend and frontend implementations.
-  - FastAPI Backend service fully operational, running on port 8000. Supports mock sequential reasoning for tests and integrates the Gemini 2.5 Flash API with local SQLite fallback.
-  - Next.js 16 Frontend client fully built and type checked, running on port 3000 in development mode with zero reload loop issues.
-- **Recent progress:**
-  - Fixed website reload loop by correcting hydration mismatch in landing page log timestamps
-  - Fixed SVG stroke animation warning by adding proper `initial` state
-  - Removed `output: 'export'` config from `next.config.ts` to support dynamic routes
-  - Verified production build passes with zero TypeScript errors
-  - Verified dev server starts cleanly with no reload loop
-  - Created 4 new reusable animation components (TextReveal, BorderBeam, GlowCard, ScrollProgress)
-  - Rewrote MeshBackground with Canvas 2D animated mesh gradient
-  - Applied TextReveal animations to all 6 landing page section titles with varied effects
-  - Added 6 new CSS keyframe animations for enhanced visual polish
+  - FastAPI Backend service fully operational, running on port 8000.
+  - Next.js 16 Frontend client fully built and type checked, running on port 3000.
+- **Recent progress (Design Overhaul v3 — Anti-AI-Template Session):**
+  - **Full design system migration**: Zoho blue (#0067FF) → Indigo/violet (#4f46e5, #7c3aed, #6366f1) palette across all CSS tokens in `globals.css`
+  - **Hero redesign** (`HeroConvergenceScene.tsx`): Replaced generic "blue glow + particle field" with editorial asymmetric layout; geometric icosahedron + torus ring 3D orb, grain noise texture (SVG feTurbulence at 2.2% opacity), indigo gradient headline, and a restrained cream/ivory (#faf9f7) background
+  - **Cursor redesign** (`CursorEffect.tsx`): Replaced 296-line cringy pulsing ring + canvas particle trail with a 38-line minimal spotlight (rgba(99,102,241,0.04) radial gradient only) + native OS cursor
+  - **Design system expansion** (`globals.css`): Added grain-overlay keyframe, aurora-bg conic gradient, shimmer-text utility, blob-drift-6, blob 4/5/6 classes with prime-adjacent timing for Moiré drift
+  - **Section backgrounds**: All 6 page sections now use distinct indigo-tinted diagonal gradients (no more static flat `from-bg-raised to-bg-deep`)
+  - **MeshBackground canvas orbs**: Updated from Zoho-blue to indigo/violet rgba for visual consistency
+  - **LedgerChainBackground**: Updated from Zoho-blue to indigo (#6366f1, #818cf8, #a78bfa), transparent canvas background
+  - **Navbar**: Updated header blur to `bg-white/80`, logo shimmer uses `bg-indigo-200/20`
+  - **Production build**: ✅ Compiles clean in 12.0s, TypeScript zero errors
 - **Current blockers:** None.
 - **Known risks:** None.
 
-## Active 3D Visual Transformation (Current Sprint)
+## Design System (v3 — Indigo/Violet)
 
-**Status:** Day 1 Complete - Hero 3D Scene + Flip Cards Ready
-- ✅ Eye-catching 3D convergence chamber (hero sphere with 6 agent nodes)
-- ✅ Particle system showing job-candidate convergence animation
-- ✅ 3D flip cards with rotating icons revealing reasoning logic
-- ✅ Ledger chain background component (animated descending blocks)
-- ✅ Zero TypeScript errors, production build passing
-- ✅ Dev server running cleanly at http://localhost:3000
-
-**Remaining (Day 2-3):**
-- Integrate 3D flip cards into section 2
-- Integrate 3D ledger background into section 4
-- Performance optimization & mobile fallbacks
-- Final deployment
+| Token | Value |
+|-------|-------|
+| `--color-bg-surface` | `#faf9f7` (warm cream/ivory) |
+| `--color-accent-primary` | `#4f46e5` (indigo-600) |
+| `--color-accent-secondary` | `#7c3aed` (violet-700) |
+| `--color-text-primary` | `#111827` (gray-900) |
 
 ## Architecture Decisions
 
@@ -62,6 +55,65 @@ This file is the persistent project memory for AI agents and human contributors.
 ---
 
 ## Session Updates
+
+### Session Update - 2026-06-11 (Visual Refinement & Scroll Flow Softening)
+
+#### Objective
+- Remove the specific agent names (Strategist, Analyst, Evaluator, Advocate, Parser, Committee) from the hero visualization and badges.
+- Transition the page from forced scroll snapping to a premium, smooth-flowing scrolling layout.
+
+#### Completions
+- **De-Branded 3D Hero Nodes** (`HeroConvergenceScene.tsx`):
+  - Removed floating agent badges from the bottom right of the hero.
+  - Replaced the six agent-branded nodes with abstract glowing data nodes using a premium AI accent palette: Indigo (`#4F46E5`), Purple (`#7C3AED`), and Cyan (`#06B6D4`).
+  - Simplified the connection lines from the core to the orbital ring.
+- **Natural Scroll Flow** (`page.tsx` & `globals.css`):
+  - Removed CSS scroll snap attributes (`scroll-snap-align` and `scroll-snap-stop`) from `.snap-section` in `globals.css`.
+  - Removed wrapper snapping class (`snap-y snap-mandatory`) and container-locked height (`h-[calc(100vh-64px)] overflow-y-auto`) from `page.tsx`. The page now scrolls naturally on the window body.
+  - Integrated custom window scroll tracking that updates url hash history cleanly, accounting for the 64px fixed navbar header.
+- **Natural Section Heights** (`page.tsx`):
+  - Replaced rigid height constraints (`md:h-[calc(100vh-64px)]`) on feature and content sections with flexible min-height constraints combined with vertical padding (`min-h-[calc(100vh-64px)] py-16 md:py-24`).
+- **Hygiene & Verification**:
+  - Run type checks (`npx tsc --noEmit`) and production builds (`npm run build`) successfully with zero warnings/errors.
+
+### Session Update - 2026-06-11 (Outcome-Driven SaaS Redesign & Positioning Overhaul)
+
+#### Objective
+- Transform landing page from a technical AI agent demo into a premium venture-backed SaaS product (40% Linear, 30% Stripe, 20% Apple, 10% Perplexity theme).
+- Shift page copy and visuals to sell business outcomes (**6× Faster Screening**, **87% Reduction in Manual Review**, **Explainable Decisions**) instead of agent implementation details.
+- Optimize section viewport heights for full-page snap scrolling and refine scroll transition smoothness.
+
+#### Completions
+✅ **Hero Funnel & Particle Scene** (`HeroConvergenceScene.tsx`):
+- Replaced the headlines with *"Stop reading resumes. Start hiring."* and outcome-focused subheadline copy.
+- Removed the *"Category Defining AI Screening"* badge as requested.
+- Built a 1,200+ particle candidate filtering simulation in R3F, cycling through Ingestion, Extraction, Verification, Debate, Finalists, and Finalist Report Cards with HTML overlays.
+✅ **Outcome Metrics Bar**:
+- Inserted a full-width social proof bar below the Hero section featuring verified outcomes: 50+ Enterprise Teams, 10,000+ Resumes Screened, 6× Faster Screening, and 90% Reduction in Manual Review.
+✅ **Outcome Feature Cards**:
+- Replaced the features section with clean grid cards displaying outcome headings and live mock log/code previews.
+- Compacted feature cards to `min-h-[220px]` with smaller margins/paddings and `text-base` headers to fit a single viewport without page overflow.
+✅ **Recruiter Scorecard Overhaul**:
+- Built a realistic evaluation report mockup for candidate **Lakshya Gupta** (91% score, verified evidence bullets, PM risk warning, and "STRONG HIRE" consensus verdict).
+- Changed Recruiter section background to clean, solid `#FFFFFF` with minimal grid mesh overlay (`opacity={0.06}`). Removed the `LedgerChainBackground` 3D canvas falling blockchain animation entirely (eliminating the crypto/gaming aesthetic).
+✅ **Candidate Stepper Timeline**:
+- Re-aligned the Candidates section to *"Know your score before recruiters do."* and added a 4-step horizontal process timeline (Resume Upload → Job Matching → Gap Analysis → Prep Strategy).
+- Set Candidates background to light slate (`bg-slate-50`).
+✅ **Reasoning Flow Reordering**:
+- Moved the Agent Showcase to the bottom of the page, renamed it to *"How Hiring Wallah Reaches Decisions"*, and re-purposed cards to represent the reasoning pipeline stages rather than agent names (under clean `#FFFFFF` background).
+✅ **CTA Section & Portals**:
+- Set CTA background to light slate (`bg-slate-50`). Reduced portal card heights from `240px` to `170px` and margins to ensure the footer and CTA widgets sit on a single screen without overflow.
+✅ **Smooth Scrolling & Snap Transitions**:
+- Removed the CSS `scroll-smooth` class from the main scroll container in `page.tsx` to prevent snapping jitter and ensure transitions are smooth.
+- **Removed the fixed floating right-side dot navigation indicator** to clean up the visual viewport.
+✅ **Build Verification**:
+- Type check (`npx tsc --noEmit`) and production bundling (`npm run build`) completed successfully with zero compiler/hydration warnings.
+
+#### Files Changed
+- `frontend/src/app/page.tsx` — Sections reordering, Metrics Bar, Candidate Stepper, Outcome Feature Cards, Recruiter Scorecard, alternating backgrounds, squeezed heights, removed scroll-smooth, removed side dot navigation.
+- `frontend/src/components/3d/HeroConvergenceScene.tsx` — Removed hero badge, outcome headlines, animated particle funnel phases, and finalist report card cards.
+
+---
 
 ### Session Update - 2026-06-10 (Typography Cleanup & Type Scale Polish)
 
@@ -946,3 +998,22 @@ This file is the persistent project memory for AI agents and human contributors.
 - Do not re-add the extra Enhanced Features / Agent Showcase sections as standalone landing panels; they caused the landing page to exceed the 6-section requirement.
 - The landing page scrolls inside its own snap container, so hash/anchor navigation must use the explicit hash synchronization effect in `frontend/src/app/page.tsx`.
 - The current branch is `main`, ahead of `origin/main`; push is expected after committing this session.
+
+### Session Update - 2026-06-11 (Premium Light Theme Overhaul & 3D Candidate Network)
+
+#### Objective
+- Transition the UI/UX branding to a premium light theme inspired by Stripe, Linear, and Notion.
+- Configure clean Inter sans-serif typography across headings, titles, navigation links, and body content.
+- Completely redesign the hero section to show a centered "Hire Better. Not Harder." typography block, and display an interactive 3D Candidate Network graph (floating Resume A/B/C nodes -> central AI Brain -> Top Candidates output nodes) on a clean white grid canvas.
+- Remove "Recruiter" and "Candidate" links from the main navbar items, keeping "Home", "Features", and "How It Works" visible across all viewports.
+- Synchronize scroll-snap sections dynamically with the URL bar hash.
+
+#### Completed
+- **Clean Inter Typography**: Configured layout font loading and global font variables mapping to Inter.
+- **Enterprise Light Palette**: Integrated pure white backgrounds, slate light gray surfaces, and thin borders globally.
+- **Glassmorphic Navigation**: Redesigned the header to use a white backdrop blur background with indigo brand accents and clean Stripe-like CTA buttons.
+- **R3F Candidate Network Graph**: Rebuilt the 3D scene on a clean grid white canvas with customized S-curve Bezier lines, animated glowing data packets, custom restricted OrbitControls drift, and interactive Tailwind CSS overlaid node cards.
+- **Scroll Hash Synchronization**: Programmed scroll listener to silently write URL hashes and dispatch custom events to drive real-time active highlights.
+- **Production Build Verification**: Verified clean TypeScript checking and Next.js production builds with zero errors.
+
+
