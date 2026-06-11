@@ -1,25 +1,25 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── Surfaces — Premium Light Theme ── */
+  /* ── Surfaces — HiringAgents Light Theme ── */
   --color-bg-deep: #ffffff;
-  --color-bg-surface: #f8fafc;
+  --color-bg-surface: #F9F9FB;
   --color-bg-raised: #ffffff;
 
-  /* ── Accents — refined indigo/violet system ── */
-  --color-accent-primary: #4f46e5;
-  --color-accent-secondary: #7c3aed;
+  /* ── Accents — HiringAgents violet system ── */
+  --color-accent-primary: #7c3aed;
+  --color-accent-secondary: #6366f1;
   --color-accent-green: #10b981;
   --color-accent-amber: #f59e0b;
   --color-accent-red: #ef4444;
   --color-accent-da: #ef4444;
 
-  /* ── Text — deep charcoal hierarchy ── */
-  --color-text-primary: #111827;
-  --color-text-secondary: #6b7280;
+  /* ── Text — dark charcoal hierarchy ── */
+  --color-text-primary: #1F2937;
+  --color-text-secondary: #4B5563;
   --color-text-tertiary: #9ca3af;
 
-  --color-border-subtle: #e5e7eb;
+  --color-border-subtle: #E5E7EB;
 
   /* ── Font families ── */
   --font-sans: var(--font-inter), Inter, Roboto, "Helvetica Neue", sans-serif;
@@ -96,6 +96,8 @@
   --ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-emphasis: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-kore: cubic-bezier(0.22, 0.6, 0.36, 1);
+  --ease-kore-fast: cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 /* ── Semantic type hierarchy ── */
@@ -284,6 +286,20 @@ body {
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
   transition-timing-function: var(--ease-out);
   transition-duration: var(--duration-base);
+}
+
+.ease-kore {
+  transition-timing-function: var(--ease-kore);
+}
+
+.duration-kore {
+  transition-duration: 1250ms;
+}
+
+.transition-kore {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: var(--ease-kore);
+  transition-duration: 1250ms;
 }
 
 .motion-enter {

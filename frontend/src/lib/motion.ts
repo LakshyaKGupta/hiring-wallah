@@ -6,6 +6,12 @@ export const EASE_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1]
 /** Spring-like exaggerated easing */
 export const EASE_SPRING: [number, number, number, number] = [0.34, 1.56, 0.64, 1]
 
+/** Kore.ai elegant transition easing — Power 3 */
+export const EASE_KORE: [number, number, number, number] = [0.22, 0.6, 0.36, 1]
+
+/** Kore.ai fast transition easing — Expo out */
+export const EASE_KORE_FAST: [number, number, number, number] = [0.165, 0.84, 0.44, 1]
+
 export const fadeUpContainerVariants: Variants = {
   hidden: {},
   show: {

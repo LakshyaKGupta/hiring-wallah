@@ -38,6 +38,7 @@ import {
 import TextReveal from '@/components/ui/TextReveal'
 import ScrollProgress from '@/components/ui/ScrollProgress'
 import { HeroConvergenceScene } from '@/components/3d/HeroConvergenceScene'
+import FloatingIcons from '@/components/ui/FloatingIcons'
 
 const LedgerChainBackground = dynamic(() => import('@/components/3d/LedgerChainBackground').then(mod => ({ default: mod.LedgerChainBackground })), { ssr: false })
 
@@ -46,29 +47,29 @@ const featureCards = [
     title: '6× Faster Screening',
     detail: 'Ingest thousands of resumes, parse credentials, and shortlist top talent in under 5 minutes without manual reading.',
     icon: Zap,
-    colorClass: 'text-indigo-600',
-    bgClass: 'from-indigo-50 to-white',
+    colorClass: 'text-amber-600',
+    bgClass: 'bg-amber-50 border border-amber-100/50',
   },
   {
     title: 'Explainable Decisions',
     detail: 'Get a comprehensive written scorecard explaining exactly why every candidate was recommended or skipped.',
     icon: FileText,
-    colorClass: 'text-purple-600',
-    bgClass: 'from-purple-50 to-white',
+    colorClass: 'text-teal-600',
+    bgClass: 'bg-teal-50 border border-teal-100/50',
   },
   {
     title: 'Evidence-Based Evaluation',
     detail: 'Verify skills against actual project history, timelines, and role scope, bypassing buzzword keyword packing.',
     icon: CheckCircle2,
-    colorClass: 'text-emerald-600',
-    bgClass: 'from-emerald-50 to-white',
+    colorClass: 'text-rose-600',
+    bgClass: 'bg-rose-50 border border-rose-100/50',
   },
   {
     title: 'Candidate Intelligence',
     detail: 'Enable candidates to run mock matches, discover skill gaps, and optimize resumes before submitting.',
     icon: Sliders,
-    colorClass: 'text-cyan-500',
-    bgClass: 'from-cyan-50 to-white',
+    colorClass: 'text-purple-600',
+    bgClass: 'bg-purple-50 border border-purple-100/50',
   },
 ] as const
 
@@ -119,7 +120,7 @@ function AgentCard({ title, role, mechanics, colorClass, borderColorClass, icon:
             <h4 className="text-xs md:text-sm font-bold text-text-primary tracking-tight">
               {title}
             </h4>
-            <p className="type-caption text-indigo-600 font-bold">
+            <p className="type-caption text-accent-primary font-bold">
               Reasoning Stage
             </p>
           </div>
@@ -261,18 +262,17 @@ function FeatureReasoningCard({
   return (
     <motion.div
       variants={sectionItemVariants}
-      className="group relative min-h-[220px] rounded-2xl border border-border-subtle bg-white p-4 shadow-sm flex flex-col justify-between overflow-hidden"
-      whileHover={{ y: -6, boxShadow: '0 12px 24px rgba(0, 0, 0, 0.04)' }}
+      className="group relative min-h-[220px] rounded-2xl border border-border-subtle bg-white p-5 shadow-xs flex flex-col justify-between overflow-hidden cursor-pointer select-text"
+      whileHover={{ y: -6, boxShadow: '0 12px 24px rgba(0, 0, 0, 0.03)' }}
       whileTap={{ scale: 0.98 }}
       transition={{ type: 'spring', stiffness: 150, damping: 24 }}
     >
-      <div className={`absolute inset-0 bg-gradient-to-br ${bgClass} opacity-40`} />
       <div className="absolute inset-x-4 top-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-40" />
 
       <div className="relative z-10 flex h-full flex-col justify-between gap-4">
         <div className="space-y-2.5">
-          <div className={`flex h-10 w-10 items-center justify-center rounded-xl border border-gray-100 bg-white shadow-xs ${colorClass}`}>
-            <Icon className="h-5 w-5" strokeWidth={2} />
+          <div className={`flex h-10 w-10 items-center justify-center rounded-full shrink-0 shadow-xs ${bgClass} ${colorClass}`}>
+            <Icon className="h-5 w-5" strokeWidth={2.2} />
           </div>
 
           <div className="space-y-1">
@@ -290,11 +290,11 @@ function FeatureReasoningCard({
           <div className="bg-slate-50 border border-gray-100 rounded-lg p-3 space-y-1.5 font-mono text-[9px] text-gray-500 text-left">
             <div className="flex items-center justify-between">
               <span className="truncate max-w-[120px]">cv_developer.pdf</span>
-              <span className="text-indigo-600 font-bold">100% Ingested</span>
+              <span className="text-accent-primary font-bold">100% Ingested</span>
             </div>
             <div className="flex items-center justify-between opacity-80">
               <span className="truncate max-w-[120px]">cv_designer.pdf</span>
-              <span className="text-indigo-600 font-bold">100% Ingested</span>
+              <span className="text-accent-primary font-bold">100% Ingested</span>
             </div>
             <div className="flex items-center justify-between opacity-60">
               <span className="truncate max-w-[120px]">cv_manager.pdf</span>
@@ -378,8 +378,7 @@ function AnimatedScore({ value }: { value: number }) {
 const LANDING_SECTIONS = [
   { id: 'hero', label: 'Hero' },
   { id: 'features', label: 'Outcomes' },
-  { id: 'for-recruiters', label: 'For Recruiters' },
-  { id: 'for-candidates', label: 'For Candidates' },
+  { id: 'workspaces', label: 'Workspaces' },
   { id: 'how-it-works', label: 'Decision Flow' },
   { id: 'cta', label: 'Get Started' },
 ] as const
@@ -405,6 +404,7 @@ const simulatedLogPool = [
 
 export default function LandingPage() {
   const [activeSection, setActiveSection] = useState(0)
+  const [workspaceTab, setWorkspaceTab] = useState<'recruiter' | 'candidate'>('recruiter')
   const containerRef = useRef<HTMLDivElement>(null)
 
   // Generate stable timestamps for log simulation (deterministic between server/client)
@@ -615,8 +615,9 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 2: FEATURES */}
-      <section id="features" className="snap-section w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 md:py-24 relative overflow-hidden border-b border-border-subtle bg-slate-50">
+      <section id="features" className="snap-section w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 md:py-24 relative overflow-hidden border-b border-border-subtle bg-bg-surface">
         <MeshBackground opacity={0.18} showGrid />
+        <FloatingIcons count={6} />
 
         <motion.div
           variants={sectionContainerVariants}
@@ -637,7 +638,7 @@ export default function LandingPage() {
               { value: '90%', label: 'Reduction in Manual Review' },
             ].map((metric) => (
               <div key={metric.label} className="space-y-1">
-                <div className="text-2xl md:text-3xl font-extrabold text-indigo-600 tracking-tight">{metric.value}</div>
+                <div className="text-2xl md:text-3xl font-extrabold text-accent-primary tracking-tight">{metric.value}</div>
                 <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{metric.label}</div>
               </div>
             ))}
@@ -665,358 +666,412 @@ export default function LandingPage() {
 
 
 
-      {/* SECTION 3: FOR RECRUITERS */}
-      <section id="for-recruiters" className="snap-section w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 md:py-24 relative overflow-hidden border-b border-border-subtle bg-white">
+      {/* SECTION 3: WORKSPACES */}
+      <section id="workspaces" className="snap-section w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 md:py-24 relative overflow-hidden border-b border-border-subtle bg-white">
         <MeshBackground opacity={0.06} />
+        <FloatingIcons count={6} />
 
         <motion.div 
           variants={sectionContainerVariants}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.15 }}
-          className="max-w-7xl mx-auto px-6 w-full relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
+          className="max-w-7xl mx-auto px-6 w-full relative z-10 space-y-10"
         >
-          {/* Left Column outcome copy */}
-          <motion.div 
-            variants={sectionContainerVariants}
-            className="lg:col-span-6 space-y-6 text-left"
-          >
-            <div className="space-y-3">
-              <motion.p variants={sectionItemVariants} className="type-caption text-accent-primary font-bold">
-                For Recruiters
-              </motion.p>
-              <motion.h2 variants={sectionItemVariants} className="text-3xl md:text-4xl font-sans font-extrabold text-gray-900 tracking-tight leading-tight">
-                <TextReveal effect="slide" staggerDelay={0.04}>See exactly why a candidate was recommended.</TextReveal>
-              </motion.h2>
-              <motion.p variants={sectionItemVariants} className="text-sm font-semibold text-gray-500">
-                Every score. Every assumption. Every decision.
-              </motion.p>
-              <motion.p variants={sectionItemVariants} className="text-xs text-text-secondary leading-relaxed font-medium">
-                Hiring Wallah is not a black box. Each recommendation is backed by a structured reasoning trail from our AI committee. Drill down into individual objections, claim verification facts, and dynamic rubrics.
-              </motion.p>
-              <motion.div variants={sectionItemVariants}>
-                <Link href="/recruiter">
-                  <motion.span
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="inline-flex items-center gap-2 mt-2 px-5 py-2.5 bg-accent-primary text-white font-sans text-caption font-bold rounded-lg border border-accent-primary cursor-pointer shadow-xs"
-                  >
-                    Open Recruiter Workspace
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </motion.span>
-                </Link>
-              </motion.div>
-            </div>
-          </motion.div>
-
-          {/* Right Column details report mockup */}
-          <motion.div 
-            variants={sectionItemVariants}
-            className="lg:col-span-6 w-full flex items-center justify-center"
-          >
-            <div className="bg-white border border-gray-150 rounded-2xl p-6 shadow-md relative max-w-md w-full text-left font-sans">
-              <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-sm">
-                    LG
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-gray-900 tracking-tight">Lakshya Gupta</h4>
-                    <p className="text-[10px] text-gray-500 font-medium">Lead Product Designer</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-2xl font-extrabold text-indigo-600 tracking-tight">91%</div>
-                  <div className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Match Score</div>
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <div className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-2">Verified Evidence (6 Agents Consensus)</div>
-                <ul className="space-y-2 text-xs">
-                  <li className="flex items-start gap-2 text-gray-700">
-                    <span className="text-emerald-500 font-bold mt-0.5">✓</span>
-                    <div>
-                      <span className="font-semibold text-gray-900">Built AI hiring platform</span>
-                      <span className="text-gray-400 block text-[9px]">Verified in project portfolio (Page 2)</span>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-700">
-                    <span className="text-emerald-500 font-bold mt-0.5">✓</span>
-                    <div>
-                      <span className="font-semibold text-gray-900">Led recruiter onboarding</span>
-                      <span className="text-gray-400 block text-[9px]">Verified via previous role history (Page 1)</span>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-700">
-                    <span className="text-emerald-500 font-bold mt-0.5">✓</span>
-                    <div>
-                      <span className="font-semibold text-gray-900">Reduced screening time 6×</span>
-                      <span className="text-gray-400 block text-[9px]">Verified from metric case studies</span>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="mb-4 border-t border-gray-100 pt-4">
-                <div className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-2">Identified Risks</div>
-                <div className="flex items-start gap-2 text-xs text-gray-700">
-                  <span className="text-amber-500 font-bold mt-0.5">⚠</span>
-                  <div>
-                    <span className="font-semibold text-gray-900">Limited PM internship experience</span>
-                    <span className="text-gray-400 block text-[9px]">Flagged by Critic Agent (Self-Critique phase)</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-t border-gray-100 pt-4 flex items-center justify-between">
-                <div>
-                  <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">Consensus Verdict</span>
-                  <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2.5 py-0.5 rounded-full inline-block mt-1">STRONG HIRE</span>
-                </div>
-                <div className="text-right">
-                  <span className="text-[8px] font-mono text-gray-400 block">HASH: sha256:7c2e9b1d...</span>
-                  <span className="text-[9px] text-emerald-600 font-bold flex items-center gap-1 mt-1 justify-end font-sans">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    Committee Sealed
-                  </span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* SECTION 4: FOR CANDIDATES */}
-      <section id="for-candidates" className="snap-section w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 md:py-24 relative overflow-hidden border-b border-border-subtle bg-slate-50">
-        <motion.div 
-          variants={sectionContainerVariants}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.15 }}
-          className="max-w-7xl mx-auto px-6 w-full relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
-        >
-          {/* Left Panel: Candidate tabs & weights */}
-          <motion.div 
-            variants={sectionContainerVariants}
-            className="lg:col-span-7 space-y-6 w-full text-left"
-          >
-            <div className="space-y-3">
-              <motion.p variants={sectionItemVariants} className="type-caption text-accent-primary font-bold">
-                For Candidates
-              </motion.p>
-              <motion.h2 variants={sectionItemVariants} className="text-2xl md:text-3xl lg:text-4xl font-sans font-extrabold text-gray-900 tracking-tight leading-tight">
-                <TextReveal effect="slide" staggerDelay={0.04}>Know your score before recruiters do.</TextReveal>
-              </motion.h2>
-              <motion.p variants={sectionItemVariants} className="text-sm text-gray-500 font-medium leading-relaxed">
-                Upload your resume, run mock evaluations against target roles, identify critical skill gaps, and optimize your application strategy before applying.
-              </motion.p>
-            </div>
-
-            {/* Step Workflow */}
-            <motion.div 
-              variants={sectionItemVariants}
-              className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-white border border-gray-150 rounded-xl p-3.5 shadow-xs"
-            >
-              {[
-                { step: '01', title: 'Resume Upload', desc: 'Timeline extraction' },
-                { step: '02', title: 'Job Matching', desc: 'Consensus scoring' },
-                { step: '03', title: 'Gap Analysis', desc: 'Identify skill leaks' },
-                { step: '04', title: 'Prep Strategy', desc: 'Custom interview prep' }
-              ].map((s) => (
-                <div key={s.step} className="space-y-1 border-l-2 border-indigo-100 pl-3">
-                  <div className="text-[10px] font-extrabold text-indigo-600 uppercase tracking-wider">
-                    {s.step}
-                  </div>
-                  <h5 className="text-xs font-bold text-gray-900 tracking-tight leading-none">{s.title}</h5>
-                  <p className="text-[10px] text-gray-500 font-medium leading-tight">{s.desc}</p>
-                </div>
-              ))}
-            </motion.div>
-
-            <motion.div variants={sectionItemVariants}>
-              <Link href="/candidate">
-                <motion.span
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.96 }}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent-secondary text-white font-sans text-caption font-bold rounded-lg border border-accent-secondary cursor-pointer shadow-xs"
-                >
-                  Open Candidate Portal
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </motion.span>
-              </Link>
-            </motion.div>
-
-            {/* Candidate Selector Tabs */}
-            <motion.div 
-              variants={sectionContainerVariants}
-              className="flex flex-wrap gap-2 border-b border-border-subtle pb-3"
-            >
-              {candidatesData.map((c, idx) => (
-                <motion.button
-                  key={idx}
-                  variants={sectionItemVariants}
-                  onClick={() => setActiveCandidateIdx(idx)}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.96 }}
-                  transition={{ type: 'spring', stiffness: 350, damping: 20 }}
-                  className={`px-3 py-1.5 rounded-lg border text-caption font-sans font-bold transition-all duration-200 cursor-pointer ${
-                    activeCandidateIdx === idx
-                      ? 'bg-accent-primary border-accent-primary text-white shadow-xs'
-                      : 'bg-bg-surface border-border-subtle text-text-secondary hover:bg-bg-raised hover:text-text-primary'
-                  }`}
-                >
-                  {c.name.split(' ')[0]}
-                </motion.button>
-              ))}
-            </motion.div>
-
-            {/* Active Candidate Info */}
-            <motion.div 
-              variants={sectionItemVariants}
-              className="bg-bg-raised border border-border-subtle rounded-xl p-4 space-y-3"
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border-subtle/50 pb-2">
-                <div>
-                  <h4 className="text-sm font-bold text-text-primary tracking-tight">{candidate.name}</h4>
-                  <p className="type-caption text-accent-primary font-bold mt-0.5">{candidate.role}</p>
-                </div>
-                <div className="flex gap-1.5">
-                  <span className="text-[9px] font-mono bg-bg-surface border border-border-subtle px-2 py-0.5 rounded text-text-secondary">
-                    Base Exp: {candidate.expMatch}%
-                  </span>
-                  <span className="text-[9px] font-mono bg-bg-surface border border-border-subtle px-2 py-0.5 rounded text-text-secondary">
-                    Base Skills: {candidate.skillMatch}%
-                  </span>
-                </div>
-              </div>
-
-              <p className="text-xs text-text-secondary leading-relaxed">
-                {candidate.description}
-              </p>
-
-              {candidate.gaps.length > 0 ? (
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="type-caption font-bold text-accent-red">Identified gaps:</span>
-                  {candidate.gaps.map((g, i) => (
-                    <span key={i} className="type-caption font-bold bg-accent-red/5 border border-accent-red/10 text-accent-red px-2 py-0.5 rounded">
-                      {g}
-                    </span>
-                  ))}
-                </div>
-              ) : (
-                <div className="flex items-center gap-1.5 text-accent-green type-caption font-bold">
-                  <span className="w-1.5 h-1.5 rounded-full bg-accent-green" />
-                  Zero Skill Gaps Detected
-                </div>
-              )}
-            </motion.div>
-
-            {/* Weight Sliders */}
-            <motion.div 
-              variants={sectionItemVariants}
-              className="space-y-4 pt-2"
-            >
-              <div className="space-y-2">
-                <div className="flex items-center justify-between type-label text-[11px] font-bold">
-                  <span className="text-text-primary">Experience weight: {expWeight}%</span>
-                  <span className="text-text-secondary">Skill alignment weight: {skillWeight}%</span>
-                </div>
-                
-                {/* Single range slider adjusts both to sum to 100% */}
-                <input 
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={expWeight}
-                  onChange={(e) => setExpWeight(Number(e.target.value))}
-                  className="w-full h-1.5 bg-border-subtle rounded-lg appearance-none cursor-pointer accent-accent-primary"
-                />
-              </div>
-
-              <div className="flex justify-between items-center type-caption text-text-tertiary font-bold">
-                <span>← Prioritize Tech Stack Match</span>
-                <span>Prioritize Career Length →</span>
-              </div>
-            </motion.div>
-          </motion.div>
-
-          {/* Right Panel: Gauge and Score */}
-          <motion.div 
-            variants={sectionItemVariants}
-            className="lg:col-span-5 bg-bg-surface border border-border-subtle rounded-2xl p-6 md:p-8 shadow-sm flex flex-col items-center justify-center text-center space-y-6 max-w-sm mx-auto w-full"
-          >
-            <span className="type-caption text-text-tertiary font-bold">Consensus match score</span>
+          {/* Header & Tabs */}
+          <div className="text-center space-y-4 max-w-2xl mx-auto">
+            <motion.p variants={sectionItemVariants} className="type-caption text-accent-primary font-bold">
+              Workspace Portals
+            </motion.p>
+            <motion.h2 variants={sectionItemVariants} className="text-3xl md:text-4xl lg:text-5xl font-sans font-extrabold text-gray-900 tracking-tight leading-tight">
+              Enterprise-Grade Workspaces
+            </motion.h2>
+            <motion.p variants={sectionItemVariants} className="text-xs md:text-sm text-text-secondary leading-relaxed font-medium">
+              Explore role alignment, consensus scorecards, and verification trails from both sides of the hiring equation.
+            </motion.p>
             
-            {/* Animated Score Gauge */}
-            <div className="relative w-36 h-36 flex items-center justify-center">
-              <svg className="w-full h-full transform -rotate-90">
-                <circle
-                  cx="72"
-                  cy="72"
-                  r={radius}
-                  className="stroke-border-subtle"
-                  strokeWidth="8"
-                  fill="transparent"
-                />
-                <motion.circle
-                  cx="72"
-                  cy="72"
-                  r={radius}
-                  className="stroke-accent-primary"
-                  strokeWidth="8"
-                  fill="transparent"
-                  strokeDasharray={circumference}
-                  initial={{ strokeDashoffset: circumference }}
-                  animate={{ strokeDashoffset }}
-                  transition={{ type: 'spring', stiffness: 120, damping: 20 }}
-                />
-              </svg>
-              <div className="absolute flex flex-col items-center justify-center">
-                <span className="text-4xl font-display font-extrabold text-text-primary leading-none">
-                  <AnimatedScore value={suitabilityScore} />
-                </span>
-                <span className="type-caption text-text-tertiary font-bold mt-1">Grade</span>
-              </div>
-            </div>
+            {/* Kore.ai-style Segmented Workspace Tabs */}
+            <motion.div 
+              variants={sectionItemVariants}
+              className="inline-flex p-1 bg-bg-surface border border-border-subtle rounded-xl shadow-xs"
+            >
+              <button
+                onClick={() => setWorkspaceTab('recruiter')}
+                className={`px-5 py-2 rounded-lg text-xs font-sans font-bold transition-all duration-200 cursor-pointer ${
+                  workspaceTab === 'recruiter'
+                    ? 'bg-white border border-border-subtle text-accent-primary shadow-xs'
+                    : 'bg-transparent border border-transparent text-text-secondary hover:text-text-primary'
+                }`}
+              >
+                Recruiter Workspace
+              </button>
+              <button
+                onClick={() => setWorkspaceTab('candidate')}
+                className={`px-5 py-2 rounded-lg text-xs font-sans font-bold transition-all duration-200 cursor-pointer ${
+                  workspaceTab === 'candidate'
+                    ? 'bg-white border border-border-subtle text-accent-primary shadow-xs'
+                    : 'bg-transparent border border-transparent text-text-secondary hover:text-text-primary'
+                }`}
+              >
+                Candidate Portal
+              </button>
+            </motion.div>
+          </div>
 
-            {/* Suitability Rating Badge */}
-            <div className="w-full">
-              {suitabilityScore >= 85 ? (
-                <div className="inline-flex items-center gap-1.5 text-accent-green bg-accent-green/5 border border-accent-green/20 px-3 py-1 rounded-full text-caption font-sans font-bold">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  Excellent Match
-                </div>
-              ) : suitabilityScore >= 70 ? (
-                <div className="inline-flex items-center gap-1.5 text-accent-primary bg-accent-primary/5 border border-accent-primary/20 px-3 py-1 rounded-full text-caption font-sans font-bold">
-                  <Check className="w-3.5 h-3.5" />
-                  Strong Match
-                </div>
-              ) : (
-                <div className="inline-flex items-center gap-1.5 text-accent-amber bg-accent-amber/5 border border-accent-amber/20 px-3 py-1 rounded-full text-caption font-sans font-bold">
-                  <AlertOctagon className="w-3.5 h-3.5" />
-                  Marginal Fit
-                </div>
-              )}
-            </div>
+          {/* Switchable Workspaces */}
+          <AnimatePresence mode="wait">
+            {workspaceTab === 'recruiter' ? (
+              <motion.div
+                key="recruiter"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={appleTransition(0.3)}
+                className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center text-left"
+              >
+                {/* Left Column outcome copy */}
+                <div className="lg:col-span-6 space-y-6">
+                  <div className="space-y-3">
+                    <h3 className="text-2xl md:text-3xl font-sans font-extrabold text-gray-900 tracking-tight leading-tight">
+                      See exactly why a candidate was recommended.
+                    </h3>
+                    <p className="text-sm font-semibold text-gray-500">
+                      Every score. Every assumption. Every decision.
+                    </p>
+                    <p className="text-xs text-text-secondary leading-relaxed font-medium">
+                      Hiring Wallah is not a black box. Each recommendation is backed by a structured reasoning trail from our AI committee. Drill down into individual objections, claim verification facts, and dynamic rubrics.
+                    </p>
+                  </div>
 
-            {/* Contribution details */}
-            <div className="w-full border-t border-border-subtle pt-4 space-y-2 text-left font-mono text-[10px] text-text-secondary">
-              <div className="flex justify-between">
-                <span>Experience Contrib:</span>
-                <span className="font-bold text-text-primary">{((candidate.expMatch * expWeight) / 100).toFixed(1)}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Skills Contrib:</span>
-                <span className="font-bold text-text-primary">{((candidate.skillMatch * skillWeight) / 100).toFixed(1)}%</span>
-              </div>
-            </div>
-          </motion.div>
+                  {/* Highlights List with custom pastel icons like Kore.ai */}
+                  <div className="space-y-3.5 pt-2">
+                    {[
+                      { title: 'Generative Job Descriptions', desc: 'Create tailored rubrics with explicit skill and experience limits.' },
+                      { title: 'Automated Scheduling Co-pilot', desc: 'Book recruiter & manager interviews in single or bulk batches.' },
+                      { title: 'Consent & Verification Trails', desc: 'Track signed candidate validation facts cryptographically.' }
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-start gap-3">
+                        <div className="w-5 h-5 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0 mt-0.5">
+                          <Check className="w-3 h-3" strokeWidth={3} />
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-bold text-gray-900 leading-none">{item.title}</h4>
+                          <p className="text-[10px] text-gray-500 font-medium mt-0.5">{item.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="pt-2">
+                    <Link href="/recruiter">
+                      <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent-primary text-white font-sans text-caption font-bold rounded-lg border border-accent-primary cursor-pointer shadow-xs hover:bg-accent-primary/95 transition-apple">
+                        Open Recruiter Workspace
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </span>
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Right Column details report mockup */}
+                <div className="lg:col-span-6 w-full flex items-center justify-center">
+                  <div className="bg-white border border-gray-150 rounded-2xl p-6 shadow-md relative max-w-md w-full text-left font-sans">
+                    <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-purple-50 border border-purple-100 flex items-center justify-center text-accent-primary font-bold text-sm">
+                          LG
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-bold text-gray-900 tracking-tight">Lakshya Gupta</h4>
+                          <p className="text-[10px] text-gray-500 font-medium">Lead Product Designer</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-2xl font-extrabold text-accent-primary tracking-tight">91%</div>
+                        <div className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Match Score</div>
+                      </div>
+                    </div>
+
+                    <div className="mb-4">
+                      <div className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-2">Verified Evidence (6 Agents Consensus)</div>
+                      <ul className="space-y-2 text-xs">
+                        <li className="flex items-start gap-2 text-gray-700">
+                          <span className="text-emerald-500 font-bold mt-0.5">✓</span>
+                          <div>
+                            <span className="font-semibold text-gray-900">Built AI hiring platform</span>
+                            <span className="text-gray-400 block text-[9px]">Verified in project portfolio (Page 2)</span>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-2 text-gray-700">
+                          <span className="text-emerald-500 font-bold mt-0.5">✓</span>
+                          <div>
+                            <span className="font-semibold text-gray-900">Led recruiter onboarding</span>
+                            <span className="text-gray-400 block text-[9px]">Verified via previous role history (Page 1)</span>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-2 text-gray-700">
+                          <span className="text-emerald-500 font-bold mt-0.5">✓</span>
+                          <div>
+                            <span className="font-semibold text-gray-900">Reduced screening time 6×</span>
+                            <span className="text-gray-400 block text-[9px]">Verified from metric case studies</span>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="mb-4 border-t border-gray-100 pt-4">
+                      <div className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-2">Identified Risks</div>
+                      <div className="flex items-start gap-2 text-xs text-gray-700">
+                        <span className="text-amber-500 font-bold mt-0.5">⚠</span>
+                        <div>
+                          <span className="font-semibold text-gray-900">Limited PM internship experience</span>
+                          <span className="text-gray-400 block text-[9px]">Flagged by Critic Agent (Self-Critique phase)</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="border-t border-gray-100 pt-4 flex items-center justify-between">
+                      <div>
+                        <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">Consensus Verdict</span>
+                        <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2.5 py-0.5 rounded-full inline-block mt-1">STRONG HIRE</span>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-[8px] font-mono text-gray-400 block">HASH: sha256:7c2e9b1d...</span>
+                        <span className="text-[9px] text-emerald-600 font-bold flex items-center gap-1 mt-1 justify-end font-sans">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                          Committee Sealed
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="candidate"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={appleTransition(0.3)}
+                className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center text-left"
+              >
+                {/* Left Column Copy & Interactive selector */}
+                <div className="lg:col-span-7 space-y-6 w-full">
+                  <div className="space-y-3">
+                    <h3 className="text-2xl md:text-3xl font-sans font-extrabold text-gray-900 tracking-tight leading-tight">
+                      Know your score before recruiters do.
+                    </h3>
+                    <p className="text-xs text-text-secondary leading-relaxed font-medium">
+                      Upload your resume, run mock evaluations against target roles, identify critical skill gaps, and optimize your application strategy before applying.
+                    </p>
+                  </div>
+
+                  {/* Step Workflow */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-white border border-gray-150 rounded-xl p-3.5 shadow-xs">
+                    {[
+                      { step: '01', title: 'Resume Upload', desc: 'Timeline extraction' },
+                      { step: '02', title: 'Job Matching', desc: 'Consensus scoring' },
+                      { step: '03', title: 'Gap Analysis', desc: 'Identify skill leaks' },
+                      { step: '04', title: 'Prep Strategy', desc: 'Custom prep strategy' }
+                    ].map((s) => (
+                      <div key={s.step} className="space-y-1 border-l-2 border-accent-secondary/30 pl-3">
+                        <div className="text-[10px] font-extrabold text-accent-secondary uppercase tracking-wider">
+                          {s.step}
+                        </div>
+                        <h5 className="text-xs font-bold text-gray-900 tracking-tight leading-none">{s.title}</h5>
+                        <p className="text-[10px] text-gray-500 font-medium leading-tight">{s.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="pt-1">
+                    <Link href="/candidate">
+                      <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent-secondary text-white font-sans text-caption font-bold rounded-lg border border-accent-secondary cursor-pointer shadow-xs hover:bg-accent-secondary/95 transition-apple">
+                        Open Candidate Portal
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </span>
+                    </Link>
+                  </div>
+
+                  {/* Candidate Selector Tabs */}
+                  <div className="flex flex-wrap gap-2 border-b border-border-subtle pb-3">
+                    {candidatesData.map((c, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setActiveCandidateIdx(idx)}
+                        className={`px-3 py-1.5 rounded-lg border text-caption font-sans font-bold transition-all duration-200 cursor-pointer ${
+                          activeCandidateIdx === idx
+                            ? 'bg-accent-secondary border-accent-secondary text-white shadow-xs'
+                            : 'bg-bg-surface border-border-subtle text-text-secondary hover:bg-bg-raised hover:text-text-primary'
+                        }`}
+                      >
+                        {c.name.split(' ')[0]}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Active Candidate Info */}
+                  <div className="bg-white border border-border-subtle rounded-xl p-4 space-y-3 shadow-xs">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border-subtle/50 pb-2">
+                      <div>
+                        <h4 className="text-sm font-bold text-text-primary tracking-tight">{candidate.name}</h4>
+                        <p className="type-caption text-accent-secondary font-bold mt-0.5">{candidate.role}</p>
+                      </div>
+                      <div className="flex gap-1.5">
+                        <span className="text-[9px] font-mono bg-bg-surface border border-border-subtle px-2 py-0.5 rounded text-text-secondary">
+                          Base Exp: {candidate.expMatch}%
+                        </span>
+                        <span className="text-[9px] font-mono bg-bg-surface border border-border-subtle px-2 py-0.5 rounded text-text-secondary">
+                          Base Skills: {candidate.skillMatch}%
+                        </span>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-text-secondary leading-relaxed">
+                      {candidate.description}
+                    </p>
+
+                    {candidate.gaps.length > 0 ? (
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="type-caption font-bold text-accent-red">Identified gaps:</span>
+                        {candidate.gaps.map((g, i) => (
+                          <span key={i} className="type-caption font-bold bg-accent-red/5 border border-accent-red/10 text-accent-red px-2 py-0.5 rounded">
+                            {g}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1.5 text-accent-green type-caption font-bold">
+                        <span className="w-1.5 h-1.5 rounded-full bg-accent-green" />
+                        Zero Skill Gaps Detected
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Weight Sliders */}
+                  <div className="space-y-4 pt-2">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between type-label text-[11px] font-bold">
+                        <span className="text-text-primary">Experience weight: {expWeight}%</span>
+                        <span className="text-text-secondary">Skill alignment weight: {skillWeight}%</span>
+                      </div>
+                      
+                      <input 
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={expWeight}
+                        onChange={(e) => setExpWeight(Number(e.target.value))}
+                        className="w-full h-1.5 bg-border-subtle rounded-lg appearance-none cursor-pointer accent-accent-secondary"
+                      />
+                    </div>
+
+                    <div className="flex justify-between items-center type-caption text-text-tertiary font-bold">
+                      <span>← Prioritize Tech Stack Match</span>
+                      <span>Prioritize Career Length →</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Column: Gauge and Score */}
+                <div className="lg:col-span-5 bg-white border border-border-subtle rounded-2xl p-6 md:p-8 shadow-xs flex flex-col items-center justify-center text-center space-y-6 max-w-sm mx-auto w-full">
+                  <span className="type-caption text-text-tertiary font-bold">Consensus match score</span>
+                  
+                  {/* Animated Score Gauge */}
+                  <div className="relative w-36 h-36 flex items-center justify-center">
+                    <svg className="w-full h-full transform -rotate-90">
+                      <circle
+                        cx="72"
+                        cy="72"
+                        r={radius}
+                        className="stroke-border-subtle"
+                        strokeWidth="8"
+                        fill="transparent"
+                      />
+                      <motion.circle
+                        cx="72"
+                        cy="72"
+                        r={radius}
+                        className="stroke-accent-secondary"
+                        strokeWidth="8"
+                        fill="transparent"
+                        strokeDasharray={circumference}
+                        initial={{ strokeDashoffset: circumference }}
+                        animate={{ strokeDashoffset }}
+                        transition={{ type: 'spring', stiffness: 120, damping: 20 }}
+                      />
+                    </svg>
+                    <div className="absolute flex flex-col items-center justify-center">
+                      <span className="text-4xl font-display font-extrabold text-text-primary leading-none">
+                        <AnimatedScore value={suitabilityScore} />
+                      </span>
+                      <span className="type-caption text-text-tertiary font-bold mt-1">Grade</span>
+                    </div>
+                  </div>
+
+                  {/* Suitability Rating Badge */}
+                  <div className="w-full">
+                    {suitabilityScore >= 85 ? (
+                      <div className="inline-flex items-center gap-1.5 text-accent-green bg-accent-green/5 border border-accent-green/20 px-3 py-1 rounded-full text-caption font-sans font-bold">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        Excellent Match
+                      </div>
+                    ) : suitabilityScore >= 70 ? (
+                      <div className="inline-flex items-center gap-1.5 text-accent-secondary bg-accent-secondary/5 border border-accent-secondary/20 px-3 py-1 rounded-full text-caption font-sans font-bold">
+                        <Check className="w-3.5 h-3.5" />
+                        Strong Match
+                      </div>
+                    ) : (
+                      <div className="inline-flex items-center gap-1.5 text-accent-amber bg-accent-amber/5 border border-accent-amber/20 px-3 py-1 rounded-full text-caption font-sans font-bold">
+                        <AlertOctagon className="w-3.5 h-3.5" />
+                        Marginal Fit
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Contribution details */}
+                  <div className="w-full border-t border-border-subtle pt-4 space-y-2 text-left font-mono text-[10px] text-text-secondary">
+                    <div className="flex justify-between">
+                      <span>Experience Contrib:</span>
+                      <span className="font-bold text-text-primary">{((candidate.expMatch * expWeight) / 100).toFixed(1)}%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Skills Contrib:</span>
+                      <span className="font-bold text-text-primary">{((candidate.skillMatch * skillWeight) / 100).toFixed(1)}%</span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       </section>
 
       {/* SECTION 5: HOW IT WORKS / DECISION FLOW */}
-      <section id="how-it-works" className="snap-section w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 md:py-24 relative overflow-hidden border-b border-border-subtle bg-white">
+      <section id="how-it-works" className="snap-section w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 md:py-24 relative overflow-hidden border-b border-border-subtle bg-bg-surface">
+        <MeshBackground opacity={0.06} />
+        <FloatingIcons count={5} />
+
+        {/* Dynamic Connector Line in the Background */}
+        <div className="absolute inset-0 pointer-events-none z-0 hidden lg:block opacity-30">
+          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M 200 450 C 400 450, 400 650, 600 650 C 800 650, 800 450, 1000 450"
+              fill="none"
+              stroke="url(#pipeline-glow)"
+              strokeWidth="3"
+              strokeDasharray="10 5"
+              className="animate-[grid-drift_30s_linear_infinite]"
+            />
+            <defs>
+              <linearGradient id="pipeline-glow" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.2" />
+                <stop offset="50%" stopColor="#6366f1" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#7c3aed" stopOpacity="0.2" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+
         <motion.div 
           variants={sectionContainerVariants}
           initial="hidden"
@@ -1045,8 +1100,8 @@ export default function LandingPage() {
               role="Deconstructs natural language JDs into deterministic objective assessment parameters."
               mechanics="Strips marketing buzzwords from job roles, defining hard technical criteria and experience limits."
               icon={Search}
-              colorClass="bg-indigo-600"
-              borderColorClass="border-indigo-100"
+              colorClass="bg-accent-primary"
+              borderColorClass="border-purple-100"
               index={0}
             />
 
@@ -1055,7 +1110,7 @@ export default function LandingPage() {
               role="Determines weight distributions. Establishes a balanced, target evaluation rubric."
               mechanics="Reviews role level and allocates proportion variables (experience vs skill alignment) totalling 100%."
               icon={Sliders}
-              colorClass="bg-purple-600"
+              colorClass="bg-accent-secondary"
               borderColorClass="border-purple-100"
               index={1}
             />
@@ -1065,7 +1120,7 @@ export default function LandingPage() {
               role="Deconstructs resume formatting, mapping timeline records, projects, and roles."
               mechanics="Forensically extracts plain text from resumes, mapping timestamps and ownership levels."
               icon={Cpu}
-              colorClass="bg-emerald-600"
+              colorClass="bg-emerald-500"
               borderColorClass="border-emerald-100"
               index={2}
             />
@@ -1095,7 +1150,7 @@ export default function LandingPage() {
               role="Aggregates agent scores, conducts consensus voting, and publishes final reports."
               mechanics="Brokers conflict resolution between Evaluator and Advocate, signing off on secure reports."
               icon={Users}
-              colorClass="bg-slate-600"
+              colorClass="bg-slate-500"
               borderColorClass="border-slate-200"
               index={5}
             />

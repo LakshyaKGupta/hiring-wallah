@@ -18,6 +18,7 @@ import {
   ChevronRight,
   RefreshCw
 } from 'lucide-react'
+import FloatingIcons from '@/components/ui/FloatingIcons'
 
 // Premium Apple-style transitions
 const appleTransition = {
@@ -174,7 +175,7 @@ export function HeroConvergenceScene() {
   }, [screeningState, logIndex, selectedCandId, activeCand])
 
   return (
-    <div className="relative flex min-h-[calc(100vh-64px)] w-full items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_75%_45%,rgba(79,70,229,0.12),transparent_38%),linear-gradient(135deg,#fbfbf8_0%,#f3f6fb_48%,#e9eef7_100%)] py-12 md:py-0">
+    <div className="relative flex min-h-[calc(100vh-64px)] w-full items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_75%_45%,rgba(124,58,237,0.12),transparent_38%),linear-gradient(135deg,#fbfbf8_0%,#f3f6fb_48%,#e9eef7_100%)] py-12 md:py-0">
       <div className="absolute inset-0 grid-bg grid-bg-drift opacity-50" />
       
       {/* Background orbs */}
@@ -188,6 +189,8 @@ export function HeroConvergenceScene() {
         animate={{ x: [0, -15, 0], y: [0, 12, 0], scale: [1, 0.96, 1] }}
         transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
       />
+
+      <FloatingIcons count={6} />
 
       <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 px-6 lg:grid-cols-12">
         {/* Left Column: Core Copy */}
@@ -270,7 +273,7 @@ export function HeroConvergenceScene() {
                   >
                     <div className="flex items-center gap-2 truncate">
                       <div className={`w-6.5 h-6.5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${
-                        selectedCandId === cand.id ? 'bg-indigo-50 text-indigo-600 border border-indigo-100' : 'bg-gray-100 text-gray-500'
+                        selectedCandId === cand.id ? 'bg-purple-50 text-accent-primary border border-purple-100/50' : 'bg-gray-100 text-gray-500'
                       }`}>
                         {cand.avatar}
                       </div>
@@ -280,7 +283,7 @@ export function HeroConvergenceScene() {
                       </div>
                     </div>
                     {selectedCandId === cand.id && screeningState === 'processing' ? (
-                      <RefreshCw className="w-3 h-3 text-indigo-600 animate-spin shrink-0 ml-1" />
+                      <RefreshCw className="w-3 h-3 text-accent-primary animate-spin shrink-0 ml-1" />
                     ) : (
                       <ChevronRight className="w-3 h-3 text-gray-300 shrink-0" />
                     )}
@@ -301,13 +304,13 @@ export function HeroConvergenceScene() {
                       className="bg-gray-950 font-mono text-[10px] text-gray-300 p-4 rounded-xl flex-1 flex flex-col gap-1.5 overflow-y-auto leading-relaxed shadow-inner"
                     >
                       {consoleLogs.map((log, idx) => (
-                        <div key={idx} className={`${idx === consoleLogs.length - 1 ? 'text-indigo-400 font-semibold' : ''}`}>
+                        <div key={idx} className={`${idx === consoleLogs.length - 1 ? 'text-accent-primary font-semibold' : ''}`}>
                           <span className="text-gray-600">&gt;</span> {log}
                         </div>
                       ))}
                       {consoleLogs.length < activeCand.logs.length && (
                         <div className="flex items-center gap-1 text-gray-600">
-                          <span className="w-1.5 h-3 bg-indigo-500 animate-pulse inline-block" />
+                          <span className="w-1.5 h-3 bg-accent-primary animate-pulse inline-block" />
                         </div>
                       )}
                     </motion.div>
@@ -324,7 +327,7 @@ export function HeroConvergenceScene() {
                       <div className="flex items-start justify-between border-b border-gray-100 pb-3">
                         <div>
                           <h4 className="text-sm font-bold text-gray-900 tracking-tight">{activeCand.name}</h4>
-                          <p className="text-[10px] text-indigo-600 font-bold mt-0.5">{activeCand.role}</p>
+                          <p className="text-[10px] text-accent-primary font-bold mt-0.5">{activeCand.role}</p>
                         </div>
                         
                         {/* Interactive Score Circle */}
@@ -342,7 +345,7 @@ export function HeroConvergenceScene() {
                               cx="36"
                               cy="36"
                               r={radius}
-                              className="stroke-indigo-600"
+                              className="stroke-accent-primary"
                               strokeWidth="4"
                               fill="transparent"
                               strokeDasharray={circumference}
@@ -394,7 +397,7 @@ export function HeroConvergenceScene() {
                           max="100"
                           value={expWeight}
                           onChange={(e) => setExpWeight(Number(e.target.value))}
-                          className="w-full h-1 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                          className="w-full h-1 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-accent-primary"
                         />
                         <div className="flex items-center justify-between text-[8px] font-bold text-gray-400">
                           <span>VERDICT: <span className={`px-2 py-0.5 rounded text-[8px] border ml-1 ${activeCand.verdictColor}`}>{activeCand.verdict}</span></span>

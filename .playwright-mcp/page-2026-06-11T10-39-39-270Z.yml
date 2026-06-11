@@ -1,0 +1,427 @@
+- generic [active] [ref=e1]:
+  - generic:
+    - generic: "0"
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "W Hiring Wallah" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e7]: W
+          - generic [ref=e9]: Hiring Wallah
+        - navigation [ref=e10]:
+          - link "Home" [ref=e12] [cursor=pointer]:
+            - /url: /
+            - img [ref=e14]
+            - generic [ref=e17]: Home
+          - link "Features" [ref=e20] [cursor=pointer]:
+            - /url: /#features
+            - img [ref=e22]
+            - generic [ref=e25]: Features
+          - link "How It Works" [ref=e27] [cursor=pointer]:
+            - /url: /#how-it-works
+            - img [ref=e29]
+            - generic [ref=e33]: How It Works
+          - link "Recruiter" [ref=e35] [cursor=pointer]:
+            - /url: /recruiter
+            - img [ref=e37]
+            - generic [ref=e40]: Recruiter
+          - link "Candidate" [ref=e42] [cursor=pointer]:
+            - /url: /candidate
+            - img [ref=e44]
+            - generic [ref=e47]: Candidate
+        - generic [ref=e48]:
+          - link "Sign In" [ref=e50] [cursor=pointer]:
+            - /url: /auth?mode=signin
+            - img [ref=e51]
+            - generic [ref=e54]: Sign In
+          - link "Sign Up" [ref=e56] [cursor=pointer]:
+            - /url: /auth?mode=signup
+            - img [ref=e57]
+            - generic [ref=e60]: Sign Up
+    - generic [ref=e62]:
+      - generic [ref=e63]:
+        - button "Hero" [ref=e64] [cursor=pointer]
+        - button "Features" [ref=e65] [cursor=pointer]
+        - button "How It Works" [ref=e66] [cursor=pointer]
+        - button "For Recruiters" [ref=e67] [cursor=pointer]
+        - button "For Candidates" [ref=e68] [cursor=pointer]
+        - button "Get Started" [ref=e69] [cursor=pointer]
+      - generic [ref=e71]:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - img
+                - text: Multi-agent hiring intelligence with an audit trail
+              - generic:
+                - heading "Forensic hiring, without the black box." [level=1]
+                - paragraph: Hiring Wallah converts resumes and job requirements into transparent agent reasoning, weighted consensus scores, and signed reports recruiters can defend.
+              - generic [ref=e79]:
+                - link "Create account" [ref=e80] [cursor=pointer]:
+                  - /url: /auth?mode=signup
+                  - text: Create account
+                  - img [ref=e81]
+                - link "Open recruiter demo" [ref=e83] [cursor=pointer]:
+                  - /url: /recruiter
+                  - img [ref=e84]
+                  - text: Open recruiter demo
+              - generic:
+                - generic:
+                  - img
+                  - generic: Parsed
+                  - generic: Resume evidence
+                - generic:
+                  - img
+                  - generic: Scored
+                  - generic: Candidate fit
+                - generic:
+                  - img
+                  - generic: Signed
+                  - generic: Decision trail
+        - generic [ref=e87]:
+          - generic [ref=e88]: Parser
+          - generic [ref=e90]: Strategist
+          - generic [ref=e92]: Analyst
+          - generic [ref=e94]: Evaluator
+          - generic [ref=e96]: Advocate
+          - generic [ref=e98]: Committee
+        - generic [ref=e100]: Scroll to explore →
+      - generic [ref=e102]:
+        - generic [ref=e103]:
+          - paragraph [ref=e104]: What changes
+          - heading "No black-box hiring shortcuts" [level=2] [ref=e105]:
+            - generic "No black-box hiring shortcuts" [ref=e106]:
+              - generic [ref=e107]: "No"
+              - generic [ref=e108]: black-box
+              - generic [ref=e109]: hiring
+              - generic [ref=e110]: shortcuts
+          - paragraph [ref=e111]: "Hiring Wallah replaces keyword filters with a visible reasoning system: evidence extraction, weighted debate, and a signed decision trail."
+          - generic [ref=e112]:
+            - generic [ref=e113]:
+              - generic [ref=e114]: "6"
+              - generic [ref=e115]: specialist agents
+            - generic [ref=e116]:
+              - generic [ref=e117]: 100%
+              - generic [ref=e118]: weight control
+            - generic [ref=e119]:
+              - generic [ref=e120]: "0"
+              - generic [ref=e121]: hidden verdicts
+            - generic [ref=e122]:
+              - generic [ref=e123]: "1"
+              - generic [ref=e124]: signed report
+        - generic [ref=e125]:
+          - generic [ref=e130]:
+            - generic [ref=e131]:
+              - img [ref=e134]
+              - generic [ref=e139]:
+                - heading "Forensic resume parsing" [level=3] [ref=e140]
+                - paragraph [ref=e141]: Turns messy resumes into normalized timelines, role scope, project evidence, and skill claims.
+            - generic [ref=e142]:
+              - generic [ref=e143]:
+                - generic [ref=e144]: Live signal
+                - img [ref=e145]
+              - generic [ref=e147]:
+                - img [ref=e148]
+                - generic [ref=e155]: PDF -> evidence graph
+          - generic [ref=e160]:
+            - generic [ref=e161]:
+              - img [ref=e164]
+              - generic [ref=e170]:
+                - heading "Weighted agent consensus" [level=3] [ref=e171]
+                - paragraph [ref=e172]: Six specialist agents score, challenge, and reconcile every decision before a verdict is signed.
+            - generic [ref=e173]:
+              - generic [ref=e174]:
+                - generic [ref=e175]: Live signal
+                - img [ref=e176]
+              - generic [ref=e178]:
+                - img [ref=e179]
+                - generic [ref=e186]: 6 agents -> one verdict
+          - generic [ref=e191]:
+            - generic [ref=e192]:
+              - img [ref=e195]
+              - generic [ref=e205]:
+                - heading "Auditable decision ledger" [level=3] [ref=e206]
+                - paragraph [ref=e207]: Each recommendation includes the reasoning trail, confidence shifts, and final cryptographic receipt.
+            - generic [ref=e208]:
+              - generic [ref=e209]:
+                - generic [ref=e210]: Live signal
+                - img [ref=e211]
+              - generic [ref=e213]:
+                - img [ref=e214]
+                - generic [ref=e221]: Reasoning -> verified hash
+      - generic [ref=e223]:
+        - generic [ref=e224]:
+          - paragraph [ref=e225]: How It Works
+          - heading "Six agents, one consensus verdict" [level=2] [ref=e226]:
+            - generic "Six agents, one consensus verdict" [ref=e227]:
+              - generic [ref=e228]: Six
+              - generic [ref=e229]: agents,
+              - generic [ref=e230]: one
+              - generic [ref=e231]: consensus
+              - generic [ref=e232]: verdict
+          - paragraph [ref=e233]: Six parallel intelligence modules executing multi-stage evaluation protocols. Hover a card to witness their underlying mechanics.
+        - generic [ref=e234]:
+          - generic [ref=e235] [cursor=pointer]:
+            - generic [ref=e238]:
+              - generic [ref=e239]:
+                - img [ref=e241]
+                - generic [ref=e244]:
+                  - heading "Requirement Analyst" [level=4] [ref=e245]
+                  - paragraph [ref=e246]: Agent Module
+              - paragraph [ref=e247]: Deconstructs natural language JDs into deterministic objective assessment parameters.
+            - generic [ref=e248]:
+              - generic [ref=e249]:
+                - generic [ref=e250]: "Reasoning Logic:"
+                - generic [ref=e251]: Active
+              - generic [ref=e254]: Hover card to reveal active thinking...
+          - generic [ref=e255] [cursor=pointer]:
+            - generic [ref=e258]:
+              - generic [ref=e259]:
+                - img [ref=e261]
+                - generic [ref=e262]:
+                  - heading "Hiring Strategist" [level=4] [ref=e263]
+                  - paragraph [ref=e264]: Agent Module
+              - paragraph [ref=e265]: Determines weight distributions. Establishes a balanced, target evaluation rubric.
+            - generic [ref=e266]:
+              - generic [ref=e267]:
+                - generic [ref=e268]: "Reasoning Logic:"
+                - generic [ref=e269]: Active
+              - generic [ref=e272]: Hover card to reveal active thinking...
+          - generic [ref=e273] [cursor=pointer]:
+            - generic [ref=e276]:
+              - generic [ref=e277]:
+                - img [ref=e279]
+                - generic [ref=e282]:
+                  - heading "Resume Parser" [level=4] [ref=e283]
+                  - paragraph [ref=e284]: Agent Module
+              - paragraph [ref=e285]: Deconstructs resume formatting, mapping timeline records, projects, and roles.
+            - generic [ref=e286]:
+              - generic [ref=e287]:
+                - generic [ref=e288]: "Reasoning Logic:"
+                - generic [ref=e289]: Active
+              - generic [ref=e292]: Hover card to reveal active thinking...
+          - generic [ref=e293] [cursor=pointer]:
+            - generic [ref=e296]:
+              - generic [ref=e297]:
+                - img [ref=e299]
+                - generic [ref=e302]:
+                  - heading "Candidate Evaluator" [level=4] [ref=e303]
+                  - paragraph [ref=e304]: Agent Module
+              - paragraph [ref=e305]: Measures candidate experience and proofs directly against Strategist rubric.
+            - generic [ref=e306]:
+              - generic [ref=e307]:
+                - generic [ref=e308]: "Reasoning Logic:"
+                - generic [ref=e309]: Active
+              - generic [ref=e312]: Hover card to reveal active thinking...
+          - generic [ref=e313] [cursor=pointer]:
+            - generic [ref=e316]:
+              - generic [ref=e317]:
+                - img [ref=e319]
+                - generic [ref=e321]:
+                  - heading "Devil's Advocate" [level=4] [ref=e322]
+                  - paragraph [ref=e323]: Agent Module
+              - paragraph [ref=e324]: Challenges scores, flags inflated claims, unverified statements, and logical gaps.
+            - generic [ref=e325]:
+              - generic [ref=e326]:
+                - generic [ref=e327]: "Reasoning Logic:"
+                - generic [ref=e328]: Active
+              - generic [ref=e331]: Hover card to reveal active thinking...
+          - generic [ref=e332] [cursor=pointer]:
+            - generic [ref=e335]:
+              - generic [ref=e336]:
+                - img [ref=e338]
+                - generic [ref=e343]:
+                  - heading "Hiring Committee" [level=4] [ref=e344]
+                  - paragraph [ref=e345]: Agent Module
+              - paragraph [ref=e346]: Aggregates agent scores, conducts consensus voting, and publishes final reports.
+            - generic [ref=e347]:
+              - generic [ref=e348]:
+                - generic [ref=e349]: "Reasoning Logic:"
+                - generic [ref=e350]: Active
+              - generic [ref=e353]: Hover card to reveal active thinking...
+      - generic [ref=e356]:
+        - generic [ref=e358]:
+          - generic [ref=e364]:
+            - img [ref=e365]
+            - text: committee_consensus_trail.log
+          - generic [ref=e367]:
+            - generic [ref=e368]:
+              - generic [ref=e369]: "[3:20:00 PM]"
+              - text: "SYSTEM: Booting Hiring Agent OS v2.4.0..."
+            - generic [ref=e370]:
+              - generic [ref=e371]: "[3:20:01 PM]"
+              - text: "SECURE: Establishing end-to-end consensus ledger bridge..."
+            - generic [ref=e372]:
+              - generic [ref=e373]: "[3:20:02 PM]"
+              - text: "DB: SQLite local fallback db loaded successfully."
+            - generic [ref=e374]:
+              - generic [ref=e375]: "[3:20:03 PM]"
+              - text: "COMMITTEE: Consensus broker initialized."
+          - generic [ref=e376]:
+            - generic [ref=e377]:
+              - text: Active Evaluated Ledger Target
+              - generic [ref=e378]: "{ \"candidate_id\": \"cnd_982\", \"status\": \"STANDBY\", \"consensus_score\": 0, \"confidence\": \"100%\", \"active_agent\": \"HiringCommittee\" }"
+            - generic [ref=e379]:
+              - generic [ref=e380]: Ledger Health
+              - generic [ref=e381]: Consensus Verified
+              - generic [ref=e383]: "HASH: STANDBY"
+        - generic [ref=e384]:
+          - generic [ref=e385]:
+            - paragraph [ref=e386]: For Recruiters
+            - heading "Hire with forensic-grade audit trails" [level=2] [ref=e387]:
+              - generic "Hire with forensic-grade audit trails" [ref=e388]:
+                - generic [ref=e389]: Hire
+                - generic [ref=e390]: with
+                - generic [ref=e391]: forensic-grade
+                - generic [ref=e392]: audit
+                - generic [ref=e393]: trails
+            - paragraph [ref=e394]: Define rubrics, batch-upload resumes, and inspect every agent decision in real time. Download consensus reports with cryptographic hashes for compliance and stakeholder review.
+            - link "Open Recruiter Workspace" [ref=e396] [cursor=pointer]:
+              - /url: /recruiter
+              - generic [ref=e397]:
+                - text: Open Recruiter Workspace
+                - img [ref=e398]
+          - generic [ref=e400]:
+            - generic [ref=e401]:
+              - img [ref=e402]
+              - generic [ref=e405]:
+                - heading "SSL/TLS Gateway" [level=5] [ref=e406]
+                - paragraph [ref=e407]: SECURE HANDSHAKE
+            - generic [ref=e408]:
+              - img [ref=e409]
+              - generic [ref=e412]:
+                - heading "Consensus Sign-Off" [level=5] [ref=e413]
+                - paragraph [ref=e414]: 6/6 VERIFIED
+            - generic [ref=e415]:
+              - img [ref=e416]
+              - generic [ref=e418]:
+                - heading "Database Ledgers" [level=5] [ref=e419]
+                - paragraph [ref=e420]: SQLITE STABLE
+            - generic [ref=e421]:
+              - img [ref=e422]
+              - generic [ref=e424]:
+                - heading "Audit Protections" [level=5] [ref=e425]
+                - paragraph [ref=e426]: ANONYMIZED
+      - generic [ref=e428]:
+        - generic [ref=e429]:
+          - generic [ref=e430]:
+            - paragraph [ref=e431]: For Candidates
+            - heading "See how recruiters will score you" [level=2] [ref=e432]:
+              - generic "See how recruiters will score you" [ref=e433]:
+                - generic [ref=e434]: See
+                - generic [ref=e435]: how
+                - generic [ref=e436]: recruiters
+                - generic [ref=e437]: will
+                - generic [ref=e438]: score
+                - generic [ref=e439]: you
+            - paragraph [ref=e440]: Upload your resume, target a role, and preview your alignment score before you apply. Adjust weight priorities to understand where your profile shines and where to improve.
+            - link "Open Candidate Portal" [ref=e442] [cursor=pointer]:
+              - /url: /candidate
+              - generic [ref=e443]:
+                - text: Open Candidate Portal
+                - img [ref=e444]
+          - generic [ref=e446]:
+            - button "Derrick" [ref=e447] [cursor=pointer]
+            - button "Sasha" [ref=e448] [cursor=pointer]
+            - button "Elena" [ref=e449] [cursor=pointer]
+          - generic [ref=e450]:
+            - generic [ref=e451]:
+              - generic [ref=e452]:
+                - heading "Derrick Vance (The Vet)" [level=4] [ref=e453]
+                - paragraph [ref=e454]: Staff Engineer (Java/Node focus)
+              - generic [ref=e455]:
+                - generic [ref=e456]: "Base Exp: 95%"
+                - generic [ref=e457]: "Base Skills: 55%"
+            - paragraph [ref=e458]: Former Staff Engineer at Enterprise scale. High ownership, but missing target skills (Python & GraphQL).
+            - generic [ref=e459]:
+              - generic [ref=e460]: "Identified gaps:"
+              - generic [ref=e461]: Python
+              - generic [ref=e462]: GraphQL
+              - generic [ref=e463]: Kubernetes
+          - generic [ref=e464]:
+            - generic [ref=e465]:
+              - generic [ref=e466]:
+                - generic [ref=e467]: "Experience weight: 50%"
+                - generic [ref=e468]: "Skill alignment weight: 50%"
+              - slider [ref=e469] [cursor=pointer]: "50"
+            - generic [ref=e470]:
+              - generic [ref=e471]: ← Prioritize Tech Stack Match
+              - generic [ref=e472]: Prioritize Career Length →
+        - generic [ref=e473]:
+          - generic [ref=e474]: Consensus match score
+          - generic [ref=e475]:
+            - img [ref=e476]
+            - generic [ref=e479]:
+              - generic [ref=e481]: "75"
+              - generic [ref=e482]: Grade
+          - generic [ref=e484]:
+            - img [ref=e485]
+            - text: Strong Match
+          - generic [ref=e487]:
+            - generic [ref=e488]:
+              - generic [ref=e489]: "Experience Contrib:"
+              - generic [ref=e490]: 47.5%
+            - generic [ref=e491]:
+              - generic [ref=e492]: "Skills Contrib:"
+              - generic [ref=e493]: 27.5%
+      - generic [ref=e494]:
+        - generic [ref=e495]:
+          - generic [ref=e496]:
+            - paragraph [ref=e497]: Get Started
+            - heading "Ready to transform your hiring?" [level=2] [ref=e498]:
+              - generic "Ready to transform your hiring?" [ref=e499]:
+                - generic [ref=e500]: Ready
+                - generic [ref=e501]: to
+                - generic [ref=e502]: transform
+                - generic [ref=e503]: your
+                - generic [ref=e504]: hiring?
+            - paragraph [ref=e505]: Create a free account or sign in to access your recruiter or candidate workspace. No credit card required.
+          - generic [ref=e506]:
+            - link "Create Free Account" [ref=e507] [cursor=pointer]:
+              - /url: /auth?mode=signup
+              - generic [ref=e508]:
+                - generic [ref=e509]: Create Free Account
+                - img [ref=e510]
+            - link "Sign In" [ref=e512] [cursor=pointer]:
+              - /url: /auth?mode=signin
+              - generic [ref=e514]: Sign In
+          - generic [ref=e515]:
+            - link "Recruiter Workspace Define evaluation rubrics, upload multiple resumes, inspect security hashes, and download forensic reports. Enter Recruiter Portal" [ref=e516] [cursor=pointer]:
+              - /url: /recruiter
+              - generic [ref=e517]:
+                - generic [ref=e519]:
+                  - generic [ref=e520]:
+                    - img [ref=e522]
+                    - heading "Recruiter Workspace" [level=3] [ref=e525]
+                  - paragraph [ref=e526]: Define evaluation rubrics, upload multiple resumes, inspect security hashes, and download forensic reports.
+                - generic [ref=e527]:
+                  - generic [ref=e528]: Enter Recruiter Portal
+                  - img [ref=e529]
+            - link "Candidate Workspace Identify alignment leaks, formatting blocks, verify skill matches, and optimize credentials before applying. Enter Candidate Portal" [ref=e531] [cursor=pointer]:
+              - /url: /candidate
+              - generic [ref=e532]:
+                - generic [ref=e534]:
+                  - generic [ref=e535]:
+                    - img [ref=e537]
+                    - heading "Candidate Workspace" [level=3] [ref=e540]
+                  - paragraph [ref=e541]: Identify alignment leaks, formatting blocks, verify skill matches, and optimize credentials before applying.
+                - generic [ref=e542]:
+                  - generic [ref=e543]: Enter Candidate Portal
+                  - img [ref=e544]
+        - generic [ref=e547]:
+          - generic [ref=e548]:
+            - generic [ref=e549]: W
+            - generic [ref=e550]: Hiring Wallah
+          - generic [ref=e551]:
+            - link "Consensus Protocol" [ref=e552] [cursor=pointer]:
+              - /url: /#how-it-works
+            - link "Cryptography Spec" [ref=e553] [cursor=pointer]:
+              - /url: /#for-recruiters
+            - link "Privacy Guidelines" [ref=e554] [cursor=pointer]:
+              - /url: /auth?mode=signup
+            - link "Documentation" [ref=e555] [cursor=pointer]:
+              - /url: /#features
+          - generic [ref=e558]: Systems Operational
+  - button "Open Next.js Dev Tools" [ref=e564] [cursor=pointer]:
+    - img [ref=e565]
+  - alert [ref=e568]
