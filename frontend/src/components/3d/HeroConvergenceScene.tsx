@@ -391,7 +391,7 @@ export function HeroConvergenceScene() {
           animate={{ y: 0, opacity: showText ? 1 : 0 }}
           transition={{ duration: 0.55, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="max-w-2xl space-y-7 lg:col-span-6">
+          <div className="max-w-2xl space-y-7 lg:col-span-6 pointer-events-auto select-text">
             <div className="inline-flex items-center gap-2 rounded-full border border-border-subtle bg-bg-surface/80 px-3 py-1.5 text-[11px] font-semibold text-text-secondary shadow-sm backdrop-blur-md">
               <ShieldCheck className="h-3.5 w-3.5 text-accent-green" />
               Multi-agent hiring intelligence with an audit trail

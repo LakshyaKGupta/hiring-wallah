@@ -63,7 +63,7 @@ export default function ScoreCard({ candidate, rank, index = 0 }: ScoreCardProps
         default: { type: 'spring', stiffness: 150, damping: 20 },
         delay: index * 0.06,
       }}
-      className="tilt-card w-full bg-bg-surface border border-border-subtle rounded-xl p-5 mb-4 last:mb-0 relative transition-colors duration-400 select-none cursor-pointer group overflow-hidden"
+      className="tilt-card w-full bg-bg-surface border border-border-subtle rounded-xl p-5 mb-4 last:mb-0 relative transition-colors duration-400 select-text cursor-pointer group overflow-hidden"
     >
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
         <div className="flex items-center gap-4">

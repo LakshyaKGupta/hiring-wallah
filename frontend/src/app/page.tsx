@@ -90,7 +90,7 @@ function AgentCard({ title, role, mechanics, colorClass, borderColorClass, icon:
       variants={sectionItemVariants}
       onMouseLeave={() => setIsHovered(false)}
       onMouseEnter={() => setIsHovered(true)}
-      className={`relative bg-bg-surface/90 backdrop-blur-sm border ${borderColorClass} rounded-xl p-5 shadow-sm select-none cursor-pointer flex flex-col justify-between h-full group overflow-hidden`}
+      className={`relative bg-bg-surface/90 backdrop-blur-sm border ${borderColorClass} rounded-xl p-5 shadow-sm select-text cursor-pointer flex flex-col justify-between h-full group overflow-hidden`}
       whileHover={{
         y: -6,
         boxShadow: '0 12px 24px rgba(0, 103, 255, 0.08)',

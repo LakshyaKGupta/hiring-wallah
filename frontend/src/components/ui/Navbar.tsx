@@ -5,21 +5,21 @@ import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import {
-  Cpu,
+  Home,
   UserPlus,
   LogIn,
-  Briefcase,
-  User,
+  ClipboardCheck,
+  FileText,
   Sparkles,
-  GitBranch,
+  Network,
 } from 'lucide-react'
 
 const navLinks = [
-  { href: '/', label: 'Home', icon: Cpu, match: (pathname: string) => pathname === '/' },
+  { href: '/', label: 'Home', icon: Home, match: (pathname: string) => pathname === '/' },
   { href: '/#features', label: 'Features', icon: Sparkles, match: () => false },
-  { href: '/#how-it-works', label: 'How It Works', icon: GitBranch, match: () => false },
-  { href: '/recruiter', label: 'Recruiter', icon: Briefcase, match: (pathname: string) => pathname.startsWith('/recruiter') },
-  { href: '/candidate', label: 'Candidate', icon: User, match: (pathname: string) => pathname.startsWith('/candidate') },
+  { href: '/#how-it-works', label: 'How It Works', icon: Network, match: () => false },
+  { href: '/recruiter', label: 'Recruiter', icon: ClipboardCheck, match: (pathname: string) => pathname.startsWith('/recruiter') },
+  { href: '/candidate', label: 'Candidate', icon: FileText, match: (pathname: string) => pathname.startsWith('/candidate') },
 ]
 
 function NavLink({
