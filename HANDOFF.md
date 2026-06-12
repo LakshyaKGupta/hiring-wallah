@@ -1156,3 +1156,25 @@ This file is the persistent project memory for AI agents and human contributors.
   - Home nav active state visible.
   - Hero badge text absent.
   - Four orbit cards rendered in the hero scene.
+
+### Session Update - 2026-06-12 (Run Site & True Orbit Hero Motion)
+
+#### Objective
+- Run the website locally and continue improving the hero animation so the orbit feels like a real 3D product scene instead of static floating labels.
+
+#### Completed
+- Started the frontend dev server at `http://127.0.0.1:3000`.
+- Converted the hero orbit layer from static positioned floating cards into a true rotating orbit:
+  - Resume, Rubric, Score, and Signed cards now travel around a circular ring.
+  - Cards counter-rotate while orbiting so labels remain readable.
+  - The central evidence workspace remains lifted with perspective/translateZ depth.
+
+#### Verification
+- `curl -L http://127.0.0.1:3000/`: returned HTTP 200.
+- `npm run lint` in `frontend`: passed.
+- `npm run build` in `frontend`: passed.
+- Browser automation was attempted, but local Chrome/Node browser runtimes were killed by the environment; used HTTP output plus lint/build as verification fallback.
+
+#### Notes For Next Agent
+- The dev server may still be running from this session on port 3000.
+- If screenshot proof is required, retry Playwright after freeing local Chrome resources or use a lighter screenshot tool.

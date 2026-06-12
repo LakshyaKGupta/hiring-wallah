@@ -35,10 +35,10 @@ const floatingGlyphs = [
 ]
 
 const orbitCards = [
-  { label: 'Resume', value: '42 claims', className: 'left-[-7%] top-[15%]', delay: 0, icon: FileCheck2 },
-  { label: 'Rubric', value: 'weighted', className: 'right-[-8%] top-[20%]', delay: 0.7, icon: BarChart3 },
-  { label: 'Score', value: '91%', className: 'left-[-4%] bottom-[14%]', delay: 1.4, icon: CheckCircle2 },
-  { label: 'Signed', value: '7c2e...', className: 'right-[-6%] bottom-[12%]', delay: 2.1, icon: Fingerprint },
+  { label: 'Resume', value: '42 claims', position: 'left-1/2 top-0 -translate-x-1/2 -translate-y-1/2', delay: 0, icon: FileCheck2 },
+  { label: 'Rubric', value: 'weighted', position: 'right-0 top-1/2 translate-x-1/2 -translate-y-1/2', delay: 0.7, icon: BarChart3 },
+  { label: 'Score', value: '91%', position: 'bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2', delay: 1.4, icon: CheckCircle2 },
+  { label: 'Signed', value: '7c2e...', position: 'left-0 top-1/2 -translate-x-1/2 -translate-y-1/2', delay: 2.1, icon: Fingerprint },
 ]
 
 function HeroFloatingGlyphs() {
@@ -77,28 +77,34 @@ function DecisionOrbit() {
         transition={{ duration: 18, repeat: Infinity, ease: heroEase }}
         className="absolute left-1/2 top-1/2 h-[460px] w-[460px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-blue-200/70"
       />
-      {orbitCards.map(({ label, value, className, delay, icon: Icon }) => (
-        <motion.div
-          key={label}
-          initial={false}
-          animate={{
-            y: [0, -16, 0],
-            rotateX: [12, 18, 12],
-            rotateY: [-18, -8, -18],
-            scale: [1, 1.035, 1],
-          }}
-          transition={{ duration: 5.5, delay, repeat: Infinity, ease: heroEase }}
-          className={`absolute ${className} z-30 flex min-w-[128px] items-center gap-3 rounded-2xl border border-white/80 bg-white/75 px-3.5 py-3 shadow-[0_24px_55px_rgba(15,23,42,0.16)] backdrop-blur-xl [transform-style:preserve-3d]`}
-        >
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-            <Icon className="h-4 w-4" />
-          </span>
-          <span>
-            <span className="block text-xs font-black text-slate-900">{label}</span>
-            <span className="block text-[11px] font-semibold text-slate-500">{value}</span>
-          </span>
-        </motion.div>
-      ))}
+      <motion.div
+        aria-hidden
+        animate={{ rotate: [0, 360] }}
+        transition={{ duration: 18, repeat: Infinity, ease: heroEase }}
+        className="absolute left-1/2 top-1/2 h-[460px] w-[460px] -translate-x-1/2 -translate-y-1/2 [transform-style:preserve-3d]"
+      >
+        {orbitCards.map(({ label, value, position, delay, icon: Icon }) => (
+          <motion.div
+            key={label}
+            initial={false}
+            animate={{ rotate: [0, -360], y: [0, -8, 0], scale: [1, 1.035, 1] }}
+            transition={{
+              rotate: { duration: 18, repeat: Infinity, ease: heroEase },
+              y: { duration: 4.8, delay, repeat: Infinity, ease: heroEase },
+              scale: { duration: 4.8, delay, repeat: Infinity, ease: heroEase },
+            }}
+            className={`absolute ${position} z-30 flex min-w-[128px] items-center gap-3 rounded-2xl border border-white/80 bg-white/78 px-3.5 py-3 shadow-[0_24px_55px_rgba(15,23,42,0.16)] backdrop-blur-xl [transform-style:preserve-3d]`}
+          >
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+              <Icon className="h-4 w-4" />
+            </span>
+            <span>
+              <span className="block text-xs font-black text-slate-900">{label}</span>
+              <span className="block text-[11px] font-semibold text-slate-500">{value}</span>
+            </span>
+          </motion.div>
+        ))}
+      </motion.div>
     </div>
   )
 }
