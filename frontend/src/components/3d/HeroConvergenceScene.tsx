@@ -16,10 +16,10 @@ import {
 const heroEase: [number, number, number, number] = [0.16, 1, 0.3, 1]
 
 const signalNodes = [
-  { label: 'Resume', value: '42 claims', Icon: FileCheck2, className: 'left-[7%] top-[19%]', delay: 0 },
-  { label: 'Rubric', value: 'weighted', Icon: BarChart3, className: 'right-[6%] top-[24%]', delay: 0.25 },
-  { label: 'Evidence', value: '18 proofs', Icon: ShieldCheck, className: 'left-[12%] bottom-[21%]', delay: 0.5 },
-  { label: 'Ledger', value: 'signed', Icon: Fingerprint, className: 'right-[13%] bottom-[18%]', delay: 0.75 },
+  { label: 'Resume', value: '42 claims', Icon: FileCheck2, className: 'left-[12%] top-[19%]', delay: 0 },
+  { label: 'Rubric', value: 'weighted', Icon: BarChart3, className: 'right-[11%] top-[24%]', delay: 0.25 },
+  { label: 'Evidence', value: '18 proofs', Icon: ShieldCheck, className: 'left-[15%] bottom-[21%]', delay: 0.5 },
+  { label: 'Ledger', value: 'signed', Icon: Fingerprint, className: 'right-[15%] bottom-[18%]', delay: 0.75 },
 ]
 
 function SignalNode({
@@ -55,37 +55,37 @@ function SignalNode({
 
 function HeroSignalMap() {
   return (
-    <div className="relative mx-auto h-[560px] w-full max-w-[680px] overflow-visible">
+    <div className="relative mx-auto h-[500px] w-full max-w-[600px] overflow-visible">
       <div className="absolute inset-10 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.14),transparent_66%)] blur-3xl" />
 
-      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 680 560" fill="none" aria-hidden>
+      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 600 500" fill="none" aria-hidden>
         <motion.circle
-          cx="340"
-          cy="280"
-          r="210"
+          cx="300"
+          cy="250"
+          r="188"
           stroke="rgba(37,99,235,0.18)"
           strokeWidth="1"
           strokeDasharray="8 10"
           animate={{ rotate: 360 }}
           transition={{ duration: 42, repeat: Infinity, ease: 'linear' }}
-          style={{ transformOrigin: '340px 280px' }}
+          style={{ transformOrigin: '300px 250px' }}
         />
         <motion.circle
-          cx="340"
-          cy="280"
-          r="142"
+          cx="300"
+          cy="250"
+          r="126"
           stroke="rgba(15,23,42,0.10)"
           strokeWidth="1"
           strokeDasharray="4 9"
           animate={{ rotate: -360 }}
           transition={{ duration: 34, repeat: Infinity, ease: 'linear' }}
-          style={{ transformOrigin: '340px 280px' }}
+          style={{ transformOrigin: '300px 250px' }}
         />
         {[
-          'M162 144 C230 175 262 214 340 280',
-          'M516 156 C456 180 418 218 340 280',
-          'M173 420 C232 392 273 342 340 280',
-          'M505 430 C454 382 413 332 340 280',
+          'M150 128 C206 158 244 194 300 250',
+          'M453 140 C404 166 366 204 300 250',
+          'M164 378 C218 350 256 306 300 250',
+          'M440 386 C402 346 363 308 300 250',
         ].map((path, index) => (
           <motion.path
             key={path}
@@ -104,7 +104,7 @@ function HeroSignalMap() {
         initial={false}
         animate={{ y: [0, -12, 0], scale: [1, 1.015, 1] }}
         transition={{ duration: 8, repeat: Infinity, ease: heroEase }}
-        className="absolute left-1/2 top-1/2 z-30 flex h-56 w-56 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/90 bg-white/60 shadow-[0_34px_90px_rgba(15,23,42,0.16)] backdrop-blur-2xl"
+        className="absolute left-1/2 top-1/2 z-30 flex h-52 w-52 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/90 bg-white/60 shadow-[0_30px_74px_rgba(15,23,42,0.14)] backdrop-blur-2xl"
       >
         <div className="absolute inset-5 rounded-full border-[12px] border-slate-100" />
         <div className="absolute inset-5 rounded-full border-[12px] border-transparent border-r-emerald-500 border-t-blue-600" />
@@ -144,7 +144,7 @@ export function HeroConvergenceScene() {
       <div className="absolute left-1/2 top-0 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.11),transparent_68%)] blur-3xl" />
       <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-white" />
 
-      <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-10">
+      <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:gap-8">
         <div className="mx-auto max-w-2xl space-y-7 text-center lg:mx-0 lg:max-w-none lg:text-left">
           <div className="space-y-5">
             <motion.h1
@@ -200,7 +200,7 @@ export function HeroConvergenceScene() {
           </motion.div>
         </div>
 
-        <div className="hidden md:block lg:justify-self-end">
+        <div className="hidden md:flex md:justify-center lg:justify-self-center">
           <HeroSignalMap />
         </div>
       </div>

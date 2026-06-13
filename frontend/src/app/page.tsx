@@ -18,7 +18,6 @@ import {
   Users, 
   Zap,
   FileText,
-  BarChart2,
   type LucideIcon,
 } from 'lucide-react'
 import MeshBackground from '@/components/ui/MeshBackground'
@@ -28,7 +27,6 @@ import {
   EASE_OUT,
   appleTransition,
 } from '@/lib/motion'
-import TextReveal from '@/components/ui/TextReveal'
 import ScrollProgress from '@/components/ui/ScrollProgress'
 import { HeroConvergenceScene } from '@/components/3d/HeroConvergenceScene'
 import FloatingIcons from '@/components/ui/FloatingIcons'
@@ -64,109 +62,9 @@ const featureCards = [
     icon: Sliders,
     colorClass: 'text-indigo-600',
     bgClass: 'bg-indigo-50',
-    stat: 'Actionable',
+  stat: 'Actionable',
   },
 ] as const
-
-interface AgentCardProps {
-  title: string
-  role: string
-  mechanics: string
-  colorClass: string
-  borderColorClass: string
-  icon: React.ComponentType<{ className?: string }>
-  stepNumber: string
-}
-
-function AgentCard({ title, role, mechanics, colorClass, borderColorClass, icon: Icon, stepNumber }: AgentCardProps & { index?: number }) {
-  const [isHovered, setIsHovered] = useState(false)
-
-  return (
-    <motion.div
-      variants={sectionItemVariants}
-      onMouseLeave={() => setIsHovered(false)}
-      onMouseEnter={() => setIsHovered(true)}
-      className={`relative border-l-4 ${borderColorClass} border-y border-r border-y-border-subtle border-r-transparent bg-white/55 p-5 select-text cursor-pointer flex flex-col justify-between h-full group overflow-hidden backdrop-blur`}
-      whileHover={{
-        y: -6,
-        boxShadow: '0 16px 34px rgba(15, 23, 42, 0.04)',
-      }}
-      whileTap={{ scale: 0.98 }}
-      transition={appleTransition(0.35)}
-    >
-      <div className="absolute top-4 right-4 text-[40px] font-extrabold text-gray-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0 pointer-events-none select-none">
-        {stepNumber}
-      </div>
-      <motion.div
-        aria-hidden
-        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent"
-        animate={isHovered ? { x: ['-40%', '140%'] } : { x: '-40%' }}
-        transition={{ duration: 0.7, ease: EASE_OUT as [number, number, number, number] }}
-      />
-      
-      <div className="relative z-10 flex flex-col h-full">
-        <div className="flex items-center justify-between mb-4">
-          <motion.div 
-            className="p-3 rounded-xl bg-white/70 border border-gray-100 group-hover:bg-white group-hover:border-gray-200 transition-all duration-300"
-            whileHover={{ scale: 1.05, rotate: 4 }}
-          >
-            <Icon className={`w-6 h-6 ${colorClass}`} />
-          </motion.div>
-          <div className="text-xs font-bold text-gray-400 tracking-wide">{stepNumber}</div>
-        </div>
-
-        <h4 className="text-lg font-bold text-gray-900 tracking-tight mb-2">
-          {title}
-        </h4>
-
-        <p className="text-sm text-gray-500 leading-relaxed mb-6 flex-1">
-          {role}
-        </p>
-
-        <div className="border-t border-gray-100 pt-4 mt-auto">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-400 text-[10px] font-bold tracking-wide">Evidence check</span>
-            <motion.span 
-              className="text-emerald-600 bg-emerald-50 border border-emerald-100/50 px-2 py-0.5 rounded text-[9px] font-bold flex items-center gap-1.5"
-              animate={isHovered ? { scale: [1, 1.05, 1] } : {}}
-              transition={{ duration: 0.4 }}
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Active
-            </motion.span>
-          </div>
-          
-          <div className="bg-white/65 p-3 text-gray-600 min-h-[72px] overflow-hidden relative border-l border-gray-200">
-            <AnimatePresence mode="wait">
-              {isHovered ? (
-                <motion.div
-                  key="mechanics"
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                  transition={appleTransition(0.22)}
-                  className="text-gray-800 text-[11px] font-medium leading-relaxed"
-                >
-                  {mechanics}
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="waiting"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 0.6 }}
-                  exit={{ opacity: 0 }}
-                  className="text-gray-400 text-[11px] h-full flex items-center"
-                >
-                  Reasoning trail ready.
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  )
-}
 
 function FeatureReasoningCard({
   title,
@@ -188,79 +86,23 @@ function FeatureReasoningCard({
   return (
     <motion.div
       variants={sectionItemVariants}
-      className="group relative min-h-[230px] border-t border-gray-200/80 bg-white/55 p-5 md:p-6 transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer select-text backdrop-blur hover:bg-white/80"
-      whileHover={{ y: -4 }}
+      className="group grid gap-4 border-b border-slate-200 px-5 py-5 last:border-b-0 md:grid-cols-[56px_1fr_auto] md:items-center md:px-7"
+      whileHover={{ x: 4 }}
     >
-      <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-60" />
-      <motion.div
-        aria-hidden
-        className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-blue-50 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100"
-      />
-
-      <div className="relative z-10 flex flex-col h-full gap-6">
-        <div className="flex items-start justify-between">
-          <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${bgClass} border border-gray-100 shrink-0`}>
-            <Icon className={`h-6 w-6 ${colorClass}`} strokeWidth={2} />
-          </div>
-          <div className="bg-white/70 px-3 py-1.5 rounded-full border border-slate-100 flex items-center gap-2">
-            <BarChart2 className={`w-3.5 h-3.5 ${colorClass}`} />
-            <span className="text-[10px] font-bold text-slate-600 tracking-wide">{stat}</span>
-          </div>
+      <div className={`flex h-12 w-12 items-center justify-center rounded-full ${bgClass} border border-gray-100`}>
+        <Icon className={`h-5 w-5 ${colorClass}`} strokeWidth={2} />
+      </div>
+      <div>
+        <div className="mb-1 flex items-center gap-3">
+          <h3 className="text-xl font-extrabold tracking-tight text-gray-900">{title}</h3>
+          <span className="hidden rounded-full border border-slate-200 bg-white/80 px-2.5 py-1 text-[10px] font-bold tracking-wide text-slate-500 sm:inline-flex">
+            {String(index + 1).padStart(2, '0')}
+          </span>
         </div>
-
-        <div className="space-y-2 flex-1">
-          <h3 className="text-xl font-bold tracking-tight text-gray-900">
-            {title}
-          </h3>
-          <p className="text-sm leading-relaxed text-gray-500 font-medium">
-            {detail}
-          </p>
-        </div>
-
-        {/* Dynamic mockup visual at bottom of card */}
-        <div className="mt-auto">
-          {index === 0 && (
-            <div className="border-l border-gray-200 bg-gray-50/60 p-4 text-[11px] text-gray-500">
-              <div className="mb-2 flex items-center justify-between gap-3">
-                <span className="font-bold text-gray-900">10,000+ profiles</span>
-                <span className="rounded-full bg-blue-50 px-2 py-0.5 font-bold text-accent-primary">Processing</span>
-              </div>
-              <div className="h-1.5 w-full rounded-full bg-gray-200">
-                <div className="h-1.5 w-[85%] rounded-full bg-accent-primary" />
-              </div>
-            </div>
-          )}
-
-          {index === 1 && (
-            <div className="border-l border-gray-200 bg-gray-50/60 p-4 text-[11px] text-gray-500">
-              <div className="mb-2 border-b border-gray-200 pb-1.5 font-bold text-gray-900">Decision log</div>
-              <div>Parser extracted 5+ years React experience</div>
-              <div className="mt-1.5 font-bold text-emerald-600">Verdict: 91% match, strong hire</div>
-            </div>
-          )}
-
-          {index === 2 && (
-            <div className="space-y-1.5 border-l border-gray-200 bg-gray-50/60 p-4 text-[11px] text-gray-600">
-              <div className="flex items-center gap-2 font-semibold text-emerald-600">
-                <CheckCircle2 className="w-3.5 h-3.5" /> Built Go Microservices (Pg 2)
-              </div>
-              <div className="flex items-center gap-2 font-semibold text-amber-600">
-                <AlertOctagon className="w-3.5 h-3.5" /> No direct PM title (Pg 3)
-              </div>
-            </div>
-          )}
-
-          {index === 3 && (
-            <div className="border-l border-gray-200 bg-gray-50/60 p-4 text-[11px] text-gray-600">
-              <div className="mb-2 text-gray-400">Target skill gap audit</div>
-              <div className="flex flex-wrap gap-1.5">
-                <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-md border border-emerald-100 font-bold">React</span>
-                <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-md border border-emerald-100 font-bold">Node.js</span>
-                <span className="px-2 py-1 bg-rose-50 text-rose-700 rounded-md border border-rose-100 font-bold line-through">Docker</span>
-              </div>
-            </div>
-          )}
-        </div>
+        <p className="text-sm font-medium leading-relaxed text-gray-500">{detail}</p>
+      </div>
+      <div className="justify-self-start rounded-full border border-slate-200 bg-white/75 px-3 py-1.5 text-xs font-extrabold text-slate-700 md:justify-self-end">
+        {stat}
       </div>
     </motion.div>
   )
@@ -436,17 +278,19 @@ export default function LandingPage() {
                 Product Outcomes
               </motion.div>
               <motion.h2 variants={sectionItemVariants} className="font-display text-4xl lg:text-5xl font-extrabold leading-[1.1] tracking-tight text-gray-900">
-                <TextReveal effect="blur" staggerDelay={0.035}>From 1,247 resumes to 3 finalists.</TextReveal>
+                From 1,247 resumes to 3 finalists.
               </motion.h2>
               <motion.p variants={sectionItemVariants} className="text-base leading-relaxed text-gray-500 font-medium">
                 Shortlist top talent with absolute trust. Hiring Wallah replaces blind keyword filters with verified evidence auditing and consensus scoring.
               </motion.p>
             </motion.div>
 
-            <motion.div variants={sectionContainerVariants} className="grid sm:grid-cols-2 gap-6 lg:w-2/3">
+            <motion.div variants={sectionContainerVariants} className="lg:w-2/3">
+              <div className="overflow-hidden border-y border-slate-200 bg-white/50 backdrop-blur">
               {featureCards.map((feature, index) => (
                 <FeatureReasoningCard key={feature.title} {...feature} index={index} />
               ))}
+              </div>
             </motion.div>
           </div>
         </motion.div>
@@ -750,80 +594,43 @@ export default function LandingPage() {
               Decision Protocol
             </motion.div>
             <motion.h2 variants={sectionItemVariants} className="text-4xl md:text-5xl font-display font-extrabold text-gray-900 tracking-tight leading-tight">
-              <TextReveal effect="blur" staggerDelay={0.04}>How We Reach Decisions</TextReveal>
+              How We Reach Decisions
             </motion.h2>
             <motion.p variants={sectionItemVariants} className="text-base text-gray-500 leading-relaxed font-medium">
               We replace black-box models with a multi-stage consensus pipeline. Hover a stage to see the underlying reasoning logic.
             </motion.p>
           </div>
 
-          <motion.div 
+          <motion.div
             variants={sectionContainerVariants}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto relative"
+            className="mx-auto max-w-5xl border-y border-slate-200 bg-white/55 backdrop-blur"
           >
-            {/* Connecting line behind cards */}
-            <div className="absolute top-[80px] left-10 right-10 h-0.5 bg-gradient-to-r from-accent-primary/20 via-accent-secondary/30 to-emerald-500/20 hidden lg:block z-0" />
-
-            <AgentCard 
-              title="Requirement Analysis"
-              role="Deconstructs natural language JDs into deterministic objective assessment parameters."
-              mechanics="Strips marketing buzzwords from job roles, defining hard technical criteria and experience limits."
-              icon={Search}
-              colorClass="text-accent-primary"
-              borderColorClass="border-l-accent-primary"
-              stepNumber="01"
-              index={0}
-            />
-            <AgentCard 
-              title="Rubric Strategy"
-              role="Determines weight distributions. Establishes a balanced, target evaluation rubric."
-              mechanics="Reviews role level and allocates proportion variables (experience vs skill alignment) totalling 100%."
-              icon={Sliders}
-              colorClass="text-accent-secondary"
-              borderColorClass="border-l-accent-secondary"
-              stepNumber="02"
-              index={1}
-            />
-            <AgentCard 
-              title="Evidence Extraction"
-              role="Deconstructs resume formatting, mapping timeline records, projects, and roles."
-              mechanics="Forensically extracts plain text from resumes, mapping timestamps and ownership levels."
-              icon={Cpu}
-              colorClass="text-emerald-500"
-              borderColorClass="border-l-emerald-500"
-              stepNumber="03"
-              index={2}
-            />
-            <AgentCard 
-              title="Score Evaluation"
-              role="Measures candidate experience and proofs directly against Strategist rubric."
-              mechanics="Rates applicant project details based on autonomy, assigning quantitative evaluation scores."
-              icon={Award}
-              colorClass="text-amber-500"
-              borderColorClass="border-l-amber-500"
-              stepNumber="04"
-              index={3}
-            />
-            <AgentCard 
-              title="Self-Critique"
-              role="Challenges scores, flags inflated claims, unverified statements, and logical gaps."
-              mechanics="Cross-checks resume gaps and matches claims with project timelines to temper optimistic scoring."
-              icon={ShieldAlert}
-              colorClass="text-rose-500"
-              borderColorClass="border-l-rose-500"
-              stepNumber="05"
-              index={4}
-            />
-            <AgentCard 
-              title="Consensus Verdict"
-              role="Aggregates agent scores, conducts consensus voting, and publishes final reports."
-              mechanics="Brokers conflict resolution between Evaluator and Advocate, signing off on secure reports."
-              icon={Users}
-              colorClass="text-slate-500"
-              borderColorClass="border-l-slate-400"
-              stepNumber="06"
-              index={5}
-            />
+            {[
+              { num: '01', title: 'Requirement Analysis', role: 'Deconstructs natural language JDs into deterministic assessment parameters.', icon: Search, colorClass: 'text-accent-primary' },
+              { num: '02', title: 'Rubric Strategy', role: 'Sets weight distributions for experience, skills, proof quality, and role level.', icon: Sliders, colorClass: 'text-accent-secondary' },
+              { num: '03', title: 'Evidence Extraction', role: 'Maps resume timelines, projects, claims, and ownership signals into reviewable evidence.', icon: Cpu, colorClass: 'text-emerald-500' },
+              { num: '04', title: 'Score Evaluation', role: 'Scores candidates directly against the rubric instead of keyword density.', icon: Award, colorClass: 'text-amber-500' },
+              { num: '05', title: 'Self-Critique', role: 'Challenges inflated claims, missing proofs, timeline gaps, and unsupported assumptions.', icon: ShieldAlert, colorClass: 'text-rose-500' },
+              { num: '06', title: 'Consensus Verdict', role: 'Publishes a signed recommendation with disagreements and confidence visible.', icon: Users, colorClass: 'text-slate-500' },
+            ].map((step) => {
+              const Icon = step.icon
+              return (
+                <motion.div
+                  key={step.num}
+                  variants={sectionItemVariants}
+                  className="grid gap-4 border-b border-slate-200 px-5 py-5 last:border-b-0 md:grid-cols-[72px_1fr_52px] md:items-center md:px-7"
+                >
+                  <div className="text-sm font-black tracking-tight text-slate-400">{step.num}</div>
+                  <div>
+                    <h3 className="text-xl font-extrabold tracking-tight text-slate-950">{step.title}</h3>
+                    <p className="mt-1 text-sm font-medium leading-6 text-slate-500">{step.role}</p>
+                  </div>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white">
+                    <Icon className={`h-5 w-5 ${step.colorClass}`} />
+                  </div>
+                </motion.div>
+              )
+            })}
           </motion.div>
         </motion.div>
       </section>
@@ -840,7 +647,7 @@ export default function LandingPage() {
         >
           <div className="text-center max-w-2xl mx-auto space-y-4">
             <motion.h2 variants={sectionItemVariants} className="text-4xl md:text-5xl lg:text-6xl font-display font-extrabold tracking-tight leading-tight text-gray-900">
-              <TextReveal effect="scale" staggerDelay={0.04}>Ready to transform your hiring?</TextReveal>
+              Ready to transform your hiring?
             </motion.h2>
             <motion.p variants={sectionItemVariants} className="text-lg text-gray-500 leading-relaxed font-medium">
               Create a free account or sign in to access your workspace. No credit card required.

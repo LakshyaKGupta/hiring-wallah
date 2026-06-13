@@ -30,6 +30,7 @@ function NavLink({
   sectionId,
   icon: Icon,
   isActive,
+  onActivate,
   className = '',
 }: {
   href: string
@@ -37,6 +38,7 @@ function NavLink({
   sectionId: string
   icon: React.ComponentType<{ className?: string }>
   isActive: boolean
+  onActivate?: (sectionId: string) => void
   className?: string
 }) {
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -44,6 +46,7 @@ function NavLink({
     if (!element) return
 
     event.preventDefault()
+    onActivate?.(sectionId)
     window.history.replaceState(null, '', window.location.pathname)
     const targetTop = Math.max(0, element.offsetTop - 64)
     document.documentElement.scrollTop = targetTop
@@ -89,33 +92,36 @@ function NavbarContent() {
   const [activeSection, setActiveSection] = useState('hero')
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleEntry = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+    let frame = 0
 
-        if (visibleEntry?.target.id) {
-          setActiveSection(visibleEntry.target.id)
-          if (window.location.hash) {
-            window.history.replaceState(null, '', window.location.pathname)
-          }
+    const syncActiveSection = () => {
+      const scrollPosition = window.scrollY + 96
+      let nextSection = 'hero'
+
+      for (const id of sectionIds) {
+        const element = document.getElementById(id)
+        if (element && scrollPosition >= element.offsetTop) {
+          nextSection = id
         }
-      },
-      {
-        root: null,
-        rootMargin: '-35% 0px -45% 0px',
-        threshold: [0.2, 0.45, 0.7],
-      },
-    )
+      }
 
-    sectionIds.forEach((id) => {
-      const element = document.getElementById(id)
-      if (element) observer.observe(element)
-    })
+      setActiveSection(nextSection)
+      if (window.location.hash) {
+        window.history.replaceState(null, '', window.location.pathname)
+      }
+    }
+
+    const handleScroll = () => {
+      window.cancelAnimationFrame(frame)
+      frame = window.requestAnimationFrame(syncActiveSection)
+    }
+
+    syncActiveSection()
+    window.addEventListener('scroll', handleScroll, { passive: true })
 
     return () => {
-      observer.disconnect()
+      window.cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', handleScroll)
     }
   }, [])
 
@@ -151,6 +157,7 @@ function NavbarContent() {
               sectionId={item.sectionId}
               icon={item.icon}
               isActive={pathname === '/' ? activeSection === item.sectionId : item.match(pathname ?? '')}
+              onActivate={setActiveSection}
             />
           ))}
         </nav>

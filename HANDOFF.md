@@ -1360,3 +1360,62 @@ This file is the persistent project memory for AI agents and human contributors.
 #### Notes For Next Agent
 - Do not reintroduce `/#section` hrefs or URL hash writes for landing navigation.
 - Avoid viewport-gated reveal animations for core section content; they make the page feel unloaded.
+
+### Session Update - 2026-06-13 (Hero Centering, Fast Nav, Row-Based Sections)
+
+#### Objective
+- Fix the hero visual being off-center and partially cut.
+- Make lower sections feel already loaded instead of appearing late.
+- Make navbar section links update faster while keeping the URL clean.
+- Replace the disliked Product Outcomes and How We Reach Decisions card layouts.
+
+#### Completed
+- Centered and resized the hero signal map:
+  - Reduced visual width/height and moved nodes away from clipping edges.
+  - Centered the hero visual in its grid column instead of pushing it to the far right.
+- Improved navbar responsiveness:
+  - Replaced delayed IntersectionObserver active-state updates with a lightweight scroll listener.
+  - Nav active state now updates immediately on click via `onActivate`.
+  - Section links still render as `/` and do not show `/#...` in the URL.
+- Removed remaining perceived load delays:
+  - Removed viewport-gated reveal usage from the landing path.
+  - Replaced animated `TextReveal` headings in Outcomes, Process, and CTA with direct text.
+- Reworked disliked card sections:
+  - Product Outcomes now renders as a proof-ledger row system instead of a card grid.
+  - How We Reach Decisions now renders as a timeline/list system instead of six boxed cards.
+
+#### Files Modified
+- `frontend/src/components/3d/HeroConvergenceScene.tsx`
+- `frontend/src/components/ui/Navbar.tsx`
+- `frontend/src/app/page.tsx`
+- `HANDOFF.md`
+
+#### Architecture Decisions
+- Kept section IDs for scroll targets but kept visible URLs clean.
+- Removed visual card components from the main landing outcomes/process sections rather than restyling the same card structure.
+- Preserved existing routes and auth/workspace flows.
+
+#### Dependencies Added
+- None.
+
+#### Verification
+- `npm run lint` in `frontend`: passed.
+- `npm run build` in `frontend`: passed.
+- `curl -L http://127.0.0.1:3000/`: returned HTTP 200.
+- Browser QA:
+  - Desktop page loaded at `http://127.0.0.1:3000/`.
+  - Mobile viewport `390x844` loaded at the same URL.
+  - Snapshot confirmed navbar section links do not render `/#...` URLs.
+  - Snapshot confirmed hero signal nodes and new Outcomes/Process row layouts.
+  - Console showed only normal React DevTools/HMR messages.
+
+#### Issues Found
+- The hero map was too wide for its grid column and could be clipped by the section overflow.
+- Navbar active state was too dependent on IntersectionObserver thresholds, making it feel delayed.
+
+#### Pending Work
+- Workspaces can still be redesigned further if the user wants the browser mockup removed too.
+
+#### Notes For Next Agent
+- Keep hero visuals inside a bounded center column; avoid wide absolute-positioned nodes near section edges.
+- Do not bring back card grids for Outcomes or Process unless the user explicitly asks.
