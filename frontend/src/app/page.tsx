@@ -423,9 +423,10 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 2: FEATURES */}
-      <section id="features" className="w-full min-h-[calc(100vh-64px)] lg:h-[calc(100vh-64px)] flex flex-col justify-center py-14 lg:py-10 relative overflow-hidden bg-white border-b border-gray-100 scroll-mt-16">
+      <section id="features" className="w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 lg:py-20 relative overflow-hidden bg-white scroll-mt-16">
         <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-white pointer-events-none" />
-        <FloatingIcons count={12} />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-[#f7f8fb]" />
+        <FloatingIcons count={5} />
 
         <motion.div
           variants={sectionContainerVariants}
@@ -457,9 +458,11 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 3: WORKSPACES */}
-      <section id="workspaces" className="w-full min-h-[calc(100vh-64px)] lg:h-[calc(100vh-64px)] flex flex-col justify-center py-14 lg:py-10 relative overflow-hidden bg-[#F4F4F6] border-b border-gray-200 scroll-mt-16">
+      <section id="workspaces" className="w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 lg:py-20 relative overflow-hidden bg-[#f7f8fb] scroll-mt-16">
         <MeshBackground opacity={0.04} />
-        <FloatingIcons count={10} />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-white" />
+        <FloatingIcons count={4} />
 
         <motion.div 
           variants={sectionContainerVariants}
@@ -554,7 +557,7 @@ export default function LandingPage() {
 
                 <div className="lg:col-span-7 relative">
                   <div className="absolute -inset-4 bg-gradient-to-r from-accent-primary/20 to-accent-secondary/20 blur-3xl opacity-50 rounded-[3rem]" />
-                  <div className="bg-white border border-gray-200/60 rounded-2xl shadow-2xl overflow-hidden relative z-10 flex flex-col h-[440px]">
+                  <div className="bg-white border border-gray-200/60 rounded-2xl shadow-2xl overflow-hidden relative z-10 flex min-h-[420px] flex-col">
                     <div className="bg-gray-50/80 border-b border-gray-200 px-4 py-3 flex items-center gap-3">
                       <div className="flex gap-1.5">
                         <div className="w-3 h-3 rounded-full bg-gray-300" />
@@ -738,8 +741,9 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 4: HOW IT WORKS */}
-      <section id="how-it-works" className="w-full min-h-[calc(100vh-64px)] lg:h-[calc(100vh-64px)] flex flex-col justify-center py-14 lg:py-10 relative overflow-hidden bg-white border-b border-gray-100 scroll-mt-16">
-        <FloatingIcons count={10} />
+      <section id="how-it-works" className="w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 lg:py-20 relative overflow-hidden bg-white scroll-mt-16">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-white" />
+        <FloatingIcons count={4} />
 
         <motion.div 
           variants={sectionContainerVariants}
@@ -832,7 +836,7 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 5: CTA */}
-      <section id="cta" className="w-full min-h-[calc(100vh-64px)] lg:h-[calc(100vh-64px)] flex flex-col justify-center py-14 lg:py-10 relative overflow-hidden bg-white border-t border-gray-100 scroll-mt-16">
+      <section id="cta" className="w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 lg:py-20 relative overflow-hidden bg-white scroll-mt-16">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(124,58,237,0.05),transparent_70%)]" />
 
         <motion.div 

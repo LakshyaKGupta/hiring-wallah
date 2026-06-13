@@ -1249,3 +1249,56 @@ This file is the persistent project memory for AI agents and human contributors.
 #### Notes For Next Agent
 - The hero now intentionally uses fewer moving UI objects; keep future animation additions tied to evidence/review artifacts rather than decorative clutter.
 - Avoid reintroducing mono uppercase dashboard labels except for true code, hashes, or tabular numeric displays.
+
+### Session Update - 2026-06-13 (Section Flow & Hero Canvas Inspection)
+
+#### Objective
+- Inspect the frontend visually because section endings felt hard-cut, some cards/text were being clipped at page boundaries, the hero card still did not feel sufficiently changed, and the page felt laggy.
+
+#### Completed
+- Replaced the hero right-side treatment again with a more distinct review-canvas composition:
+  - Central score ring, floating resume/rubric/ledger sheets, evidence rails, weighted scorecard, and signed ledger strip.
+  - Reduced the number of always-running hero animations and removed the previous rectangular dashboard-card feel.
+- Fixed section flow and clipping risk in `frontend/src/app/page.tsx`:
+  - Removed forced desktop `lg:h-[calc(100vh-64px)]` constraints from the major landing sections.
+  - Kept full-page feel with `min-h-[calc(100vh-64px)]` while allowing content to grow naturally.
+  - Added soft gradient handoffs between hero, outcomes, workspaces, process, and CTA sections.
+- Reduced lag sources:
+  - Lowered decorative floating icon counts across sections.
+  - Updated `FloatingIcons` to respect `prefers-reduced-motion`.
+  - Slowed decorative icon drift and kept transforms GPU-friendly.
+
+#### Files Modified
+- `frontend/src/components/3d/HeroConvergenceScene.tsx`
+- `frontend/src/app/page.tsx`
+- `frontend/src/components/ui/FloatingIcons.tsx`
+- `HANDOFF.md`
+
+#### Architecture Decisions
+- Kept the existing five-section landing page and section IDs.
+- Removed clipping by changing height behavior rather than adding scroll snapping or hidden overflow tricks.
+- Avoided new dependencies; all visual changes use existing React, Tailwind, Framer Motion, and lucide assets.
+
+#### Dependencies Added
+- None.
+
+#### Verification
+- `npm run lint` in `frontend`: passed.
+- `npm run build` in `frontend`: passed.
+- `curl -L http://127.0.0.1:3000/`: returned HTTP 200.
+- Browser QA with MCP Playwright:
+  - Desktop page loaded at `http://127.0.0.1:3000/`.
+  - Mobile viewport `390x844` loaded at the same URL.
+  - Snapshots showed the new `Live candidate review` hero canvas plus Outcomes, Workspaces, Process, and CTA sections in order.
+  - Console output only showed normal React DevTools/HMR development messages.
+
+#### Issues Found
+- The previous desktop-only `lg:h-[calc(100vh-64px)]` rules were the main cause of section-end clipping and hard cuts.
+- Repeated decorative floating icon layers were heavier than needed for the landing page.
+
+#### Pending Work
+- If the user wants even more premium polish, the Workspaces mock browser panel should be redesigned next because it is now the oldest-looking section.
+
+#### Notes For Next Agent
+- Do not restore forced one-viewport heights on dense sections. Use min-height plus content-aware spacing.
+- Keep decorative motion sparse; prioritize product-specific motion over repeated background icons.

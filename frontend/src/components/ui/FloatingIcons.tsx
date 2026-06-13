@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useMemo } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import {
   FileText,
   Sparkles,
@@ -73,6 +73,7 @@ function createConfig(index: number): FloatingIconConfig {
 }
 
 export default function FloatingIcons({ count = 8 }: { count?: number }) {
+  const shouldReduceMotion = useReducedMotion()
   const configs = useMemo(
     () => Array.from({ length: count }).map((_, index) => createConfig(index)),
     [count],
@@ -85,23 +86,23 @@ export default function FloatingIcons({ count = 8 }: { count?: number }) {
         return (
           <motion.div
             key={config.id}
-            className="absolute text-accent-primary"
+            className="absolute text-accent-primary will-change-transform"
             style={{
               left: config.x,
               top: config.y,
               scale: config.scale,
               opacity: config.opacity,
             }}
-            animate={{
+            animate={shouldReduceMotion ? undefined : {
               x: config.xDrift,
               y: config.yDrift,
               rotate: config.rotateDrift,
             }}
-            transition={{
-              duration: config.duration,
+            transition={shouldReduceMotion ? undefined : {
+              duration: config.duration * 1.35,
               delay: config.delay,
               repeat: Infinity,
-              ease: 'easeInOut',
+              ease: [0.16, 1, 0.3, 1],
             }}
           >
             <Icon className="w-8 h-8 md:w-12 md:h-12" strokeWidth={1.2} />
