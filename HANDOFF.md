@@ -1203,3 +1203,49 @@ This file is the persistent project memory for AI agents and human contributors.
 #### Notes For Next Agent
 - Browser automation was unreliable in the prior session; if visual proof is needed, retry after clearing browser runtime processes.
 - The next visual pass should focus on the Workspaces mock browser panel, which still has older generic SaaS styling compared with the hero.
+
+### Session Update - 2026-06-13 (Hero Card Replacement & Alignment Cleanup)
+
+#### Objective
+- Fix visible frontend alignment issues and replace the hero section card because the previous orbit/dashboard treatment felt generic and visually weak.
+
+#### Completed
+- Rebuilt `frontend/src/components/3d/HeroConvergenceScene.tsx` around a cleaner candidate review product card:
+  - Removed the noisy four-card rotating orbit and dense two-column mini dashboard.
+  - Added one stronger candidate review panel with score, verified proof, risk check, score bars, signed ledger, and calmer floating evidence chips.
+  - Re-centered hero copy, buttons, and stats on mobile/tablet while preserving left alignment on desktop.
+  - Shifted the hero background to a lighter warm surface with animated radial depth instead of a static flat backdrop.
+- Cleaned remaining AI-generated-looking typography in `frontend/src/app/page.tsx`:
+  - Removed several `font-mono` mini blocks from feature cards.
+  - Converted leftover uppercase labels into calmer sentence-case labels.
+  - Kept the existing five-section landing structure and routing intact.
+
+#### Files Modified
+- `frontend/src/components/3d/HeroConvergenceScene.tsx`
+- `frontend/src/app/page.tsx`
+- `HANDOFF.md`
+
+#### Architecture Decisions
+- Kept the hero as a single React/Framer Motion component with no new dependencies.
+- Used existing lucide icons and existing motion easing instead of adding a new visual system.
+- Preserved the existing section IDs, auth links, and landing navigation contracts.
+
+#### Dependencies Added
+- None.
+
+#### Verification
+- `npm run lint` in `frontend`: passed.
+- `npm run build` in `frontend`: passed.
+- `curl -L http://127.0.0.1:3000/`: returned HTTP 200.
+
+#### Issues Found
+- Playwright is not installed in this frontend, so a terminal-driven screenshot pass could not run without adding a dependency.
+- Port 3000 was already serving locally, so the existing dev server was reused.
+
+#### Pending Work
+- If stronger screenshot evidence is required, add or temporarily install a visual test runner and capture desktop/mobile hero screenshots.
+- Continue visual polish on the Workspaces mock browser panel, which still carries older generic SaaS styling.
+
+#### Notes For Next Agent
+- The hero now intentionally uses fewer moving UI objects; keep future animation additions tied to evidence/review artifacts rather than decorative clutter.
+- Avoid reintroducing mono uppercase dashboard labels except for true code, hashes, or tabular numeric displays.

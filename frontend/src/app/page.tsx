@@ -125,7 +125,7 @@ function AgentCard({ title, role, mechanics, colorClass, borderColorClass, icon:
 
         <div className="border-t border-gray-100 pt-4 mt-auto">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-400 text-[10px] uppercase font-bold tracking-wider">Evidence check</span>
+            <span className="text-gray-400 text-[10px] font-bold tracking-wide">Evidence check</span>
             <motion.span 
               className="text-emerald-600 bg-emerald-50 border border-emerald-100/50 px-2 py-0.5 rounded text-[9px] font-bold flex items-center gap-1.5"
               animate={isHovered ? { scale: [1, 1.05, 1] } : {}}
@@ -220,39 +220,39 @@ function FeatureReasoningCard({
         {/* Dynamic mockup visual at bottom of card */}
         <div className="mt-auto">
           {index === 0 && (
-            <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 font-mono text-[10px] text-gray-500">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-gray-900 font-bold">10,000+ Profiles</span>
-                <span className="text-accent-primary animate-pulse">Processing...</span>
+            <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 text-[11px] text-gray-500">
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <span className="font-bold text-gray-900">10,000+ profiles</span>
+                <span className="rounded-full bg-blue-50 px-2 py-0.5 font-bold text-accent-primary">Processing</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-1.5">
-                <div className="bg-accent-primary h-1.5 rounded-full w-[85%]"></div>
+              <div className="h-1.5 w-full rounded-full bg-gray-200">
+                <div className="h-1.5 w-[85%] rounded-full bg-accent-primary" />
               </div>
             </div>
           )}
 
           {index === 1 && (
-            <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 font-mono text-[10px] text-gray-500">
-              <div className="text-gray-900 font-bold border-b border-gray-200 pb-1.5 mb-1.5">DECISION LOG</div>
-              <div>Parser: Extracted 5+ years React exp</div>
-              <div className="text-emerald-600 font-bold mt-1.5">Verdict: 91% Match (Strong Hire)</div>
+            <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 text-[11px] text-gray-500">
+              <div className="mb-2 border-b border-gray-200 pb-1.5 font-bold text-gray-900">Decision log</div>
+              <div>Parser extracted 5+ years React experience</div>
+              <div className="mt-1.5 font-bold text-emerald-600">Verdict: 91% match, strong hire</div>
             </div>
           )}
 
           {index === 2 && (
-            <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 font-mono text-[10px] text-gray-600 space-y-1.5">
-              <div className="flex items-center gap-2 text-emerald-600 font-semibold">
+            <div className="space-y-1.5 rounded-xl border border-gray-100 bg-gray-50 p-4 text-[11px] text-gray-600">
+              <div className="flex items-center gap-2 font-semibold text-emerald-600">
                 <CheckCircle2 className="w-3.5 h-3.5" /> Built Go Microservices (Pg 2)
               </div>
-              <div className="flex items-center gap-2 text-amber-600 font-semibold">
+              <div className="flex items-center gap-2 font-semibold text-amber-600">
                 <AlertOctagon className="w-3.5 h-3.5" /> No direct PM title (Pg 3)
               </div>
             </div>
           )}
 
           {index === 3 && (
-            <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 font-mono text-[10px] text-gray-600">
-              <div className="text-gray-400 mb-2">Target Skill Gap Audit:</div>
+            <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 text-[11px] text-gray-600">
+              <div className="mb-2 text-gray-400">Target skill gap audit</div>
               <div className="flex flex-wrap gap-1.5">
                 <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-md border border-emerald-100 font-bold">React</span>
                 <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-md border border-emerald-100 font-bold">Node.js</span>
@@ -436,7 +436,7 @@ export default function LandingPage() {
         >
           <div className="flex flex-col lg:flex-row gap-10 lg:gap-14 items-start">
             <motion.div variants={sectionContainerVariants} className="space-y-5 lg:w-1/3">
-              <motion.div variants={sectionItemVariants} className="inline-flex bg-accent-primary/10 border border-accent-primary/20 text-accent-primary rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider">
+              <motion.div variants={sectionItemVariants} className="inline-flex bg-accent-primary/10 border border-accent-primary/20 text-accent-primary rounded-full px-4 py-1.5 text-xs font-bold tracking-wide">
                 Product Outcomes
               </motion.div>
               <motion.h2 variants={sectionItemVariants} className="font-display text-4xl lg:text-5xl font-extrabold leading-[1.1] tracking-tight text-gray-900">
@@ -470,7 +470,7 @@ export default function LandingPage() {
         >
           {/* Header & Tabs */}
           <div className="text-center space-y-4 max-w-2xl mx-auto">
-            <motion.div variants={sectionItemVariants} className="inline-flex bg-accent-secondary/10 border border-accent-secondary/20 text-accent-secondary rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider">
+            <motion.div variants={sectionItemVariants} className="inline-flex bg-accent-secondary/10 border border-accent-secondary/20 text-accent-secondary rounded-full px-4 py-1.5 text-xs font-bold tracking-wide">
               Workspace Portals
             </motion.div>
             <motion.h2 variants={sectionItemVariants} className="text-4xl md:text-5xl font-display font-extrabold text-gray-900 tracking-tight leading-tight">
@@ -577,13 +577,13 @@ export default function LandingPage() {
                           </div>
                           <div className="text-right">
                             <div className="text-3xl font-extrabold text-accent-primary tracking-tight">91%</div>
-                            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1">Match Score</div>
+                            <div className="mt-1 text-[10px] font-bold tracking-wide text-gray-400">Match score</div>
                           </div>
                         </div>
 
                         <div className="flex-1 space-y-6">
                           <div>
-                            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3">Verified Evidence (6 Agents)</div>
+                            <div className="mb-3 text-[10px] font-bold tracking-wide text-gray-400">Verified evidence, 6 agents</div>
                             <div className="space-y-3">
                               {[
                                 { text: "Built AI hiring platform", sub: "Verified in project portfolio (Page 2)" },
@@ -601,7 +601,7 @@ export default function LandingPage() {
                           </div>
                           <div className="pt-6 border-t border-gray-100">
                             <div className="flex items-center justify-between">
-                              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Consensus Verdict</span>
+                              <span className="text-[10px] font-bold tracking-wide text-gray-400">Consensus verdict</span>
                               <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">STRONG HIRE</span>
                             </div>
                           </div>
@@ -689,7 +689,7 @@ export default function LandingPage() {
                 </div>
 
                 <div className="lg:col-span-6 bg-white border border-gray-200 rounded-[2.5rem] p-10 md:p-12 shadow-xl flex flex-col items-center justify-center text-center">
-                  <span className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-10">Match Score</span>
+                  <span className="mb-10 text-sm font-bold tracking-wide text-gray-400">Match score</span>
                   
                   <div className="relative w-56 h-56 flex items-center justify-center mb-10">
                     <svg className="w-full h-full transform -rotate-90">
@@ -749,7 +749,7 @@ export default function LandingPage() {
           className="max-w-7xl mx-auto px-6 w-full relative z-10 space-y-8 lg:space-y-10"
         >
           <div className="text-center max-w-2xl mx-auto space-y-4">
-            <motion.div variants={sectionItemVariants} className="inline-flex bg-gray-100 border border-gray-200 text-gray-600 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider">
+            <motion.div variants={sectionItemVariants} className="inline-flex bg-gray-100 border border-gray-200 text-gray-600 rounded-full px-4 py-1.5 text-xs font-bold tracking-wide">
               Decision Protocol
             </motion.div>
             <motion.h2 variants={sectionItemVariants} className="text-4xl md:text-5xl font-display font-extrabold text-gray-900 tracking-tight leading-tight">
