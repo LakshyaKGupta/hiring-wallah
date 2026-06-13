@@ -30,6 +30,7 @@ import {
 import ScrollProgress from '@/components/ui/ScrollProgress'
 import { HeroConvergenceScene } from '@/components/3d/HeroConvergenceScene'
 import FloatingIcons from '@/components/ui/FloatingIcons'
+import { SectionReveal } from '@/components/ui/SectionReveal'
 
 const featureCards = [
   {
@@ -261,32 +262,25 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 2: FEATURES */}
-      <section id="features" className="w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 lg:py-20 relative overflow-hidden bg-white scroll-mt-16">
+      <section id="features" className="w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 lg:py-20 relative overflow-hidden bg-white scroll-mt-16 section-divider">
         <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-white pointer-events-none" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-[#f7f8fb]" />
         <FloatingIcons count={5} />
 
-        <motion.div
-          variants={sectionContainerVariants}
-          initial="show"
-          animate="show"
-          className="relative z-10 mx-auto w-full max-w-7xl px-6"
-        >
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-6">
           <div className="flex flex-col lg:flex-row gap-10 lg:gap-14 items-start">
-            <motion.div variants={sectionContainerVariants} className="space-y-5 lg:w-1/3">
-              <motion.div variants={sectionItemVariants} className="inline-flex bg-accent-primary/10 border border-accent-primary/20 text-accent-primary rounded-full px-4 py-1.5 text-xs font-bold tracking-wide">
+            <SectionReveal className="space-y-5 lg:w-1/3" variant="left">
+              <div className="inline-flex bg-accent-primary/10 border border-accent-primary/20 text-accent-primary rounded-full px-4 py-1.5 text-xs font-bold tracking-wide">
                 Product Outcomes
-              </motion.div>
-              <motion.h2 variants={sectionItemVariants} className="outcome-headline-motion font-display text-4xl lg:text-5xl font-extrabold leading-[1.1] tracking-tight text-gray-900">
-                From 1,247 resumes to 3 finalists.
-              </motion.h2>
-              <motion.p variants={sectionItemVariants} className="outcome-copy-motion text-base leading-relaxed text-gray-500 font-medium">
-                Shortlist top talent with absolute trust. Hiring Wallah replaces blind keyword filters with verified evidence auditing and consensus scoring.
-              </motion.p>
-              <motion.div
-                variants={sectionItemVariants}
-                className="outcome-ribbon relative overflow-hidden border-y border-slate-200 bg-white/70 px-3 py-2 text-xs font-extrabold tracking-wide text-slate-600"
-              >
+              </div>
+              <h2 className="outcome-headline-motion font-display text-4xl lg:text-5xl font-extrabold leading-[1.1] tracking-tight text-gray-900">
+                From 1,247 resumes<br />to 3 finalists.
+              </h2>
+              <p className="outcome-copy-motion text-base leading-relaxed text-gray-500 font-medium">
+                Shortlist top talent with{' '}
+                <span className="font-extrabold text-gray-900">absolute trust</span>. Hiring Wallah replaces blind keyword filters with verified evidence auditing and consensus scoring — every shortlist comes with a signed paper trail.
+              </p>
+              <div className="outcome-ribbon relative overflow-hidden border-y border-slate-200 bg-white/70 px-3 py-2 text-xs font-extrabold tracking-wide text-slate-600">
                 <div className="flex items-center gap-3 whitespace-nowrap">
                   <span>Parse</span>
                   <span className="h-px w-8 bg-slate-300" />
@@ -296,50 +290,42 @@ export default function LandingPage() {
                   <span className="h-px w-8 bg-slate-300" />
                   <span>Sign</span>
                 </div>
-              </motion.div>
-            </motion.div>
+              </div>
+            </SectionReveal>
 
-            <motion.div variants={sectionContainerVariants} className="lg:w-2/3">
+            <SectionReveal className="lg:w-2/3" variant="default" delay={100}>
               <div className="overflow-hidden border-y border-slate-200 bg-white/50 backdrop-blur">
               {featureCards.map((feature, index) => (
                 <FeatureReasoningCard key={feature.title} {...feature} index={index} />
               ))}
               </div>
-            </motion.div>
+            </SectionReveal>
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* SECTION 3: WORKSPACES */}
-      <section id="workspaces" className="w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 lg:py-20 relative overflow-hidden bg-[#f7f8fb] scroll-mt-16">
+      <section id="workspaces" className="w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 lg:py-20 relative overflow-hidden bg-[#f7f8fb] scroll-mt-16 section-divider">
         <MeshBackground opacity={0.04} />
         <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white to-transparent" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-white" />
         <FloatingIcons count={4} />
 
-        <motion.div 
-          variants={sectionContainerVariants}
-          initial="show"
-          animate="show"
-          className="max-w-7xl mx-auto px-6 w-full relative z-10 space-y-8 lg:space-y-10"
-        >
+        <div className="max-w-7xl mx-auto px-6 w-full relative z-10 space-y-8 lg:space-y-10">
           {/* Header & Tabs */}
-          <div className="text-center space-y-4 max-w-2xl mx-auto">
-            <motion.div variants={sectionItemVariants} className="inline-flex bg-accent-secondary/10 border border-accent-secondary/20 text-accent-secondary rounded-full px-4 py-1.5 text-xs font-bold tracking-wide">
+          <SectionReveal className="text-center space-y-4 max-w-2xl mx-auto">
+            <div className="inline-flex bg-accent-secondary/10 border border-accent-secondary/20 text-accent-secondary rounded-full px-4 py-1.5 text-xs font-bold tracking-wide">
               Workspace Portals
-            </motion.div>
-            <motion.h2 variants={sectionItemVariants} className="text-4xl md:text-5xl font-display font-extrabold text-gray-900 tracking-tight leading-tight">
+            </div>
+            <h2 className="text-4xl md:text-5xl font-display font-extrabold text-gray-900 tracking-tight leading-tight">
               Enterprise-Grade Workspaces
-            </motion.h2>
-            <motion.p variants={sectionItemVariants} className="text-base text-gray-500 leading-relaxed font-medium max-w-lg mx-auto">
+            </h2>
+            <p className="text-base text-gray-500 leading-relaxed font-medium max-w-lg mx-auto">
               Explore role alignment, consensus scorecards, and verification trails from both sides of the hiring equation.
-            </motion.p>
+            </p>
             
             {/* Sliding Pill Tab Switcher */}
-            <motion.div 
-              variants={sectionItemVariants}
-              className="inline-flex p-1.5 bg-gray-200/50 rounded-2xl relative"
-            >
+            <div className="inline-flex p-1.5 bg-gray-200/50 rounded-2xl relative">
               {(['recruiter', 'candidate'] as const).map((tab) => (
                 <button
                   key={tab}
@@ -358,8 +344,8 @@ export default function LandingPage() {
                   <span className="capitalize">{tab} {tab === 'recruiter' ? 'Workspace' : 'Portal'}</span>
                 </button>
               ))}
-            </motion.div>
-          </div>
+            </div>
+          </SectionReveal>
 
           <AnimatePresence mode="wait">
             {workspaceTab === 'recruiter' ? (
@@ -589,36 +575,28 @@ export default function LandingPage() {
               </motion.div>
             )}
           </AnimatePresence>
-        </motion.div>
+        </div>
       </section>
 
       {/* SECTION 4: HOW IT WORKS */}
-      <section id="how-it-works" className="w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 lg:py-20 relative overflow-hidden bg-white scroll-mt-16">
+      <section id="how-it-works" className="w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 lg:py-20 relative overflow-hidden bg-white scroll-mt-16 section-divider">
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-white" />
         <FloatingIcons count={4} />
 
-        <motion.div 
-          variants={sectionContainerVariants}
-          initial="show"
-          animate="show"
-          className="max-w-7xl mx-auto px-6 w-full relative z-10 space-y-8 lg:space-y-10"
-        >
+        <SectionReveal className="max-w-7xl mx-auto px-6 w-full relative z-10 space-y-8 lg:space-y-10">
           <div className="text-center max-w-2xl mx-auto space-y-4">
-            <motion.div variants={sectionItemVariants} className="inline-flex bg-gray-100 border border-gray-200 text-gray-600 rounded-full px-4 py-1.5 text-xs font-bold tracking-wide">
+            <div className="inline-flex bg-gray-100 border border-gray-200 text-gray-600 rounded-full px-4 py-1.5 text-xs font-bold tracking-wide">
               Decision Protocol
-            </motion.div>
-            <motion.h2 variants={sectionItemVariants} className="text-4xl md:text-5xl font-display font-extrabold text-gray-900 tracking-tight leading-tight">
+            </div>
+            <h2 className="text-4xl md:text-5xl font-display font-extrabold text-gray-900 tracking-tight leading-tight">
               How We Reach Decisions
-            </motion.h2>
-            <motion.p variants={sectionItemVariants} className="text-base text-gray-500 leading-relaxed font-medium">
+            </h2>
+            <p className="text-base text-gray-500 leading-relaxed font-medium">
               We replace black-box models with a multi-stage consensus pipeline. Hover a stage to see the underlying reasoning logic.
-            </motion.p>
+            </p>
           </div>
 
-          <motion.div
-            variants={sectionContainerVariants}
-            className="mx-auto max-w-5xl border-y border-slate-200 bg-white/55 backdrop-blur"
-          >
+          <SectionReveal className="mx-auto max-w-5xl border-y border-slate-200 bg-white/55 backdrop-blur" delay={80}>
             {[
               { num: '01', title: 'Requirement Analysis', role: 'Deconstructs natural language JDs into deterministic assessment parameters.', icon: Search, colorClass: 'text-accent-primary' },
               { num: '02', title: 'Rubric Strategy', role: 'Sets weight distributions for experience, skills, proof quality, and role level.', icon: Sliders, colorClass: 'text-accent-secondary' },
@@ -629,9 +607,8 @@ export default function LandingPage() {
             ].map((step) => {
               const Icon = step.icon
               return (
-                <motion.div
+                <div
                   key={step.num}
-                  variants={sectionItemVariants}
                   className="grid gap-4 border-b border-slate-200 px-5 py-5 transition-all duration-300 hover:translate-x-1 hover:bg-white/70 last:border-b-0 md:grid-cols-[72px_1fr_52px] md:items-center md:px-7"
                 >
                   <div className="text-sm font-black tracking-tight text-slate-400">{step.num}</div>
@@ -642,60 +619,40 @@ export default function LandingPage() {
                   <div className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white">
                     <Icon className={`h-5 w-5 ${step.colorClass}`} />
                   </div>
-                </motion.div>
+                </div>
               )
             })}
-          </motion.div>
-        </motion.div>
+          </SectionReveal>
+        </SectionReveal>
       </section>
 
       {/* SECTION 5: CTA */}
       <section id="cta" className="w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 lg:py-20 relative overflow-hidden bg-white scroll-mt-16">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(124,58,237,0.05),transparent_70%)]" />
 
-        <motion.div 
-          variants={sectionContainerVariants}
-          initial="show"
-          animate="show"
-          className="max-w-7xl mx-auto px-6 w-full flex flex-col justify-center relative z-10 space-y-8 lg:space-y-10"
-        >
-          <div className="text-center max-w-2xl mx-auto space-y-4">
-            <motion.h2 variants={sectionItemVariants} className="text-4xl md:text-5xl lg:text-6xl font-display font-extrabold tracking-tight leading-tight text-gray-900">
+        <div className="max-w-7xl mx-auto px-6 w-full flex flex-col justify-center relative z-10 space-y-8 lg:space-y-10">
+          <SectionReveal className="text-center max-w-2xl mx-auto space-y-4">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-extrabold tracking-tight leading-tight text-gray-900">
               Ready to transform your hiring?
-            </motion.h2>
-            <motion.p variants={sectionItemVariants} className="text-lg text-gray-500 leading-relaxed font-medium">
+            </h2>
+            <p className="text-lg text-gray-500 leading-relaxed font-medium">
               Create a free account or sign in to access your workspace. No credit card required.
-            </motion.p>
-          </div>
+            </p>
+          </SectionReveal>
 
-          <motion.div 
-            variants={sectionItemVariants}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
-          >
-            <Link href="/auth?mode=signup">
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-10 py-4 bg-gray-900 text-white font-bold rounded-xl flex items-center justify-center gap-3 hover:bg-gray-800 transition-all cursor-pointer"
-              >
-                <span>Create Free Account</span>
-                <ArrowRight className="w-4 h-4" />
-              </motion.div>
+          <SectionReveal className="flex flex-col sm:flex-row items-center justify-center gap-4" delay={120}>
+            <Link href="/auth?mode=signup" className="group inline-flex items-center justify-center gap-2 px-10 py-4 bg-gray-900 text-white font-bold rounded-xl hover:bg-gray-800 shadow-[0_12px_24px_rgba(15,23,42,0.18)] hover:shadow-[0_16px_32px_rgba(15,23,42,0.24)] hover:-translate-y-0.5 transition-all duration-300">
+              <span>Create Free Account</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
-            <Link href="/auth?mode=signin">
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-10 py-4 bg-white/70 border border-gray-200 hover:bg-white text-gray-900 font-bold rounded-xl flex items-center justify-center cursor-pointer transition-all"
-              >
-                <span>Sign In</span>
-              </motion.div>
+            <Link href="/auth?mode=signin" className="inline-flex items-center justify-center gap-2 px-10 py-4 bg-white border border-gray-200 hover:bg-gray-50 text-gray-900 font-bold rounded-xl shadow-sm hover:-translate-y-0.5 transition-all duration-300">
+              <span>Sign In</span>
             </Link>
-          </motion.div>
+          </SectionReveal>
 
-          <motion.div 
-            variants={sectionContainerVariants}
+          <SectionReveal
             className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto"
+            delay={240}
           >
             <div className="bg-white/60 border-l border-gray-200 p-8 transition-all duration-300 hover:bg-white/85">
               <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center mb-6">
@@ -717,9 +674,8 @@ export default function LandingPage() {
                 Enter Candidate Portal <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
-          </motion.div>
-        </motion.div>
-
+          </SectionReveal>
+        </div>
       </section>
     </div>
   )

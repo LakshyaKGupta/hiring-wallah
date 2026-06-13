@@ -312,24 +312,26 @@ body {
 }
 
 /* Lightweight compositor-only motion for landing visuals */
+/* Only apply will-change on elements that actually transform frequently */
 .hero-copy-drift {
-  animation: hero-copy-drift 8s var(--ease-out) infinite;
-  will-change: transform;
+  animation: hero-copy-drift 9s ease-in-out infinite;
+  /* no will-change – GPU layer created only when animating */
 }
 
 .hero-signal-node {
-  animation: hero-signal-node 7.5s var(--ease-out) infinite;
+  animation: hero-signal-node 8s ease-in-out infinite;
   will-change: transform;
+  /* Paint layer – these move constantly */
 }
 
 .hero-score-core {
-  animation: hero-score-core 8.5s var(--ease-out) infinite;
+  animation: hero-score-core 9s ease-in-out infinite;
   will-change: transform;
 }
 
 .hero-orbit-ring {
   animation: hero-orbit-spin 44s linear infinite;
-  will-change: transform;
+  /* SVG rotate – compositor handled */
 }
 
 .hero-orbit-ring-reverse {
@@ -339,21 +341,20 @@ body {
 
 .hero-signal-path {
   animation: hero-dash-flow 6s linear infinite;
+  /* stroke-dashoffset is paint, not compositor – keep it light */
 }
 
+/* Floating icon: only 2 at a time get will-change (the CSS var trick) */
 .floating-icon-drift {
-  animation: floating-icon-drift 20s var(--ease-out) infinite;
-  will-change: transform;
+  animation: floating-icon-drift 20s ease-in-out infinite;
 }
 
 .outcome-headline-motion {
-  animation: outcome-headline-motion 9s var(--ease-out) infinite;
-  will-change: transform;
+  animation: outcome-headline-motion 9s ease-in-out infinite;
 }
 
 .outcome-copy-motion {
-  animation: outcome-copy-motion 10s var(--ease-out) infinite;
-  will-change: transform;
+  animation: outcome-copy-motion 10s ease-in-out infinite;
 }
 
 .outcome-ribbon::before {
@@ -868,3 +869,104 @@ body {
     background-image: none;
   }
 }
+
+/* ──────────────────────────────────────────────────────
+   SECTION SCROLL-REVEAL
+   Applied by Intersection Observer in SectionReveal.tsx.
+   Initial: invisible + translated down. Final: visible.
+   Uses CSS transitions so it's off the JS thread.
+────────────────────────────────────────────────────── */
+
+.section-reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition:
+    opacity 0.72s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.72s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.section-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger children when parent becomes visible */
+.section-reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.section-reveal-stagger.is-visible > *:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0ms; }
+.section-reveal-stagger.is-visible > *:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 80ms; }
+.section-reveal-stagger.is-visible > *:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 160ms; }
+.section-reveal-stagger.is-visible > *:nth-child(4) { opacity: 1; transform: translateY(0); transition-delay: 240ms; }
+.section-reveal-stagger.is-visible > *:nth-child(5) { opacity: 1; transform: translateY(0); transition-delay: 320ms; }
+.section-reveal-stagger.is-visible > *:nth-child(6) { opacity: 1; transform: translateY(0); transition-delay: 400ms; }
+.section-reveal-stagger.is-visible > *:nth-child(n+7) { opacity: 1; transform: translateY(0); transition-delay: 480ms; }
+
+/* Slide in from left variant */
+.section-reveal-left {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition:
+    opacity 0.72s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.72s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.section-reveal-left.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Scale-up reveal for cards */
+.section-reveal-scale {
+  opacity: 0;
+  transform: scale(0.94) translateY(20px);
+  transition:
+    opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.section-reveal-scale.is-visible {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+/* ──────────────────────────────────────────────────────
+   SECTION DIVIDER — gradient wipe between sections
+────────────────────────────────────────────────────── */
+.section-divider {
+  position: relative;
+}
+.section-divider::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(15, 23, 42, 0.08) 20%,
+    rgba(15, 23, 42, 0.12) 50%,
+    rgba(15, 23, 42, 0.08) 80%,
+    transparent
+  );
+}
+
+/* ──────────────────────────────────────────────────────
+   SECTION BACKGROUND SHIMMER — subtle shifting gradient
+   Gives each section a living, breathing feel.
+────────────────────────────────────────────────────── */
+.section-bg-shift {
+  background-size: 200% 200%;
+  animation: section-bg-shift 12s ease-in-out infinite;
+}
+
+@keyframes section-bg-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
