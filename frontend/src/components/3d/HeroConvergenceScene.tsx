@@ -66,10 +66,10 @@ function AnimatedStat({ stat, label, delay = 0 }: { stat: string; label: string;
 
 /* ── Signal nodes ── */
 const signalNodes = [
-  { label: 'Resume', value: '42 claims', Icon: FileCheck2, className: 'left-[4%] top-[12%]', delay: '0s' },
-  { label: 'Rubric', value: 'weighted', Icon: BarChart3, className: 'right-[3%] top-[16%]', delay: '-1.8s' },
-  { label: 'Evidence', value: '18 proofs', Icon: ShieldCheck, className: 'left-[6%] bottom-[14%]', delay: '-3.4s' },
-  { label: 'Ledger', value: 'signed', Icon: Fingerprint, className: 'right-[6%] bottom-[10%]', delay: '-5s' },
+  { label: 'Resume', value: '42 claims', Icon: FileCheck2, className: 'left-[0%] top-[5%]', delay: '0s' },
+  { label: 'Rubric', value: 'weighted', Icon: BarChart3, className: 'right-[-2%] top-[8%]', delay: '-1.8s' },
+  { label: 'Evidence', value: '18 proofs', Icon: ShieldCheck, className: 'left-[0%] bottom-[5%]', delay: '-3.4s' },
+  { label: 'Ledger', value: 'signed', Icon: Fingerprint, className: 'right-[-1%] bottom-[3%]', delay: '-5s' },
 ]
 
 function SignalNode({
@@ -145,41 +145,43 @@ function CyclingHeadline() {
 /* ── Hero signal map ── */
 function HeroSignalMap() {
   return (
-    <div className="relative mx-auto h-[560px] w-full max-w-[660px] overflow-visible">
-      <div className="absolute inset-10 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.12),transparent_66%)] blur-3xl" />
+    <div className="relative mx-auto h-[600px] w-full max-w-[700px]" style={{ overflow: 'visible' }}>
+      {/* Ambient radial glow */}
+      <div className="absolute inset-16 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.10),transparent_66%)] blur-3xl pointer-events-none" />
 
-      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 660 560" fill="none" aria-hidden>
+      {/* SVG orbit rings + signal paths */}
+      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 700 600" fill="none" aria-hidden>
         <circle
           className="hero-orbit-ring"
-          cx="330"
-          cy="280"
-          r="210"
-          stroke="rgba(37,99,235,0.16)"
+          cx="350"
+          cy="300"
+          r="220"
+          stroke="rgba(37,99,235,0.15)"
           strokeWidth="1"
           strokeDasharray="8 10"
-          style={{ transformOrigin: '330px 280px' }}
+          style={{ transformOrigin: '350px 300px' }}
         />
         <circle
           className="hero-orbit-ring hero-orbit-ring-reverse"
-          cx="330"
-          cy="280"
-          r="140"
-          stroke="rgba(15,23,42,0.09)"
+          cx="350"
+          cy="300"
+          r="148"
+          stroke="rgba(15,23,42,0.08)"
           strokeWidth="1"
           strokeDasharray="4 9"
-          style={{ transformOrigin: '330px 280px' }}
+          style={{ transformOrigin: '350px 300px' }}
         />
         {[
-          'M158 128 C222 166 268 216 330 280',
-          'M508 142 C452 178 404 226 330 280',
-          'M172 428 C238 386 278 334 330 280',
-          'M490 436 C440 384 394 332 330 280',
+          'M108 100 C200 170 280 230 350 300',
+          'M596 118 C510 185 440 240 350 300',
+          'M120 490 C210 420 290 360 350 300',
+          'M584 498 C500 426 430 362 350 300',
         ].map((path, index) => (
           <path
             key={path}
             className="hero-signal-path"
             d={path}
-            stroke={index % 2 === 0 ? 'rgba(37,99,235,0.28)' : 'rgba(16,185,129,0.26)'}
+            stroke={index % 2 === 0 ? 'rgba(37,99,235,0.26)' : 'rgba(16,185,129,0.24)'}
             strokeWidth="2"
             strokeLinecap="round"
             strokeDasharray="10 12"
@@ -188,16 +190,43 @@ function HeroSignalMap() {
         ))}
       </svg>
 
-      {/* Central score core */}
-      <div className="hero-score-core absolute left-1/2 top-1/2 z-30 flex h-56 w-56 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/90 bg-white/60 shadow-[0_30px_74px_rgba(15,23,42,0.14)] backdrop-blur-2xl">
-        <div className="absolute inset-5 rounded-full border-[12px] border-slate-100" />
-        <div className="absolute inset-5 rounded-full border-[12px] border-transparent border-r-emerald-500 border-t-blue-600" />
-        <div className="relative z-10 text-center">
-          <div className="text-7xl font-black leading-none tracking-[-0.07em] text-slate-950">91</div>
-          <div className="mt-1 text-sm font-extrabold text-emerald-600">Strong hire</div>
-          <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-3 py-1 text-xs font-bold text-slate-600">
-            <Sparkles className="h-3.5 w-3.5 text-blue-600" />
-            Consensus
+      {/* Central score core — isolated so backdrop-blur stays contained */}
+      <div className="absolute left-1/2 top-1/2 z-30 -translate-x-1/2 -translate-y-1/2">
+        {/* Outer pulsing glow ring */}
+        <div className="hero-score-glow absolute -inset-4 rounded-full bg-blue-500/6 blur-md" />
+        {/* Spinning arc SVG */}
+        <svg
+          className="hero-arc-spin absolute inset-0"
+          viewBox="0 0 224 224"
+          fill="none"
+          style={{ width: 224, height: 224 }}
+        >
+          <circle
+            cx="112" cy="112" r="108"
+            stroke="url(#arcGradient)"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeDasharray="64 276"
+          />
+          <defs>
+            <linearGradient id="arcGradient" x1="0" y1="0" x2="224" y2="224" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stopColor="rgb(37,99,235)" stopOpacity="0.9" />
+              <stop offset="100%" stopColor="rgb(16,185,129)" stopOpacity="0.9" />
+            </linearGradient>
+          </defs>
+        </svg>
+        {/* Main frosted circle */}
+        <div className="hero-score-core relative flex h-56 w-56 items-center justify-center rounded-full border border-white/90 bg-white/65 shadow-[0_24px_56px_rgba(15,23,42,0.13)] backdrop-blur-2xl">
+          {/* Static inner track */}
+          <div className="absolute inset-5 rounded-full border-[12px] border-slate-100/70" />
+          {/* Content */}
+          <div className="relative z-10 text-center">
+            <div className="text-7xl font-black leading-none tracking-[-0.07em] text-slate-950">91</div>
+            <div className="mt-1 text-sm font-extrabold text-emerald-600">Strong hire</div>
+            <div className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/80 px-3 py-1 text-xs font-bold text-slate-600">
+              <Sparkles className="h-3.5 w-3.5 text-blue-600" />
+              Consensus
+            </div>
           </div>
         </div>
       </div>
@@ -250,7 +279,8 @@ export function HeroConvergenceScene() {
 
           <div className="space-y-6">
             <h1 className="hero-copy-drift font-display text-5xl font-black leading-[0.95] tracking-[-0.055em] text-slate-950 md:text-7xl lg:text-[5.15rem]">
-              Hiring decisions with receipts.
+              Hiring decisions{' '}
+              <span className="hero-highlight">with receipts.</span>
             </h1>
             <p
               className="hero-copy-drift mx-auto max-w-xl text-lg font-medium leading-8 text-slate-600 lg:mx-0"

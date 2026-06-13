@@ -970,3 +970,118 @@ body {
   50% { background-position: 100% 50%; }
 }
 
+/* ──────────────────────────────────────────────────────
+   HERO CIRCLE ANIMATIONS
+────────────────────────────────────────────────────── */
+
+/* Spinning gradient arc around the score circle */
+.hero-arc-spin {
+  animation: hero-arc-spin 9s linear infinite;
+  transform-origin: center;
+  overflow: visible;
+}
+
+@keyframes hero-arc-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Outer pulsing glow ring */
+.hero-score-glow {
+  animation: hero-score-glow 3.5s ease-in-out infinite;
+}
+
+@keyframes hero-score-glow {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.08); }
+}
+
+/* ──────────────────────────────────────────────────────
+   HERO HIGHLIGHT UNDERLINE
+   Animated underline sweep on key headline words
+────────────────────────────────────────────────────── */
+.hero-highlight {
+  position: relative;
+  display: inline;
+}
+
+.hero-highlight::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0.35), rgba(16, 185, 129, 0.4));
+  border-radius: 3px;
+  transform-origin: left center;
+  transform: scaleX(0);
+  animation: hero-highlight-in 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.7s forwards;
+}
+
+@keyframes hero-highlight-in {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* ──────────────────────────────────────────────────────
+   CARD HOVER LIFT — professional micro-interaction
+────────────────────────────────────────────────────── */
+.card-lift {
+  transition:
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.card-lift:hover {
+  transform: translateY(-4px) scale(1.005);
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.10), 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+/* ──────────────────────────────────────────────────────
+   SECTION TOP GRADIENT LINE — visual section separator
+────────────────────────────────────────────────────── */
+.section-gradient-sep {
+  position: relative;
+}
+
+.section-gradient-sep::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 8%;
+  right: 8%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(15, 23, 42, 0.09), transparent);
+}
+
+/* ──────────────────────────────────────────────────────
+   GOOGLE AUTH BUTTON SHIMMER
+────────────────────────────────────────────────────── */
+.google-btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.google-btn-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.25),
+    transparent
+  );
+  transform: skewX(-15deg);
+  animation: google-btn-shimmer 3s ease-in-out infinite;
+}
+
+@keyframes google-btn-shimmer {
+  0%, 60% { left: -75%; }
+  100% { left: 135%; }
+}

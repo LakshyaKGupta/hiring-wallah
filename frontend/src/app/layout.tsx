@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, IBM_Plex_Mono } from "next/font/google";
 import Navbar from "@/components/ui/Navbar";
 import MeshBackground from "@/components/ui/MeshBackground";
+import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
 
 const inter = Inter({
@@ -35,8 +36,10 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-bg-deep text-text-primary font-sans relative">
         <MeshBackground fixed mode="full" opacity={0.22} className="z-0" />
         <div className="relative z-10 flex flex-col flex-1 min-h-full">
-          <Navbar />
-          {children}
+          <AuthProvider>
+            <Navbar />
+            {children}
+          </AuthProvider>
         </div>
       </body>
     </html>
