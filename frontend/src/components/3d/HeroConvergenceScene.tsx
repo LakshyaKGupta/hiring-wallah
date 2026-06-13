@@ -2,7 +2,6 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 import {
   ArrowRight,
   BarChart3,
@@ -13,13 +12,11 @@ import {
   Sparkles,
 } from 'lucide-react'
 
-const heroEase: [number, number, number, number] = [0.16, 1, 0.3, 1]
-
 const signalNodes = [
-  { label: 'Resume', value: '42 claims', Icon: FileCheck2, className: 'left-[12%] top-[19%]', delay: 0 },
-  { label: 'Rubric', value: 'weighted', Icon: BarChart3, className: 'right-[11%] top-[24%]', delay: 0.25 },
-  { label: 'Evidence', value: '18 proofs', Icon: ShieldCheck, className: 'left-[15%] bottom-[21%]', delay: 0.5 },
-  { label: 'Ledger', value: 'signed', Icon: Fingerprint, className: 'right-[15%] bottom-[18%]', delay: 0.75 },
+  { label: 'Resume', value: '42 claims', Icon: FileCheck2, className: 'left-[8%] top-[14%]', delay: '0s' },
+  { label: 'Rubric', value: 'weighted', Icon: BarChart3, className: 'right-[7%] top-[18%]', delay: '-1.5s' },
+  { label: 'Evidence', value: '18 proofs', Icon: ShieldCheck, className: 'left-[11%] bottom-[15%]', delay: '-3s' },
+  { label: 'Ledger', value: 'signed', Icon: Fingerprint, className: 'right-[11%] bottom-[12%]', delay: '-4.5s' },
 ]
 
 function SignalNode({
@@ -33,14 +30,12 @@ function SignalNode({
   value: string
   Icon: React.ComponentType<{ className?: string; strokeWidth?: number }>
   className: string
-  delay: number
+  delay: string
 }) {
   return (
-    <motion.div
-      initial={false}
-      animate={{ y: [0, -10, 0], scale: [1, 1.025, 1] }}
-      transition={{ duration: 6.8, delay, repeat: Infinity, ease: heroEase }}
-      className={`absolute z-20 flex items-center gap-3 ${className}`}
+    <div
+      className={`hero-signal-node absolute z-20 flex items-center gap-3 ${className}`}
+      style={{ animationDelay: delay }}
     >
       <span className="grid h-14 w-14 place-items-center rounded-full border border-white/90 bg-white/75 text-slate-800 shadow-[0_22px_52px_rgba(15,23,42,0.12)] backdrop-blur-xl">
         <Icon className="h-5 w-5" strokeWidth={1.8} />
@@ -49,62 +44,57 @@ function SignalNode({
         <span className="block text-xs font-extrabold leading-none text-slate-950">{label}</span>
         <span className="mt-1 block text-[11px] font-semibold leading-none text-slate-500">{value}</span>
       </span>
-    </motion.div>
+    </div>
   )
 }
 
 function HeroSignalMap() {
   return (
-    <div className="relative mx-auto h-[500px] w-full max-w-[600px] overflow-visible">
+    <div className="relative mx-auto h-[540px] w-full max-w-[640px] overflow-visible">
       <div className="absolute inset-10 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.14),transparent_66%)] blur-3xl" />
 
-      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 600 500" fill="none" aria-hidden>
-        <motion.circle
-          cx="300"
-          cy="250"
-          r="188"
+      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 640 540" fill="none" aria-hidden>
+        <circle
+          className="hero-orbit-ring"
+          cx="320"
+          cy="270"
+          r="204"
           stroke="rgba(37,99,235,0.18)"
           strokeWidth="1"
           strokeDasharray="8 10"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 42, repeat: Infinity, ease: 'linear' }}
-          style={{ transformOrigin: '300px 250px' }}
+          style={{ transformOrigin: '320px 270px' }}
         />
-        <motion.circle
-          cx="300"
-          cy="250"
-          r="126"
+        <circle
+          className="hero-orbit-ring hero-orbit-ring-reverse"
+          cx="320"
+          cy="270"
+          r="136"
           stroke="rgba(15,23,42,0.10)"
           strokeWidth="1"
           strokeDasharray="4 9"
-          animate={{ rotate: -360 }}
-          transition={{ duration: 34, repeat: Infinity, ease: 'linear' }}
-          style={{ transformOrigin: '300px 250px' }}
+          style={{ transformOrigin: '320px 270px' }}
         />
         {[
-          'M150 128 C206 158 244 194 300 250',
-          'M453 140 C404 166 366 204 300 250',
-          'M164 378 C218 350 256 306 300 250',
-          'M440 386 C402 346 363 308 300 250',
+          'M152 116 C214 154 258 204 320 270',
+          'M493 132 C438 166 392 214 320 270',
+          'M166 414 C230 374 270 324 320 270',
+          'M474 420 C426 370 382 320 320 270',
         ].map((path, index) => (
-          <motion.path
+          <path
             key={path}
+            className="hero-signal-path"
             d={path}
             stroke={index % 2 === 0 ? 'rgba(37,99,235,0.30)' : 'rgba(16,185,129,0.28)'}
             strokeWidth="2"
             strokeLinecap="round"
             strokeDasharray="10 12"
-            animate={{ strokeDashoffset: [0, -44] }}
-            transition={{ duration: 5.5 + index * 0.4, repeat: Infinity, ease: 'linear' }}
+            style={{ animationDelay: `${index * -0.9}s` }}
           />
         ))}
       </svg>
 
-      <motion.div
-        initial={false}
-        animate={{ y: [0, -12, 0], scale: [1, 1.015, 1] }}
-        transition={{ duration: 8, repeat: Infinity, ease: heroEase }}
-        className="absolute left-1/2 top-1/2 z-30 flex h-52 w-52 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/90 bg-white/60 shadow-[0_30px_74px_rgba(15,23,42,0.14)] backdrop-blur-2xl"
+      <div
+        className="hero-score-core absolute left-1/2 top-1/2 z-30 flex h-52 w-52 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/90 bg-white/60 shadow-[0_30px_74px_rgba(15,23,42,0.14)] backdrop-blur-2xl"
       >
         <div className="absolute inset-5 rounded-full border-[12px] border-slate-100" />
         <div className="absolute inset-5 rounded-full border-[12px] border-transparent border-r-emerald-500 border-t-blue-600" />
@@ -116,7 +106,7 @@ function HeroSignalMap() {
             Consensus
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {signalNodes.map((node) => (
         <SignalNode key={node.label} {...node} />
@@ -147,28 +137,20 @@ export function HeroConvergenceScene() {
       <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:gap-8">
         <div className="mx-auto max-w-2xl space-y-7 text-center lg:mx-0 lg:max-w-none lg:text-left">
           <div className="space-y-5">
-            <motion.h1
-              initial={false}
-              animate={{ y: 0 }}
-              transition={{ duration: 0.6, delay: 0.05, ease: heroEase }}
-              className="font-display text-5xl font-black leading-[0.95] tracking-[-0.055em] text-slate-950 md:text-7xl lg:text-[5.15rem]"
+            <h1
+              className="hero-copy-drift font-display text-5xl font-black leading-[0.95] tracking-[-0.055em] text-slate-950 md:text-7xl lg:text-[5.15rem]"
             >
               Hiring decisions with receipts.
-            </motion.h1>
-            <motion.p
-              initial={false}
-              animate={{ y: 0 }}
-              transition={{ duration: 0.6, delay: 0.12, ease: heroEase }}
-              className="mx-auto max-w-xl text-lg font-medium leading-8 text-slate-600 lg:mx-0"
+            </h1>
+            <p
+              className="hero-copy-drift mx-auto max-w-xl text-lg font-medium leading-8 text-slate-600 lg:mx-0"
+              style={{ animationDelay: '-2s' }}
             >
               Hiring Wallah turns resumes, job requirements, and recruiter rules into defensible scorecards with visible evidence trails and signed consensus reports.
-            </motion.p>
+            </p>
           </div>
 
-          <motion.div
-            initial={false}
-            animate={{ y: 0 }}
-            transition={{ duration: 0.6, delay: 0.18, ease: heroEase }}
+          <div
             className="flex flex-col justify-center gap-3 sm:flex-row lg:justify-start"
           >
             <Link href="/auth?mode=signup" className="group inline-flex items-center justify-center gap-2 rounded-xl border border-slate-950 bg-slate-950 px-7 py-4 text-base font-bold text-white shadow-[0_18px_35px_rgba(15,23,42,0.18)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-[0_22px_42px_rgba(15,23,42,0.22)]">
@@ -179,12 +161,9 @@ export function HeroConvergenceScene() {
               <Briefcase className="h-5 w-5 text-blue-600" />
               See workspaces
             </Link>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={false}
-            animate={{ y: 0 }}
-            transition={{ duration: 0.6, delay: 0.24, ease: heroEase }}
+          <div
             className="mx-auto grid max-w-xl grid-cols-3 gap-3 pt-2 lg:mx-0"
           >
             {[
@@ -197,7 +176,7 @@ export function HeroConvergenceScene() {
                 <div className="mt-1 text-xs font-semibold leading-snug text-slate-500">{label}</div>
               </div>
             ))}
-          </motion.div>
+          </div>
         </div>
 
         <div className="hidden md:flex md:justify-center lg:justify-self-center">

@@ -1419,3 +1419,59 @@ This file is the persistent project memory for AI agents and human contributors.
 #### Notes For Next Agent
 - Keep hero visuals inside a bounded center column; avoid wide absolute-positioned nodes near section edges.
 - Do not bring back card grids for Outcomes or Process unless the user explicitly asks.
+
+### Session Update - 2026-06-13 (Lightweight Motion & Lag Reduction)
+
+#### Objective
+- Keep all current content while making the site feel less laggy.
+- Add more constant movement and transitions, especially in the hero signal map and the Outcomes intro.
+- Give the hero signal components more breathing room instead of a saturated cluster.
+
+#### Completed
+- Reworked always-running motion to reduce runtime overhead:
+  - Converted hero signal node drift, orbit rings, path dash flow, and score-core movement from Framer runtime loops to CSS keyframe animations.
+  - Converted decorative `FloatingIcons` from Framer loops to CSS transform animations.
+  - Rounded generated floating icon style values to prevent server/client hydration mismatch.
+- Improved hero spacing and motion:
+  - Expanded the hero signal map canvas from `600x500` to `640x540`.
+  - Moved Resume/Rubric/Evidence/Ledger nodes farther from the score core.
+  - Added compositor-only drift to hero copy and signal components.
+- Added constant movement to the Outcomes intro:
+  - Added subtle motion to the heading and paragraph.
+  - Added a lightweight animated process ribbon: Parse -> Verify -> Rank -> Sign.
+- Added additional lightweight hover movement to the Process timeline rows.
+
+#### Files Modified
+- `frontend/src/components/3d/HeroConvergenceScene.tsx`
+- `frontend/src/components/ui/FloatingIcons.tsx`
+- `frontend/src/app/page.tsx`
+- `frontend/src/app/globals.css`
+- `HANDOFF.md`
+
+#### Architecture Decisions
+- Kept all existing landing sections and content.
+- Used CSS keyframes for continuous decorative motion because transform/opacity animations are cheaper than many active Framer loops.
+- Kept Framer Motion for interactive/local UI transitions where it is useful, such as workspace tab transitions and candidate score changes.
+
+#### Dependencies Added
+- None.
+
+#### Verification
+- `npm run lint` in `frontend`: passed.
+- `npm run build` in `frontend`: initially failed on a transient Google Fonts fetch from `fonts.gstatic.com`; rerun passed.
+- `curl -L http://127.0.0.1:3000/`: returned HTTP 200.
+- Browser QA:
+  - Page loaded at `http://127.0.0.1:3000/`.
+  - Snapshot confirmed hero signal nodes and Outcomes ribbon text: Parse, Verify, Rank, Sign.
+  - Console showed only normal React DevTools/HMR messages after rounding floating icon style values.
+
+#### Issues Found
+- Floating icon custom styles previously produced tiny server/client numeric formatting differences, causing a hydration warning. Rounding fixed it.
+- First production build attempt failed because Next/Turbopack could not fetch a Google font asset; this was transient and passed on rerun.
+
+#### Pending Work
+- If more performance work is needed, next target should be replacing the remaining tab/spring animations in the Workspaces section with CSS or static transitions.
+
+#### Notes For Next Agent
+- For continuous decorative motion, prefer CSS keyframes over Framer loops.
+- Keep generated inline style values rounded and deterministic to avoid hydration mismatches.

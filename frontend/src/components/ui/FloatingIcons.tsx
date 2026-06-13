@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useMemo } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
 import {
   FileText,
   Sparkles,
@@ -49,10 +48,14 @@ function seededValue(seed: number) {
   return value - Math.floor(value)
 }
 
+function rounded(value: number, precision = 3) {
+  return Number(value.toFixed(precision))
+}
+
 function createConfig(index: number): FloatingIconConfig {
   const Icon = iconsList[index % iconsList.length]
-  const xPercent = seededValue(index + 1) * 100
-  const yPercent = seededValue(index + 11) * 100
+  const xPercent = rounded(seededValue(index + 1) * 100)
+  const yPercent = rounded(seededValue(index + 11) * 100)
   const xSign = seededValue(index + 21) > 0.5 ? 1 : -1
   const ySign = seededValue(index + 31) > 0.5 ? 1 : -1
   const rotateSign = seededValue(index + 41) > 0.5 ? 1 : -1
@@ -62,18 +65,17 @@ function createConfig(index: number): FloatingIconConfig {
     Icon,
     x: `${Math.max(2, Math.min(98, xPercent))}%`,
     y: `${Math.max(2, Math.min(98, yPercent))}%`,
-    scale: 0.6 + seededValue(index + 51) * 0.5,
-    opacity: 0.15 + seededValue(index + 61) * 0.10,
-    delay: seededValue(index + 71) * 4,
-    duration: 12 + seededValue(index + 81) * 8,
-    xDrift: [0, xSign * (20 + seededValue(index + 91) * 30), 0],
-    yDrift: [0, ySign * (25 + seededValue(index + 101) * 35), 0],
-    rotateDrift: [0, rotateSign * (15 + seededValue(index + 111) * 20), 0],
+    scale: rounded(0.6 + seededValue(index + 51) * 0.5),
+    opacity: rounded(0.15 + seededValue(index + 61) * 0.10),
+    delay: rounded(seededValue(index + 71) * 4),
+    duration: rounded(12 + seededValue(index + 81) * 8),
+    xDrift: [0, rounded(xSign * (20 + seededValue(index + 91) * 30)), 0],
+    yDrift: [0, rounded(ySign * (25 + seededValue(index + 101) * 35)), 0],
+    rotateDrift: [0, rounded(rotateSign * (15 + seededValue(index + 111) * 20)), 0],
   }
 }
 
 export default function FloatingIcons({ count = 8 }: { count?: number }) {
-  const shouldReduceMotion = useReducedMotion()
   const configs = useMemo(
     () => Array.from({ length: count }).map((_, index) => createConfig(index)),
     [count],
@@ -84,29 +86,23 @@ export default function FloatingIcons({ count = 8 }: { count?: number }) {
       {configs.map((config) => {
         const { Icon } = config
         return (
-          <motion.div
+          <div
             key={config.id}
-            className="absolute text-accent-primary will-change-transform"
+            className="floating-icon-drift absolute text-accent-primary will-change-transform"
             style={{
               left: config.x,
               top: config.y,
-              scale: config.scale,
               opacity: config.opacity,
-            }}
-            animate={shouldReduceMotion ? undefined : {
-              x: config.xDrift,
-              y: config.yDrift,
-              rotate: config.rotateDrift,
-            }}
-            transition={shouldReduceMotion ? undefined : {
-              duration: config.duration * 1.35,
-              delay: config.delay,
-              repeat: Infinity,
-              ease: [0.16, 1, 0.3, 1],
-            }}
+              '--float-scale': config.scale,
+              '--float-x': `${config.xDrift[1]}px`,
+              '--float-y': `${config.yDrift[1]}px`,
+              '--float-rotate': `${config.rotateDrift[1]}deg`,
+              animationDelay: `${config.delay * -1}s`,
+              animationDuration: `${config.duration * 1.35}s`,
+            } as React.CSSProperties}
           >
             <Icon className="w-8 h-8 md:w-12 md:h-12" strokeWidth={1.2} />
-          </motion.div>
+          </div>
         )
       })}
     </div>

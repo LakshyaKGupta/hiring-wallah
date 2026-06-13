@@ -311,6 +311,139 @@ body {
   transition-delay: var(--delay-stagger);
 }
 
+/* Lightweight compositor-only motion for landing visuals */
+.hero-copy-drift {
+  animation: hero-copy-drift 8s var(--ease-out) infinite;
+  will-change: transform;
+}
+
+.hero-signal-node {
+  animation: hero-signal-node 7.5s var(--ease-out) infinite;
+  will-change: transform;
+}
+
+.hero-score-core {
+  animation: hero-score-core 8.5s var(--ease-out) infinite;
+  will-change: transform;
+}
+
+.hero-orbit-ring {
+  animation: hero-orbit-spin 44s linear infinite;
+  will-change: transform;
+}
+
+.hero-orbit-ring-reverse {
+  animation-direction: reverse;
+  animation-duration: 36s;
+}
+
+.hero-signal-path {
+  animation: hero-dash-flow 6s linear infinite;
+}
+
+.floating-icon-drift {
+  animation: floating-icon-drift 20s var(--ease-out) infinite;
+  will-change: transform;
+}
+
+.outcome-headline-motion {
+  animation: outcome-headline-motion 9s var(--ease-out) infinite;
+  will-change: transform;
+}
+
+.outcome-copy-motion {
+  animation: outcome-copy-motion 10s var(--ease-out) infinite;
+  will-change: transform;
+}
+
+.outcome-ribbon::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.12), transparent);
+  animation: ribbon-scan 4.8s var(--ease-out) infinite;
+  transform: translateX(-120%);
+}
+
+@keyframes hero-copy-drift {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -4px, 0);
+  }
+}
+
+@keyframes hero-signal-node {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  45% {
+    transform: translate3d(10px, -16px, 0) scale(1.035);
+  }
+  72% {
+    transform: translate3d(-6px, 6px, 0) scale(1.01);
+  }
+}
+
+@keyframes hero-score-core {
+  0%, 100% {
+    transform: translate3d(-50%, -50%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-50%, calc(-50% - 12px), 0) scale(1.018);
+  }
+}
+
+@keyframes hero-orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes hero-dash-flow {
+  to {
+    stroke-dashoffset: -44;
+  }
+}
+
+@keyframes floating-icon-drift {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(var(--float-scale, 1));
+  }
+  50% {
+    transform: translate3d(var(--float-x, 20px), var(--float-y, -24px), 0) rotate(var(--float-rotate, 12deg)) scale(var(--float-scale, 1));
+  }
+}
+
+@keyframes outcome-headline-motion {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(6px, -5px, 0);
+  }
+}
+
+@keyframes outcome-copy-motion {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-4px, 4px, 0);
+  }
+}
+
+@keyframes ribbon-scan {
+  0% {
+    transform: translateX(-120%);
+  }
+  55%, 100% {
+    transform: translateX(260%);
+  }
+}
+
 /* Ambient mesh blobs — Zoho blue, restrained */
 @keyframes blob-drift-1 {
   0% {
@@ -735,4 +868,3 @@ body {
     background-image: none;
   }
 }
-

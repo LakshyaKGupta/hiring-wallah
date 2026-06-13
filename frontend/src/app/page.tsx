@@ -277,12 +277,26 @@ export default function LandingPage() {
               <motion.div variants={sectionItemVariants} className="inline-flex bg-accent-primary/10 border border-accent-primary/20 text-accent-primary rounded-full px-4 py-1.5 text-xs font-bold tracking-wide">
                 Product Outcomes
               </motion.div>
-              <motion.h2 variants={sectionItemVariants} className="font-display text-4xl lg:text-5xl font-extrabold leading-[1.1] tracking-tight text-gray-900">
+              <motion.h2 variants={sectionItemVariants} className="outcome-headline-motion font-display text-4xl lg:text-5xl font-extrabold leading-[1.1] tracking-tight text-gray-900">
                 From 1,247 resumes to 3 finalists.
               </motion.h2>
-              <motion.p variants={sectionItemVariants} className="text-base leading-relaxed text-gray-500 font-medium">
+              <motion.p variants={sectionItemVariants} className="outcome-copy-motion text-base leading-relaxed text-gray-500 font-medium">
                 Shortlist top talent with absolute trust. Hiring Wallah replaces blind keyword filters with verified evidence auditing and consensus scoring.
               </motion.p>
+              <motion.div
+                variants={sectionItemVariants}
+                className="outcome-ribbon relative overflow-hidden border-y border-slate-200 bg-white/70 px-3 py-2 text-xs font-extrabold tracking-wide text-slate-600"
+              >
+                <div className="flex items-center gap-3 whitespace-nowrap">
+                  <span>Parse</span>
+                  <span className="h-px w-8 bg-slate-300" />
+                  <span>Verify</span>
+                  <span className="h-px w-8 bg-slate-300" />
+                  <span>Rank</span>
+                  <span className="h-px w-8 bg-slate-300" />
+                  <span>Sign</span>
+                </div>
+              </motion.div>
             </motion.div>
 
             <motion.div variants={sectionContainerVariants} className="lg:w-2/3">
@@ -618,7 +632,7 @@ export default function LandingPage() {
                 <motion.div
                   key={step.num}
                   variants={sectionItemVariants}
-                  className="grid gap-4 border-b border-slate-200 px-5 py-5 last:border-b-0 md:grid-cols-[72px_1fr_52px] md:items-center md:px-7"
+                  className="grid gap-4 border-b border-slate-200 px-5 py-5 transition-all duration-300 hover:translate-x-1 hover:bg-white/70 last:border-b-0 md:grid-cols-[72px_1fr_52px] md:items-center md:px-7"
                 >
                   <div className="text-sm font-black tracking-tight text-slate-400">{step.num}</div>
                   <div>
