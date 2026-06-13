@@ -1475,3 +1475,57 @@ This file is the persistent project memory for AI agents and human contributors.
 #### Notes For Next Agent
 - For continuous decorative motion, prefer CSS keyframes over Framer loops.
 - Keep generated inline style values rounded and deterministic to avoid hydration mismatches.
+
+### Session Update - 2026-06-14 (Hero Alignment, Auth Redirect, Section Motion)
+
+#### Objective
+- Fix the live hero alignment and remove the delayed/blank hero-load feel.
+- Add a hand-drawn glowing blue underline under "Hiring decisions with receipts."
+- Add subtle constant motion/glow to Product Outcomes, Workspace Portals, and How We Reach Decisions.
+- Tighten Google auth so existing users route from their stored role instead of the local signup selector.
+
+#### Completed
+- Rebuilt the hero signal map geometry:
+  - Removed the mounted-state opacity gate so the hero content is visible immediately.
+  - Centered the score core in the visual map.
+  - Gave the map an explicit responsive width so percentage-positioned signal nodes do not collapse.
+  - Anchored left and right signal pills differently to prevent overlap with the score circle.
+  - Added a glowing hand-drawn pencil underline to the full hero headline.
+- Added lightweight section motion:
+  - Animated glow seams for section transitions.
+  - Subtle glow/drift on Product Outcomes, Workspace Portals, and How We Reach Decisions labels/headings/copy.
+  - Added reduced-motion fallbacks for the new animations.
+- Fixed Google auth redirect behavior:
+  - `signInWithGoogle()` now returns the stored Firestore role.
+  - Existing users redirect to their stored recruiter/candidate workspace.
+  - New users or users without a stored role still see the role picker.
+  - Added clearer Firebase setup error copy for unauthorized domains or disabled Google provider.
+
+#### Files Modified
+- `frontend/src/components/3d/HeroConvergenceScene.tsx`
+- `frontend/src/app/globals.css`
+- `frontend/src/app/page.tsx`
+- `frontend/src/context/AuthContext.tsx`
+- `frontend/src/app/auth/page.tsx`
+- `HANDOFF.md`
+
+#### Database/Auth Notes
+- `implementation_plan.md` was not present anywhere under the project during this pass.
+- `frontend/.env.local` already exists and contains Firebase plus Supabase variable names with values; it was not overwritten with the empty `.env.example`.
+- Firestore user role writes and Supabase user mirroring are implemented in the app code.
+- Creating/enabling Firebase Auth providers, Firestore databases, or Supabase/PostgreSQL schema remotely still requires console/admin access. Frontend public keys and anon keys are not enough to perform those admin actions safely from this codebase.
+
+#### Verification
+- `npm run lint` in `frontend`: passed.
+- `npm run build` in `frontend`: passed.
+- Fresh local dev server started at `http://localhost:3000`.
+- Browser QA:
+  - Landing page opened at `http://localhost:3000/`.
+  - Auth signup page opened at `http://localhost:3000/auth?mode=signup`.
+  - Hero screenshot verified visible immediate content, centered score core, glowing underline, and no signal-pill overlap with the score circle.
+  - Workspace and Process screenshots verified active navbar updates and no visible text/card clipping.
+  - Layout metrics showed all five landing sections remain one viewport tall and horizontal overflow is `0`.
+
+#### Pending Work
+- Remote Firebase/Supabase console setup still needs admin-authenticated access if it has not already been completed outside the repo.
+- No reference image was available in the workspace/conversation, so visual matching was based on live browser inspection and the written brief.

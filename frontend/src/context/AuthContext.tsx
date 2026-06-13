@@ -13,7 +13,6 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   signOut as firebaseSignOut,
-  type User,
 } from 'firebase/auth'
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore'
 import { auth, db } from '@/lib/firebase'
@@ -34,7 +33,7 @@ export interface AuthUser {
 interface AuthContextValue {
   user:            AuthUser | null
   loading:         boolean
-  signInWithGoogle: () => Promise<{ isNewUser: boolean }>
+  signInWithGoogle: () => Promise<{ isNewUser: boolean; role: UserRole }>
   signOut:         () => Promise<void>
   setUserRole:     (role: 'recruiter' | 'candidate') => Promise<void>
 }
@@ -76,7 +75,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   // ── Google Sign-In ────────────────────────────
-  async function signInWithGoogle(): Promise<{ isNewUser: boolean }> {
+  async function signInWithGoogle(): Promise<{ isNewUser: boolean; role: UserRole }> {
     const provider = new GoogleAuthProvider()
     provider.setCustomParameters({ prompt: 'select_account' })
     const result = await signInWithPopup(auth, provider)
@@ -97,6 +96,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         photoURL:    fbUser.photoURL,
         role,
       })
+      return { isNewUser, role }
     } else {
       // New user — role not set yet; will be set by RoleModal
       setUser({
@@ -106,9 +106,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         photoURL:    fbUser.photoURL,
         role: null,
       })
+      return { isNewUser, role: null }
     }
-
-    return { isNewUser }
   }
 
   // ── Set role (called after role modal) ────────

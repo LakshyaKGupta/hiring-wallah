@@ -22,7 +22,6 @@ import {
 } from 'lucide-react'
 import MeshBackground from '@/components/ui/MeshBackground'
 import {
-  fadeUpContainerVariants as sectionContainerVariants,
   fadeUpItemVariants as sectionItemVariants,
   EASE_OUT,
   appleTransition,
@@ -264,16 +263,17 @@ export default function LandingPage() {
       {/* SECTION 2: FEATURES */}
       <section id="features" className="w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 lg:py-20 relative overflow-hidden bg-white scroll-mt-16 section-divider">
         <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-white pointer-events-none" />
+        <div className="section-glow-seam pointer-events-none absolute left-1/2 top-0 h-px w-[72%] -translate-x-1/2 bg-gradient-to-r from-transparent via-blue-400/50 to-transparent" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-[#f7f8fb]" />
         <FloatingIcons count={5} />
 
         <div className="relative z-10 mx-auto w-full max-w-7xl px-6">
           <div className="flex flex-col lg:flex-row gap-10 lg:gap-14 items-start">
             <SectionReveal className="space-y-5 lg:w-1/3" variant="left">
-              <div className="inline-flex bg-accent-primary/10 border border-accent-primary/20 text-accent-primary rounded-full px-4 py-1.5 text-xs font-bold tracking-wide">
+              <div className="section-kicker-glow inline-flex bg-accent-primary/10 border border-accent-primary/20 text-accent-primary rounded-full px-4 py-1.5 text-xs font-bold tracking-wide">
                 Product Outcomes
               </div>
-              <h2 className="outcome-headline-motion font-display text-4xl lg:text-5xl font-extrabold leading-[1.1] tracking-tight text-gray-900">
+              <h2 className="outcome-headline-motion section-title-glow font-display text-4xl lg:text-5xl font-extrabold leading-[1.1] tracking-tight text-gray-900">
                 From 1,247 resumes<br />to 3 finalists.
               </h2>
               <p className="outcome-copy-motion text-base leading-relaxed text-gray-500 font-medium">
@@ -308,19 +308,20 @@ export default function LandingPage() {
       <section id="workspaces" className="w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 lg:py-20 relative overflow-hidden bg-[#f7f8fb] scroll-mt-16 section-divider">
         <MeshBackground opacity={0.04} />
         <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white to-transparent" />
+        <div className="section-glow-seam pointer-events-none absolute left-1/2 top-16 h-px w-[68%] -translate-x-1/2 bg-gradient-to-r from-transparent via-emerald-400/45 to-transparent" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-white" />
         <FloatingIcons count={4} />
 
         <div className="max-w-7xl mx-auto px-6 w-full relative z-10 space-y-8 lg:space-y-10">
           {/* Header & Tabs */}
           <SectionReveal className="text-center space-y-4 max-w-2xl mx-auto">
-            <div className="inline-flex bg-accent-secondary/10 border border-accent-secondary/20 text-accent-secondary rounded-full px-4 py-1.5 text-xs font-bold tracking-wide">
+            <div className="section-kicker-glow inline-flex bg-accent-secondary/10 border border-accent-secondary/20 text-accent-secondary rounded-full px-4 py-1.5 text-xs font-bold tracking-wide">
               Workspace Portals
             </div>
-            <h2 className="text-4xl md:text-5xl font-display font-extrabold text-gray-900 tracking-tight leading-tight">
+            <h2 className="section-title-glow text-4xl md:text-5xl font-display font-extrabold text-gray-900 tracking-tight leading-tight">
               Enterprise-Grade Workspaces
             </h2>
-            <p className="text-base text-gray-500 leading-relaxed font-medium max-w-lg mx-auto">
+            <p className="section-copy-drift text-base text-gray-500 leading-relaxed font-medium max-w-lg mx-auto">
               Explore role alignment, consensus scorecards, and verification trails from both sides of the hiring equation.
             </p>
             
@@ -580,18 +581,19 @@ export default function LandingPage() {
 
       {/* SECTION 4: HOW IT WORKS */}
       <section id="how-it-works" className="w-full min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 lg:py-20 relative overflow-hidden bg-white scroll-mt-16 section-divider">
+        <div className="section-glow-seam pointer-events-none absolute left-1/2 top-12 h-px w-[70%] -translate-x-1/2 bg-gradient-to-r from-transparent via-blue-400/45 to-transparent" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-white" />
         <FloatingIcons count={4} />
 
         <SectionReveal className="max-w-7xl mx-auto px-6 w-full relative z-10 space-y-8 lg:space-y-10">
           <div className="text-center max-w-2xl mx-auto space-y-4">
-            <div className="inline-flex bg-gray-100 border border-gray-200 text-gray-600 rounded-full px-4 py-1.5 text-xs font-bold tracking-wide">
+            <div className="section-kicker-glow inline-flex bg-gray-100 border border-gray-200 text-gray-600 rounded-full px-4 py-1.5 text-xs font-bold tracking-wide">
               Decision Protocol
             </div>
-            <h2 className="text-4xl md:text-5xl font-display font-extrabold text-gray-900 tracking-tight leading-tight">
+            <h2 className="section-title-glow text-4xl md:text-5xl font-display font-extrabold text-gray-900 tracking-tight leading-tight">
               How We Reach Decisions
             </h2>
-            <p className="text-base text-gray-500 leading-relaxed font-medium">
+            <p className="section-copy-drift text-base text-gray-500 leading-relaxed font-medium">
               We replace black-box models with a multi-stage consensus pipeline. Hover a stage to see the underlying reasoning logic.
             </p>
           </div>

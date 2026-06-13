@@ -130,14 +130,14 @@ type NodeDef = {
 }
 
 const NODE_DEFS: NodeDef[] = [
-  { label: 'Rubric',   value: 'weighted',  Icon: BarChart3,   cx: 300, cy:  56, floatDelay: '0s',    floatDuration: '6.1s' },
-  { label: 'Resume',   value: '42 claims', Icon: FileCheck2,  cx: 400, cy: 170, floatDelay: '-2.1s', floatDuration: '5.7s' },
-  { label: 'Evidence', value: '18 proofs', Icon: ShieldCheck, cx: 380, cy: 330, floatDelay: '-3.9s', floatDuration: '6.5s' },
-  { label: 'Ledger',   value: 'signed',    Icon: Fingerprint, cx: 260, cy: 410, floatDelay: '-1.3s', floatDuration: '7.1s' },
+  { label: 'Rubric',   value: 'weighted',  Icon: BarChart3,   cx: 118, cy:  98, floatDelay: '0s',    floatDuration: '6.1s' },
+  { label: 'Resume',   value: '42 claims', Icon: FileCheck2,  cx: 522, cy: 160, floatDelay: '-2.1s', floatDuration: '5.7s' },
+  { label: 'Evidence', value: '18 proofs', Icon: ShieldCheck, cx: 524, cy: 360, floatDelay: '-3.9s', floatDuration: '6.5s' },
+  { label: 'Ledger',   value: 'signed',    Icon: Fingerprint, cx: 124, cy: 420, floatDelay: '-1.3s', floatDuration: '7.1s' },
 ]
 
 // Path end-point (score core centre in SVG units)
-const CORE_CX = 180
+const CORE_CX = 280
 const CORE_CY = 260
 
 // Bezier control points (node cx/cy + some curve offset)
@@ -162,7 +162,7 @@ function nodePct(node: NodeDef) {
 function HeroSignalMap() {
   return (
     <div
-      className="relative h-[520px] w-full max-w-[560px] select-none"
+      className="relative h-[520px] w-[560px] max-w-full select-none"
       style={{ overflow: 'visible' }}
     >
       {/* Ambient radial glow behind core */}
@@ -272,16 +272,19 @@ function HeroSignalMap() {
       {/* Signal Nodes — positioned to match SVG anchors */}
       {NODE_DEFS.map((node) => {
         const Icon = node.Icon
+        const isLeftNode = node.cx < CORE_CX
         return (
           <div
             key={node.label}
-            className="hero-signal-node absolute z-20 flex items-center gap-2.5"
+            className={`hero-signal-node absolute z-20 flex items-center gap-2.5 ${
+              isLeftNode ? 'flex-row-reverse text-right' : ''
+            }`}
             style={{
               ...nodePct(node),
-              transform: 'translate(-50%, -50%)',
+              '--node-transform': isLeftNode ? 'translate(-100%, -50%)' : 'translate(0, -50%)',
               animationDelay: node.floatDelay,
               animationDuration: node.floatDuration,
-            }}
+            } as React.CSSProperties}
           >
             <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-white/85 bg-white/80 text-slate-700 shadow-[0_12px_32px_rgba(15,23,42,0.12)] backdrop-blur-xl">
               <Icon className="h-5 w-5" strokeWidth={1.8} />
@@ -299,13 +302,6 @@ function HeroSignalMap() {
 
 /* ── Main export ── */
 export function HeroConvergenceScene() {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    const timer = setTimeout(() => setMounted(true), 80)
-    return () => clearTimeout(timer)
-  }, [])
-
   const scrollToWorkspaces = (event: React.MouseEvent<HTMLAnchorElement>) => {
     const element = document.getElementById('workspaces')
     if (!element) return
@@ -315,7 +311,7 @@ export function HeroConvergenceScene() {
   }
 
   return (
-    <section className="relative flex min-h-[calc(100vh-64px)] w-full items-center overflow-hidden bg-[#f8f8f6] px-5 py-16 md:px-6">
+    <section className="relative flex min-h-[calc(100vh-64px)] w-full items-center overflow-hidden bg-[#f8f8f6] px-5 py-14 md:px-6 lg:py-10">
       {/* Subtle grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.03)_1px,transparent_1px)] bg-[size:44px_44px]" />
       {/* Radial glow */}
@@ -324,45 +320,34 @@ export function HeroConvergenceScene() {
       <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-white" />
 
       <div
-        className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-16 lg:grid-cols-[0.95fr_1.05fr] lg:gap-20"
-        style={{
-          opacity: mounted ? 1 : 0,
-          transform: mounted ? 'translateY(0)' : 'translateY(20px)',
-          transition: 'opacity 0.7s ease, transform 0.7s ease',
-        }}
+        className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14"
       >
         {/* ── Left: Copy ── */}
         <div className="mx-auto max-w-2xl space-y-8 text-center lg:mx-0 lg:max-w-none lg:text-left">
           <CyclingHeadline />
 
-          <div className="space-y-6">
-            <h1 className="font-display text-5xl font-black leading-[0.95] tracking-[-0.055em] text-slate-950 md:text-7xl lg:text-[5.15rem]">
-              Hiring decisions{' '}
-              <span className="relative inline-block whitespace-nowrap">
-                <span className="relative z-10">with receipts.</span>
-                <svg
-                  className="absolute -bottom-2 lg:-bottom-4 left-0 w-full overflow-visible pointer-events-none"
-                  viewBox="0 0 200 12"
-                  preserveAspectRatio="none"
-                  style={{ filter: 'drop-shadow(0px 4px 10px rgba(37,99,235,0.55))' }}
-                >
-                  <path
-                    d="M2,10 Q50,0 100,5 T198,8"
-                    stroke="url(#pencilGrad)"
-                    strokeWidth="5"
-                    strokeLinecap="round"
-                    fill="none"
-                    className="hero-pencil-line"
-                  />
-                  <defs>
-                    <linearGradient id="pencilGrad" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%"   stopColor="#3b82f6" />
-                      <stop offset="100%" stopColor="#10b981" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-              </span>
-            </h1>
+          <div className="space-y-7">
+            <div className="hero-copy-drift relative inline-block pb-3">
+              <h1 className="font-display text-5xl font-black leading-[0.95] tracking-[-0.055em] text-slate-950 md:text-7xl lg:text-[5.15rem]">
+                Hiring decisions{' '}
+                <span className="whitespace-nowrap">with receipts.</span>
+              </h1>
+              <svg
+                className="hero-pencil-underline pointer-events-none absolute -bottom-2 left-1/2 h-8 w-[94%] -translate-x-1/2 overflow-visible lg:left-0 lg:w-[88%] lg:translate-x-0"
+                viewBox="0 0 560 44"
+                fill="none"
+                aria-hidden
+              >
+                <path
+                  className="hero-pencil-glow"
+                  d="M8 29 C88 9 148 31 226 18 C312 4 366 35 552 16"
+                />
+                <path
+                  className="hero-pencil-path"
+                  d="M8 29 C88 9 148 31 226 18 C312 4 366 35 552 16"
+                />
+              </svg>
+            </div>
             <p className="mx-auto max-w-xl text-lg font-medium leading-8 text-slate-500 lg:mx-0">
               From{' '}
               <span className="font-extrabold text-slate-950">1,247 resumes</span> to{' '}
@@ -402,7 +387,7 @@ export function HeroConvergenceScene() {
         </div>
 
         {/* ── Right: Signal Map ── */}
-        <div className="hidden md:flex md:justify-center lg:justify-self-center">
+        <div className="hidden w-full md:flex md:justify-center lg:justify-self-center">
           <HeroSignalMap />
         </div>
       </div>

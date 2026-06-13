@@ -12,7 +12,6 @@ import {
   Loader2,
   CheckCircle2,
   ShieldCheck,
-  X,
 } from 'lucide-react'
 import MeshBackground from '@/components/ui/MeshBackground'
 import { useAuth } from '@/context/AuthContext'
@@ -134,17 +133,26 @@ function AuthForm() {
     setGoogleLoading(true)
     setAuthNotice('')
     try {
-      const { isNewUser } = await signInWithGoogle()
-      if (isNewUser) {
+      const { isNewUser, role: storedRole } = await signInWithGoogle()
+      if (isNewUser || !storedRole) {
         setRoleModalOpen(true)
       } else {
-        // Existing user: redirect based on their stored role
-        const storedRole = role // will be refreshed by context, use role from context
         redirectToWorkspace(storedRole)
       }
     } catch (err: unknown) {
+      const code = typeof err === 'object' && err && 'code' in err
+        ? String((err as { code?: unknown }).code)
+        : ''
       const msg = err instanceof Error ? err.message : 'Sign-in failed'
-      setAuthNotice(msg.includes('popup-closed') ? 'Sign-in cancelled.' : 'Google sign-in failed. Please try again.')
+      if (code.includes('popup-closed') || msg.includes('popup-closed')) {
+        setAuthNotice('Sign-in cancelled.')
+      } else if (code.includes('unauthorized-domain')) {
+        setAuthNotice('This domain is not authorized in Firebase Authentication yet.')
+      } else if (code.includes('configuration-not-found')) {
+        setAuthNotice('Google sign-in is not enabled in Firebase Authentication yet.')
+      } else {
+        setAuthNotice('Google sign-in failed. Please try again.')
+      }
     } finally {
       setGoogleLoading(false)
     }
