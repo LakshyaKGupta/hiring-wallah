@@ -1178,3 +1178,28 @@ This file is the persistent project memory for AI agents and human contributors.
 #### Notes For Next Agent
 - The dev server may still be running from this session on port 3000.
 - If screenshot proof is required, retry Playwright after freeing local Chrome resources or use a lighter screenshot tool.
+
+### Session Update - 2026-06-13 (Run Site & Lower Section Polish)
+
+#### Objective
+- Run the website again and continue remaining polish beyond the hero so lower landing sections match the lighter evidence-led direction.
+
+#### Completed
+- Started the frontend dev server at `http://127.0.0.1:3000`.
+- Improved Outcomes feature cards:
+  - Replaced loud amber/rose/purple stat treatments with calmer blue/slate/emerald/indigo evidence colors.
+  - Tightened card height and radius for a more composed one-screen layout.
+  - Added subtle hover glow while preserving readable content hierarchy.
+- Improved Decision Protocol cards:
+  - Replaced "Logic Engine" and "Hover to reveal..." instructional copy with evidence-led language.
+  - Removed unnecessary mono styling from step numbers.
+  - Added a scan-line hover detail to better match the hero evidence system.
+
+#### Verification
+- `npm run lint` in `frontend`: passed.
+- `npm run build` in `frontend`: passed.
+- `curl -L http://127.0.0.1:3000/`: returned HTTP 200 after restarting the dev server.
+
+#### Notes For Next Agent
+- Browser automation was unreliable in the prior session; if visual proof is needed, retry after clearing browser runtime processes.
+- The next visual pass should focus on the Workspaces mock browser panel, which still has older generic SaaS styling compared with the hero.

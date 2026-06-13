@@ -38,33 +38,33 @@ const featureCards = [
     title: '6× Faster Screening',
     detail: 'Ingest thousands of resumes, parse credentials, and shortlist top talent in under 5 minutes without manual reading.',
     icon: Zap,
-    colorClass: 'text-amber-600',
-    bgClass: 'bg-gradient-to-br from-amber-50 to-amber-100/50',
-    stat: '600% Speed',
+    colorClass: 'text-blue-600',
+    bgClass: 'bg-blue-50',
+    stat: '6x faster',
   },
   {
     title: 'Explainable Decisions',
     detail: 'Get a comprehensive written scorecard explaining exactly why every candidate was recommended or skipped.',
     icon: FileText,
-    colorClass: 'text-teal-600',
-    bgClass: 'bg-gradient-to-br from-teal-50 to-teal-100/50',
-    stat: '100% Transparent',
+    colorClass: 'text-slate-700',
+    bgClass: 'bg-slate-50',
+    stat: 'Full trail',
   },
   {
     title: 'Evidence-Based Evaluation',
     detail: 'Verify skills against actual project history, timelines, and role scope, bypassing buzzword keyword packing.',
     icon: CheckCircle2,
-    colorClass: 'text-rose-600',
-    bgClass: 'bg-gradient-to-br from-rose-50 to-rose-100/50',
-    stat: 'Zero Bias',
+    colorClass: 'text-emerald-600',
+    bgClass: 'bg-emerald-50',
+    stat: 'Verified',
   },
   {
     title: 'Candidate Intelligence',
     detail: 'Enable candidates to run mock matches, discover skill gaps, and optimize resumes before submitting.',
     icon: Sliders,
-    colorClass: 'text-purple-600',
-    bgClass: 'bg-gradient-to-br from-purple-50 to-purple-100/50',
-    stat: 'Actionable Insights',
+    colorClass: 'text-indigo-600',
+    bgClass: 'bg-indigo-50',
+    stat: 'Actionable',
   },
 ] as const
 
@@ -86,7 +86,7 @@ function AgentCard({ title, role, mechanics, colorClass, borderColorClass, icon:
       variants={sectionItemVariants}
       onMouseLeave={() => setIsHovered(false)}
       onMouseEnter={() => setIsHovered(true)}
-      className={`relative bg-white border-l-4 ${borderColorClass} border-y border-r border-y-border-subtle border-r-border-subtle rounded-xl p-6 shadow-sm select-text cursor-pointer flex flex-col justify-between h-full group overflow-hidden`}
+      className={`relative bg-white/90 border-l-4 ${borderColorClass} border-y border-r border-y-border-subtle border-r-border-subtle rounded-2xl p-5 shadow-sm select-text cursor-pointer flex flex-col justify-between h-full group overflow-hidden backdrop-blur`}
       whileHover={{
         y: -6,
         boxShadow: '0 20px 40px rgba(0, 0, 0, 0.04)',
@@ -97,6 +97,12 @@ function AgentCard({ title, role, mechanics, colorClass, borderColorClass, icon:
       <div className="absolute top-4 right-4 text-[40px] font-extrabold text-gray-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0 pointer-events-none select-none">
         {stepNumber}
       </div>
+      <motion.div
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent"
+        animate={isHovered ? { x: ['-40%', '140%'] } : { x: '-40%' }}
+        transition={{ duration: 0.7, ease: EASE_OUT as [number, number, number, number] }}
+      />
       
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex items-center justify-between mb-4">
@@ -106,7 +112,7 @@ function AgentCard({ title, role, mechanics, colorClass, borderColorClass, icon:
           >
             <Icon className={`w-6 h-6 ${colorClass}`} />
           </motion.div>
-          <div className="text-xs font-bold text-gray-400 font-mono tracking-widest">{stepNumber}</div>
+          <div className="text-xs font-bold text-gray-400 tracking-wide">{stepNumber}</div>
         </div>
 
         <h4 className="text-lg font-bold text-gray-900 tracking-tight mb-2">
@@ -119,7 +125,7 @@ function AgentCard({ title, role, mechanics, colorClass, borderColorClass, icon:
 
         <div className="border-t border-gray-100 pt-4 mt-auto">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-400 text-[10px] uppercase font-bold tracking-wider">Logic Engine</span>
+            <span className="text-gray-400 text-[10px] uppercase font-bold tracking-wider">Evidence check</span>
             <motion.span 
               className="text-emerald-600 bg-emerald-50 border border-emerald-100/50 px-2 py-0.5 rounded text-[9px] font-bold flex items-center gap-1.5"
               animate={isHovered ? { scale: [1, 1.05, 1] } : {}}
@@ -149,9 +155,9 @@ function AgentCard({ title, role, mechanics, colorClass, borderColorClass, icon:
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 0.6 }}
                   exit={{ opacity: 0 }}
-                  className="italic text-gray-400 text-[11px] h-full flex items-center"
+                  className="text-gray-400 text-[11px] h-full flex items-center"
                 >
-                  Hover to reveal reasoning protocol...
+                  Reasoning trail ready.
                 </motion.div>
               )}
             </AnimatePresence>
@@ -167,6 +173,7 @@ function FeatureReasoningCard({
   detail,
   icon: Icon,
   colorClass,
+  bgClass,
   stat,
   index,
 }: {
@@ -181,19 +188,23 @@ function FeatureReasoningCard({
   return (
     <motion.div
       variants={sectionItemVariants}
-      className="group relative min-h-[280px] rounded-3xl border border-gray-200/60 bg-white p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col justify-between overflow-hidden cursor-pointer select-text"
+      className="group relative min-h-[250px] rounded-2xl border border-gray-200/70 bg-white/92 p-5 md:p-6 shadow-sm hover:shadow-[0_24px_60px_rgba(15,23,42,0.10)] transition-all duration-500 flex flex-col justify-between overflow-hidden cursor-pointer select-text backdrop-blur"
       whileHover={{ y: -8 }}
     >
       <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-60" />
+      <motion.div
+        aria-hidden
+        className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-blue-50 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100"
+      />
 
       <div className="relative z-10 flex flex-col h-full gap-6">
         <div className="flex items-start justify-between">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-50 border border-gray-100 text-accent-primary shrink-0 shadow-sm">
-            <Icon className="h-6 w-6" strokeWidth={2} />
+          <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${bgClass} border border-gray-100 shrink-0 shadow-sm`}>
+            <Icon className={`h-6 w-6 ${colorClass}`} strokeWidth={2} />
           </div>
-          <div className="bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100 flex items-center gap-2">
+          <div className="bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 flex items-center gap-2">
             <BarChart2 className={`w-3.5 h-3.5 ${colorClass}`} />
-            <span className="text-[10px] font-bold text-gray-600 tracking-wide uppercase">{stat}</span>
+            <span className="text-[10px] font-bold text-slate-600 tracking-wide">{stat}</span>
           </div>
         </div>
 
