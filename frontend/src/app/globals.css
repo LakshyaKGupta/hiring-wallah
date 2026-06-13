@@ -324,9 +324,9 @@ body {
   will-change: transform;
 }
 
-/* Score core wrapper also uses the same float pattern */
-.hero-score-core {
-  animation: hero-float-y 7.2s ease-in-out infinite;
+.hero-score-cluster {
+  transform: var(--score-transform, translate(-50%, -50%));
+  animation: hero-score-cluster-float 7.2s ease-in-out infinite;
   will-change: transform;
 }
 
@@ -344,7 +344,7 @@ body {
 }
 
 .hero-pencil-underline {
-  filter: drop-shadow(0 0 16px rgba(37, 99, 235, 0.36));
+  filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.42));
 }
 
 .hero-pencil-path,
@@ -356,13 +356,13 @@ body {
 }
 
 .hero-pencil-path {
-  stroke: #2563eb;
+  stroke: #38bdf8;
   stroke-width: 5;
   opacity: 0.95;
 }
 
 .hero-pencil-glow {
-  stroke: rgba(59, 130, 246, 0.28);
+  stroke: rgba(56, 189, 248, 0.34);
   stroke-width: 16;
 }
 
@@ -414,6 +414,11 @@ body {
 @keyframes hero-node-float {
   0%, 100% { transform: var(--node-transform, translate(-50%, -50%)) translateY(0px); }
   50%       { transform: var(--node-transform, translate(-50%, -50%)) translateY(-14px); }
+}
+
+@keyframes hero-score-cluster-float {
+  0%, 100% { transform: var(--score-transform, translate(-50%, -50%)) translateY(0px); }
+  50%       { transform: var(--score-transform, translate(-50%, -50%)) translateY(-10px); }
 }
 
 @keyframes hero-copy-drift {
@@ -1064,8 +1069,8 @@ body {
 }
 
 @keyframes hero-arc-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 /* Outer pulsing glow ring */
@@ -1274,7 +1279,7 @@ body {
   .idle-stat-shimmer, .section-ambient-pulse,
   .idle-spin-slow,
   .idle-drift-1, .idle-drift-2, .idle-drift-3, .idle-drift-4,
-  .hero-copy-drift, .hero-signal-node, .hero-score-core,
+  .hero-copy-drift, .hero-signal-node, .hero-score-cluster,
   .hero-orbit-ring, .hero-signal-path, .hero-pencil-path,
   .hero-pencil-glow, .floating-icon-drift, .outcome-headline-motion,
   .outcome-copy-motion, .section-kicker-glow, .section-title-glow,

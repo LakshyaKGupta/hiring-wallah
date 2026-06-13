@@ -76,6 +76,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // ── Google Sign-In ────────────────────────────
   async function signInWithGoogle(): Promise<{ isNewUser: boolean; role: UserRole }> {
+    assertHiringWallahFirebaseConfig()
+
     const provider = new GoogleAuthProvider()
     provider.setCustomParameters({ prompt: 'select_account' })
     const result = await signInWithPopup(auth, provider)
@@ -162,5 +164,28 @@ async function getUserRole(uid: string): Promise<UserRole> {
     return (snap.exists() ? snap.data()?.role : null) ?? null
   } catch {
     return null
+  }
+}
+
+function assertHiringWallahFirebaseConfig() {
+  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ?? ''
+  const authDomain = process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ?? ''
+  const storageBucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ?? ''
+  const configValues = [authDomain, projectId, storageBucket].filter(Boolean).join(' ')
+
+  if (/agenteval/i.test(configValues)) {
+    const error = new Error(
+      'Google sign-in is still configured for the AgentEval Firebase project. Replace the Firebase env values with the Hiring Wallah Firebase app before opening Google auth.',
+    ) as Error & { code: string }
+    error.code = 'auth/wrong-firebase-project'
+    throw error
+  }
+
+  if (!projectId || !/hiring-wallah/i.test(projectId)) {
+    const error = new Error(
+      'Google sign-in must use a Hiring Wallah Firebase project. Set NEXT_PUBLIC_FIREBASE_PROJECT_ID to the Hiring Wallah Firebase project before opening Google auth.',
+    ) as Error & { code: string }
+    error.code = 'auth/wrong-firebase-project'
+    throw error
   }
 }

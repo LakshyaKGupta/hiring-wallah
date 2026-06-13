@@ -146,10 +146,12 @@ function AuthForm() {
       const msg = err instanceof Error ? err.message : 'Sign-in failed'
       if (code.includes('popup-closed') || msg.includes('popup-closed')) {
         setAuthNotice('Sign-in cancelled.')
+      } else if (code.includes('wrong-firebase-project')) {
+        setAuthNotice('Google sign-in must use the Hiring Wallah Firebase project. Add the Hiring Wallah Firebase keys to .env.local before continuing.')
       } else if (code.includes('unauthorized-domain')) {
         setAuthNotice('This domain is not authorized in Firebase Authentication yet.')
-      } else if (code.includes('configuration-not-found')) {
-        setAuthNotice('Google sign-in is not enabled in Firebase Authentication yet.')
+      } else if (code.includes('configuration-not-found') || code.includes('operation-not-allowed')) {
+        setAuthNotice('Google sign-in is not enabled in the Hiring Wallah Firebase console yet.')
       } else {
         setAuthNotice('Google sign-in failed. Please try again.')
       }

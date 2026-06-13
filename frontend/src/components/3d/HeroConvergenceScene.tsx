@@ -217,12 +217,12 @@ function HeroSignalMap() {
 
       {/* Score core — positioned via CSS to match SVG coordinate */}
       <div
-        className="absolute z-30"
+        className="hero-score-cluster absolute z-30"
         style={{
           left: `${(CORE_CX / 560) * 100}%`,
           top:  `${(CORE_CY / 520) * 100}%`,
-          transform: 'translate(-50%, -50%)',
-        }}
+          '--score-transform': 'translate(-50%, -50%)',
+        } as React.CSSProperties}
       >
         {/* Pulsing ambient glow */}
         <div className="hero-score-glow pointer-events-none absolute -inset-6 rounded-full bg-blue-500/8 blur-xl" />
@@ -250,8 +250,8 @@ function HeroSignalMap() {
           />
           <defs>
             <linearGradient id="arcGrad" x1="0" y1="0" x2="224" y2="224" gradientUnits="userSpaceOnUse">
-              <stop offset="0%"   stopColor="rgb(37,99,235)"  stopOpacity="0.95" />
-              <stop offset="100%" stopColor="rgb(16,185,129)" stopOpacity="0.95" />
+              <stop offset="0%"   stopColor="rgb(14,165,233)"  stopOpacity="0.95" />
+              <stop offset="100%" stopColor="rgb(56,189,248)" stopOpacity="0.95" />
             </linearGradient>
           </defs>
         </svg>

@@ -1529,3 +1529,89 @@ This file is the persistent project memory for AI agents and human contributors.
 #### Pending Work
 - Remote Firebase/Supabase console setup still needs admin-authenticated access if it has not already been completed outside the repo.
 - No reference image was available in the workspace/conversation, so visual matching was based on live browser inspection and the written brief.
+
+### Session Update - 2026-06-14 (Hero Arc Alignment & Firebase Project Guard)
+
+#### Objective
+- Make the hero underline only sky glowing blue.
+- Fix the rotating hero score animation so it aligns with the `91 / Strong hire` circle.
+- Prevent "Continue with Google" from opening the wrong AgentEval Firebase auth popup in the Hiring Wallah project.
+
+#### Completed
+- Changed the hero headline underline to a pure sky-blue stroke and glow.
+- Changed the score animation structure so the rotating arc, glow, and `91 / Strong hire` circle move as one aligned cluster.
+- Updated the rotating arc keyframes to preserve `translate(-50%, -50%)` while rotating.
+- Removed the green tint from the score arc gradient.
+- Added a Firebase config guard before `signInWithPopup()`:
+  - Detects `agenteval` in `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`, `NEXT_PUBLIC_FIREBASE_PROJECT_ID`, or `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`.
+  - Blocks the popup before Firebase opens the wrong AgentEval auth window.
+  - Shows a clear setup message telling the developer to add Hiring Wallah Firebase keys to `.env.local`.
+
+#### Files Modified
+- `frontend/src/components/3d/HeroConvergenceScene.tsx`
+- `frontend/src/app/globals.css`
+- `frontend/src/context/AuthContext.tsx`
+- `frontend/src/app/auth/page.tsx`
+- `HANDOFF.md`
+
+#### Verification
+- `npm run lint` in `frontend`: passed.
+- `npm run build` in `frontend`: passed.
+- Browser/Chrome verification on `http://localhost:3000/`:
+  - Hero arc center matched the score circle center.
+  - Hero underline computed as `rgb(56, 189, 248)` with sky-blue glow.
+  - Horizontal overflow remained `0`.
+- Browser/Chrome verification on `http://localhost:3000/auth?mode=signup`:
+  - Clicking `Continue with Google` did not open a second popup/window.
+  - Page stayed on Hiring Wallah auth route and showed the wrong-Firebase-project setup notice.
+
+#### Pending Work
+- Replace `frontend/.env.local` Firebase values with the real Hiring Wallah Firebase app config. Current local values still point to `agenteval1`, so Google auth is intentionally blocked to avoid showing the wrong project.
+
+### Session Update - 2026-06-14 (Hiring Wallah Firebase Project)
+
+#### Objective
+- Create a dedicated Firebase project for Hiring Wallah.
+- Replace local AgentEval Firebase config with Hiring Wallah config without exposing secrets.
+- Verify Google auth no longer points at AgentEval.
+- Commit and push the safe project changes.
+
+#### Completed
+- Created Firebase project:
+  - Project ID: `hiring-wallah-prod`
+  - Display name: `Hiring Wallah`
+- Created Firebase Web app:
+  - Display name: `Hiring Wallah Web`
+  - App ID starts with `1:39799091533:web:`
+- Updated local `frontend/.env.local` with the Hiring Wallah Firebase Web app config.
+  - `.env.local` remains ignored and was not committed.
+  - No Firebase API key or Supabase anon key was committed.
+- Added `.firebaserc` with default project `hiring-wallah-prod` so future Firebase CLI commands target the Hiring Wallah project.
+- Hardened auth config validation:
+  - Blocks AgentEval Firebase config.
+  - Blocks any non-Hiring-Wallah Firebase project ID before opening Google auth.
+- Improved auth error copy for disabled Google provider.
+- Updated `frontend/.env.example` with non-secret guidance that Firebase config must belong to the Hiring Wallah Firebase project.
+
+#### Verification
+- `firebase projects:list` confirmed `hiring-wallah-prod | Hiring Wallah | ACTIVE`.
+- `firebase apps:list WEB --project hiring-wallah-prod` confirmed one active Web app: `Hiring Wallah Web`.
+- `npm run lint` in `frontend`: passed.
+- `npm run build` in `frontend`: passed.
+- Secret hygiene check:
+  - No `.env` files are tracked by git.
+  - Tracked diff did not contain Firebase API keys, Supabase anon keys, passwords, tokens, or secrets.
+- Browser auth smoke on fresh dev server:
+  - `Continue with Google` no longer used AgentEval.
+  - Firebase auth handler domain was `hiring-wallah-prod.firebaseapp.com`.
+  - App showed: `Google sign-in is not enabled in the Hiring Wallah Firebase console yet.`
+
+#### Blockers / Pending Work
+- Firestore database creation is blocked because the Cloud Firestore API is disabled for `hiring-wallah-prod`.
+  - Firebase CLI returned HTTP 403 and asked to enable:
+    `https://console.developers.google.com/apis/api/firestore.googleapis.com/overview?project=hiring-wallah-prod`
+  - After enabling the API, rerun:
+    `firebase --project hiring-wallah-prod firestore:databases:create '(default)' --location=nam5 --delete-protection=DISABLED`
+- Google sign-in provider is not enabled yet in Firebase Authentication.
+  - Enable Firebase Console -> Authentication -> Sign-in method -> Google.
+  - Add authorized domains as needed, including `localhost` for local development and the production domain.
