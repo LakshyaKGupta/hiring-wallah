@@ -90,7 +90,7 @@ function FeatureReasoningCard({
       className="group grid gap-4 border-b border-slate-200 px-5 py-5 last:border-b-0 md:grid-cols-[56px_1fr_auto] md:items-center md:px-7"
       whileHover={{ x: 4 }}
     >
-      <div className={`flex h-12 w-12 items-center justify-center rounded-full ${bgClass} border border-gray-100`}>
+      <div className={`idle-drift-${(index % 4) + 1} flex h-12 w-12 items-center justify-center rounded-full ${bgClass} border border-gray-100`}>
         <Icon className={`h-5 w-5 ${colorClass}`} strokeWidth={2} />
       </div>
       <div>
@@ -394,7 +394,7 @@ export default function LandingPage() {
                 </div>
 
                 <div className="lg:col-span-7 relative">
-                  <div className="absolute -inset-4 bg-gradient-to-r from-accent-primary/20 to-accent-secondary/20 blur-3xl opacity-50 rounded-[3rem]" />
+                  <div className="section-ambient-pulse absolute -inset-4 bg-gradient-to-r from-accent-primary/20 to-accent-secondary/20 blur-3xl opacity-50 rounded-[3rem]" />
                   <div className="bg-white/70 border-y border-gray-200/70 overflow-hidden relative z-10 flex min-h-[420px] flex-col backdrop-blur">
                     <div className="bg-gray-50/80 border-b border-gray-200 px-4 py-3 flex items-center gap-3">
                       <div className="flex gap-1.5">
@@ -417,7 +417,7 @@ export default function LandingPage() {
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="text-3xl font-extrabold text-accent-primary tracking-tight">91%</div>
+                            <div className="idle-breathe text-3xl font-extrabold text-accent-primary tracking-tight">91%</div>
                             <div className="mt-1 text-[10px] font-bold tracking-wide text-gray-400">Match score</div>
                           </div>
                         </div>
@@ -596,7 +596,9 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <SectionReveal className="mx-auto max-w-5xl border-y border-slate-200 bg-white/55 backdrop-blur" delay={80}>
+          <SectionReveal variant="stagger" className="relative mx-auto max-w-5xl border-y border-slate-200 bg-white/55 backdrop-blur shadow-[0_0_80px_-15px_rgba(37,99,235,0.15)]" delay={80}>
+            {/* Ambient inner glow */}
+            <div className="absolute left-1/2 top-1/2 -z-10 h-full w-[120%] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.06),transparent_60%)]" />
             {[
               { num: '01', title: 'Requirement Analysis', role: 'Deconstructs natural language JDs into deterministic assessment parameters.', icon: Search, colorClass: 'text-accent-primary' },
               { num: '02', title: 'Rubric Strategy', role: 'Sets weight distributions for experience, skills, proof quality, and role level.', icon: Sliders, colorClass: 'text-accent-secondary' },
@@ -616,7 +618,7 @@ export default function LandingPage() {
                     <h3 className="text-xl font-extrabold tracking-tight text-slate-950">{step.title}</h3>
                     <p className="mt-1 text-sm font-medium leading-6 text-slate-500">{step.role}</p>
                   </div>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white">
+                  <div className={`idle-drift-${(parseInt(step.num) % 4) + 1} flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white`}>
                     <Icon className={`h-5 w-5 ${step.colorClass}`} />
                   </div>
                 </div>

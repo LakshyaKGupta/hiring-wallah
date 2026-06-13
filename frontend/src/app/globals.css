@@ -315,23 +315,22 @@ body {
 /* Only apply will-change on elements that actually transform frequently */
 .hero-copy-drift {
   animation: hero-copy-drift 9s ease-in-out infinite;
-  /* no will-change – GPU layer created only when animating */
 }
 
+/* Signal nodes — only translateY so the translate(-50%,-50%) centering isn't disturbed */
 .hero-signal-node {
-  animation: hero-signal-node 8s ease-in-out infinite;
+  animation: hero-float-y 6s ease-in-out infinite;
   will-change: transform;
-  /* Paint layer – these move constantly */
 }
 
+/* Score core wrapper also uses the same float pattern */
 .hero-score-core {
-  animation: hero-score-core 9s ease-in-out infinite;
+  animation: hero-float-y 7.2s ease-in-out infinite;
   will-change: transform;
 }
 
 .hero-orbit-ring {
   animation: hero-orbit-spin 44s linear infinite;
-  /* SVG rotate – compositor handled */
 }
 
 .hero-orbit-ring-reverse {
@@ -340,11 +339,10 @@ body {
 }
 
 .hero-signal-path {
-  animation: hero-dash-flow 6s linear infinite;
-  /* stroke-dashoffset is paint, not compositor – keep it light */
+  animation: hero-dash-flow 5s linear infinite;
 }
 
-/* Floating icon: only 2 at a time get will-change (the CSS var trick) */
+/* Floating icon drift */
 .floating-icon-drift {
   animation: floating-icon-drift 20s ease-in-out infinite;
 }
@@ -367,46 +365,28 @@ body {
   transform: translateX(-120%);
 }
 
-@keyframes hero-copy-drift {
-  0%, 100% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(0, -4px, 0);
-  }
+/* Base float — pure Y so it composes safely with translate(-50%,-50%) */
+@keyframes hero-float-y {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-14px); }
 }
 
-@keyframes hero-signal-node {
-  0%, 100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  45% {
-    transform: translate3d(10px, -16px, 0) scale(1.035);
-  }
-  72% {
-    transform: translate3d(-6px, 6px, 0) scale(1.01);
-  }
+@keyframes hero-copy-drift {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%       { transform: translate3d(0, -4px, 0); }
 }
 
 @keyframes hero-score-core {
-  0%, 100% {
-    transform: translate3d(-50%, -50%, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(-50%, calc(-50% - 12px), 0) scale(1.018);
-  }
+  0%, 100% { transform: translate3d(-50%, -50%, 0) scale(1); }
+  50%       { transform: translate3d(-50%, calc(-50% - 12px), 0) scale(1.018); }
 }
 
 @keyframes hero-orbit-spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 @keyframes hero-dash-flow {
-  to {
-    stroke-dashoffset: -44;
-  }
+  to { stroke-dashoffset: -40; }
 }
 
 @keyframes floating-icon-drift {
@@ -997,31 +977,30 @@ body {
 }
 
 /* ──────────────────────────────────────────────────────
-   HERO HIGHLIGHT UNDERLINE
-   Animated underline sweep on key headline words
+   HERO FLOAT ANIMATION
 ────────────────────────────────────────────────────── */
-.hero-highlight {
-  position: relative;
-  display: inline;
+.hero-float {
+  animation: hero-float 6s ease-in-out infinite;
+  will-change: transform;
 }
 
-.hero-highlight::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -4px;
-  width: 100%;
-  height: 5px;
-  background: linear-gradient(90deg, rgba(37, 99, 235, 0.35), rgba(16, 185, 129, 0.4));
-  border-radius: 3px;
-  transform-origin: left center;
-  transform: scaleX(0);
-  animation: hero-highlight-in 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.7s forwards;
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
 }
 
-@keyframes hero-highlight-in {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
+/* ──────────────────────────────────────────────────────
+   HERO PENCIL LINE
+   Animated stroke drawing for the headline
+────────────────────────────────────────────────────── */
+.hero-pencil-line {
+  stroke-dasharray: 250;
+  stroke-dashoffset: 250;
+  animation: pencil-draw 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
+}
+
+@keyframes pencil-draw {
+  to { stroke-dashoffset: 0; }
 }
 
 /* ──────────────────────────────────────────────────────
@@ -1084,4 +1063,115 @@ body {
 @keyframes google-btn-shimmer {
   0%, 60% { left: -75%; }
   100% { left: 135%; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SITE-WIDE CONSTANT MOVEMENT UTILITIES
+   Subtle, non-distracting idle animations that make the
+   whole page feel alive and premium.
+═══════════════════════════════════════════════════════════ */
+
+/* ── Gentle vertical float (for cards, icons, pills) ── */
+.idle-float {
+  animation: idle-float 5.5s ease-in-out infinite;
+  will-change: transform;
+}
+.idle-float-slow {
+  animation: idle-float 8s ease-in-out infinite;
+  will-change: transform;
+}
+.idle-float-fast {
+  animation: idle-float 3.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes idle-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+/* ── Subtle breathing scale (for stat boxes, score circles) ── */
+.idle-breathe {
+  animation: idle-breathe 4s ease-in-out infinite;
+}
+
+@keyframes idle-breathe {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.025); }
+}
+
+/* ── Gentle horizontal sway (for feature cards) ── */
+.idle-sway {
+  animation: idle-sway 7s ease-in-out infinite;
+}
+
+@keyframes idle-sway {
+  0%, 100% { transform: translateX(0px) rotate(0deg); }
+  33%       { transform: translateX(3px)  rotate(0.4deg); }
+  66%       { transform: translateX(-2px) rotate(-0.3deg); }
+}
+
+/* ── Border glow pulse (highlight cards on hover approach) ── */
+.idle-glow-border {
+  animation: idle-glow-border 3s ease-in-out infinite;
+}
+
+@keyframes idle-glow-border {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+  50%       { box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08), 0 8px 32px rgba(37, 99, 235, 0.07); }
+}
+
+/* ── Shimmer across stat numbers ── */
+.idle-stat-shimmer {
+  animation: idle-stat-shimmer 4s ease-in-out infinite;
+  background: linear-gradient(90deg,
+    var(--color-text-primary) 0%,
+    rgba(37, 99, 235, 0.9) 45%,
+    var(--color-text-primary) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes idle-stat-shimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+/* ── Ambient section glow pulse (for section backgrounds) ── */
+.section-ambient-pulse {
+  animation: section-ambient-pulse 8s ease-in-out infinite;
+}
+
+@keyframes section-ambient-pulse {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1; }
+}
+
+/* ── Icon spin (very slow, for decorative icons) ── */
+.idle-spin-slow {
+  animation: idle-spin-slow 20s linear infinite;
+}
+
+@keyframes idle-spin-slow {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Dot/particle drift ── */
+.idle-drift-1 { animation: idle-float 5.1s ease-in-out infinite; }
+.idle-drift-2 { animation: idle-float 6.3s ease-in-out infinite -1.2s; }
+.idle-drift-3 { animation: idle-float 7.7s ease-in-out infinite -2.8s; }
+.idle-drift-4 { animation: idle-float 4.9s ease-in-out infinite -0.6s; }
+
+/* ── Reduce motion: disable all idle animations ── */
+@media (prefers-reduced-motion: reduce) {
+  .idle-float, .idle-float-slow, .idle-float-fast,
+  .idle-breathe, .idle-sway, .idle-glow-border,
+  .idle-stat-shimmer, .section-ambient-pulse,
+  .idle-spin-slow,
+  .idle-drift-1, .idle-drift-2, .idle-drift-3, .idle-drift-4 {
+    animation: none !important;
+  }
 }
