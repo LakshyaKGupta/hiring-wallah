@@ -37,7 +37,6 @@ export default function TextReveal({
   className = '',
   effect = 'fade',
   staggerDelay = 0.04,
-  once = true,
 }: TextRevealProps) {
   const words = children.split(' ')
 
@@ -65,9 +64,8 @@ export default function TextReveal({
   return (
     <motion.span
       variants={containerVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once, amount: 0.5 }}
+      initial="visible"
+      animate="visible"
       className={`inline ${className}`}
       aria-label={children}
     >

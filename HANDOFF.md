@@ -1302,3 +1302,61 @@ This file is the persistent project memory for AI agents and human contributors.
 #### Notes For Next Agent
 - Do not restore forced one-viewport heights on dense sections. Use min-height plus content-aware spacing.
 - Keep decorative motion sparse; prioritize product-specific motion over repeated background icons.
+
+### Session Update - 2026-06-13 (No-Hash Navigation, Immediate Sections, Cardless Hero)
+
+#### Objective
+- Fix section content feeling like it loads late while scrolling.
+- Stop section navigation from showing `/#section` in the address bar.
+- Remove the hero card/canvas entirely and replace it with a different visual object.
+- Reduce the boxed-card feel across the landing page.
+
+#### Completed
+- Removed scroll-triggered section reveals:
+  - Replaced landing section `whileInView` wrappers with immediate `animate="show"` rendering.
+  - Updated `TextReveal` so headings render immediately instead of waiting for viewport entry.
+- Removed hash-writing section navigation:
+  - Navbar section links now use `/` as the visible href and scroll via click handlers.
+  - Scroll observers still update active nav state but no longer write URL hashes.
+  - Existing direct hash visits are still handled and then cleaned back to `/`.
+- Replaced the hero visual:
+  - Removed the central dashboard/card/canvas structure.
+  - Added a signal-map visual with orbital rails, SVG paths, a score core, and floating Resume/Rubric/Evidence/Ledger nodes.
+- Flattened visual cards:
+  - Outcomes, Process, Workspaces, and CTA panels now use lighter borders, fewer shadows, and more open panel/row styling.
+
+#### Files Modified
+- `frontend/src/components/3d/HeroConvergenceScene.tsx`
+- `frontend/src/components/ui/Navbar.tsx`
+- `frontend/src/components/ui/TextReveal.tsx`
+- `frontend/src/app/page.tsx`
+- `HANDOFF.md`
+
+#### Architecture Decisions
+- Kept existing section IDs for scrolling and accessibility, but removed hashes from visible URLs.
+- Preserved the existing landing route and auth/workspace links.
+- Avoided new dependencies; all fixes use existing Next.js, Framer Motion, Tailwind, and lucide assets.
+
+#### Dependencies Added
+- None.
+
+#### Verification
+- `npm run lint` in `frontend`: passed.
+- `npm run build` in `frontend`: passed.
+- `curl -L http://127.0.0.1:3000/`: returned HTTP 200.
+- Browser QA:
+  - Page loaded at `http://127.0.0.1:3000/`.
+  - Navbar section links rendered with `/` URLs, not `/#...`.
+  - Snapshot showed the new hero signal nodes: Resume, Rubric, Evidence, Ledger, and Consensus.
+  - Console had only normal React DevTools/HMR development messages after fixing duplicate nav keys.
+
+#### Issues Found
+- Changing nav links to `/` initially created duplicate React keys because the navbar used `key={item.href}`; fixed by keying on `sectionId`.
+- The previous `whileInView` usage was the main cause of sections feeling unloaded on scroll.
+
+#### Pending Work
+- If the user still dislikes the remaining lower-page visual language, redesign Workspaces as a custom non-browser composition next.
+
+#### Notes For Next Agent
+- Do not reintroduce `/#section` hrefs or URL hash writes for landing navigation.
+- Avoid viewport-gated reveal animations for core section content; they make the page feel unloaded.

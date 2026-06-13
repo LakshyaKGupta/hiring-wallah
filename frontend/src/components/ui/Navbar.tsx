@@ -15,39 +15,36 @@ import {
 } from 'lucide-react'
 
 const navLinks = [
-  { href: '/', label: 'Home', icon: Home, match: (pathname: string) => pathname === '/' },
-  { href: '/#features', label: 'Outcomes', icon: Sparkles, match: () => false },
-  { href: '/#workspaces', label: 'Workspaces', icon: ClipboardCheck, match: () => false },
-  { href: '/#how-it-works', label: 'Process', icon: Network, match: () => false },
-  { href: '/#cta', label: 'Start', icon: FileText, match: () => false },
+  { href: '/', label: 'Home', icon: Home, sectionId: 'hero', match: (pathname: string) => pathname === '/' },
+  { href: '/', label: 'Outcomes', icon: Sparkles, sectionId: 'features', match: () => false },
+  { href: '/', label: 'Workspaces', icon: ClipboardCheck, sectionId: 'workspaces', match: () => false },
+  { href: '/', label: 'Process', icon: Network, sectionId: 'how-it-works', match: () => false },
+  { href: '/', label: 'Start', icon: FileText, sectionId: 'cta', match: () => false },
 ]
 
-const sectionIds = navLinks
-  .map((item) => item.href.startsWith('/#') ? item.href.slice(2) : null)
-  .filter((item): item is string => Boolean(item))
+const sectionIds = navLinks.map((item) => item.sectionId)
 
 function NavLink({
   href,
   label,
+  sectionId,
   icon: Icon,
   isActive,
   className = '',
 }: {
   href: string
   label: string
+  sectionId: string
   icon: React.ComponentType<{ className?: string }>
   isActive: boolean
   className?: string
 }) {
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!href.startsWith('/#')) return
-
-    const sectionId = href.slice(2)
     const element = document.getElementById(sectionId)
     if (!element) return
 
     event.preventDefault()
-    window.history.pushState(null, '', href)
+    window.history.replaceState(null, '', window.location.pathname)
     const targetTop = Math.max(0, element.offsetTop - 64)
     document.documentElement.scrollTop = targetTop
     document.body.scrollTop = targetTop
@@ -89,21 +86,9 @@ function NavbarContent() {
   const searchParams = useSearchParams()
   const mode = searchParams?.get('mode')
   const isAuthPage = pathname === '/auth'
-  const [activeHash, setActiveHash] = useState('')
+  const [activeSection, setActiveSection] = useState('hero')
 
   useEffect(() => {
-    const syncHash = () => {
-      if (window.location.hash === '#hero') {
-        window.history.replaceState(null, '', window.location.pathname)
-        setActiveHash('')
-        return
-      }
-      setActiveHash(window.location.hash || '')
-    }
-
-    syncHash()
-    window.addEventListener('hashchange', syncHash)
-
     const observer = new IntersectionObserver(
       (entries) => {
         const visibleEntry = entries
@@ -111,9 +96,10 @@ function NavbarContent() {
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
 
         if (visibleEntry?.target.id) {
-          const nextHash = `#${visibleEntry.target.id}`
-          setActiveHash(nextHash)
-          window.history.replaceState(null, '', nextHash)
+          setActiveSection(visibleEntry.target.id)
+          if (window.location.hash) {
+            window.history.replaceState(null, '', window.location.pathname)
+          }
         }
       },
       {
@@ -129,7 +115,6 @@ function NavbarContent() {
     })
 
     return () => {
-      window.removeEventListener('hashchange', syncHash)
       observer.disconnect()
     }
   }, [])
@@ -160,11 +145,12 @@ function NavbarContent() {
         <nav className="hidden md:flex items-center gap-0.5 sm:gap-1">
           {navLinks.map((item) => (
             <NavLink
-              key={item.href}
+              key={item.sectionId}
               href={item.href}
               label={item.label}
+              sectionId={item.sectionId}
               icon={item.icon}
-              isActive={item.href.startsWith('/#') ? activeHash === item.href.slice(1) : item.match(pathname ?? '') && (!activeHash || activeHash === '#hero')}
+              isActive={pathname === '/' ? activeSection === item.sectionId : item.match(pathname ?? '')}
             />
           ))}
         </nav>
@@ -221,11 +207,12 @@ function NavbarFallback() {
         <nav className="hidden md:flex items-center gap-0.5 sm:gap-1">
           {navLinks.map((item) => (
             <NavLink
-              key={item.href}
+              key={item.sectionId}
               href={item.href}
               label={item.label}
+              sectionId={item.sectionId}
               icon={item.icon}
-              isActive={item.match(pathname ?? '')}
+              isActive={item.sectionId === 'hero' && item.match(pathname ?? '')}
             />
           ))}
         </nav>

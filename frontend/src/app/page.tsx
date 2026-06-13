@@ -86,10 +86,10 @@ function AgentCard({ title, role, mechanics, colorClass, borderColorClass, icon:
       variants={sectionItemVariants}
       onMouseLeave={() => setIsHovered(false)}
       onMouseEnter={() => setIsHovered(true)}
-      className={`relative bg-white/90 border-l-4 ${borderColorClass} border-y border-r border-y-border-subtle border-r-border-subtle rounded-2xl p-5 shadow-sm select-text cursor-pointer flex flex-col justify-between h-full group overflow-hidden backdrop-blur`}
+      className={`relative border-l-4 ${borderColorClass} border-y border-r border-y-border-subtle border-r-transparent bg-white/55 p-5 select-text cursor-pointer flex flex-col justify-between h-full group overflow-hidden backdrop-blur`}
       whileHover={{
         y: -6,
-        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.04)',
+        boxShadow: '0 16px 34px rgba(15, 23, 42, 0.04)',
       }}
       whileTap={{ scale: 0.98 }}
       transition={appleTransition(0.35)}
@@ -107,7 +107,7 @@ function AgentCard({ title, role, mechanics, colorClass, borderColorClass, icon:
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex items-center justify-between mb-4">
           <motion.div 
-            className="p-3 rounded-xl bg-gray-50 border border-gray-100 group-hover:bg-white group-hover:border-gray-200 transition-all duration-300 shadow-sm"
+            className="p-3 rounded-xl bg-white/70 border border-gray-100 group-hover:bg-white group-hover:border-gray-200 transition-all duration-300"
             whileHover={{ scale: 1.05, rotate: 4 }}
           >
             <Icon className={`w-6 h-6 ${colorClass}`} />
@@ -136,7 +136,7 @@ function AgentCard({ title, role, mechanics, colorClass, borderColorClass, icon:
             </motion.span>
           </div>
           
-          <div className="bg-gray-50 rounded-lg p-3 text-gray-600 h-[72px] overflow-hidden relative border border-gray-100">
+          <div className="bg-white/65 p-3 text-gray-600 min-h-[72px] overflow-hidden relative border-l border-gray-200">
             <AnimatePresence mode="wait">
               {isHovered ? (
                 <motion.div
@@ -188,8 +188,8 @@ function FeatureReasoningCard({
   return (
     <motion.div
       variants={sectionItemVariants}
-      className="group relative min-h-[250px] rounded-2xl border border-gray-200/70 bg-white/92 p-5 md:p-6 shadow-sm hover:shadow-[0_24px_60px_rgba(15,23,42,0.10)] transition-all duration-500 flex flex-col justify-between overflow-hidden cursor-pointer select-text backdrop-blur"
-      whileHover={{ y: -8 }}
+      className="group relative min-h-[230px] border-t border-gray-200/80 bg-white/55 p-5 md:p-6 transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer select-text backdrop-blur hover:bg-white/80"
+      whileHover={{ y: -4 }}
     >
       <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-60" />
       <motion.div
@@ -199,10 +199,10 @@ function FeatureReasoningCard({
 
       <div className="relative z-10 flex flex-col h-full gap-6">
         <div className="flex items-start justify-between">
-          <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${bgClass} border border-gray-100 shrink-0 shadow-sm`}>
+          <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${bgClass} border border-gray-100 shrink-0`}>
             <Icon className={`h-6 w-6 ${colorClass}`} strokeWidth={2} />
           </div>
-          <div className="bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 flex items-center gap-2">
+          <div className="bg-white/70 px-3 py-1.5 rounded-full border border-slate-100 flex items-center gap-2">
             <BarChart2 className={`w-3.5 h-3.5 ${colorClass}`} />
             <span className="text-[10px] font-bold text-slate-600 tracking-wide">{stat}</span>
           </div>
@@ -220,7 +220,7 @@ function FeatureReasoningCard({
         {/* Dynamic mockup visual at bottom of card */}
         <div className="mt-auto">
           {index === 0 && (
-            <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 text-[11px] text-gray-500">
+            <div className="border-l border-gray-200 bg-gray-50/60 p-4 text-[11px] text-gray-500">
               <div className="mb-2 flex items-center justify-between gap-3">
                 <span className="font-bold text-gray-900">10,000+ profiles</span>
                 <span className="rounded-full bg-blue-50 px-2 py-0.5 font-bold text-accent-primary">Processing</span>
@@ -232,7 +232,7 @@ function FeatureReasoningCard({
           )}
 
           {index === 1 && (
-            <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 text-[11px] text-gray-500">
+            <div className="border-l border-gray-200 bg-gray-50/60 p-4 text-[11px] text-gray-500">
               <div className="mb-2 border-b border-gray-200 pb-1.5 font-bold text-gray-900">Decision log</div>
               <div>Parser extracted 5+ years React experience</div>
               <div className="mt-1.5 font-bold text-emerald-600">Verdict: 91% match, strong hire</div>
@@ -240,7 +240,7 @@ function FeatureReasoningCard({
           )}
 
           {index === 2 && (
-            <div className="space-y-1.5 rounded-xl border border-gray-100 bg-gray-50 p-4 text-[11px] text-gray-600">
+            <div className="space-y-1.5 border-l border-gray-200 bg-gray-50/60 p-4 text-[11px] text-gray-600">
               <div className="flex items-center gap-2 font-semibold text-emerald-600">
                 <CheckCircle2 className="w-3.5 h-3.5" /> Built Go Microservices (Pg 2)
               </div>
@@ -251,7 +251,7 @@ function FeatureReasoningCard({
           )}
 
           {index === 3 && (
-            <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 text-[11px] text-gray-600">
+            <div className="border-l border-gray-200 bg-gray-50/60 p-4 text-[11px] text-gray-600">
               <div className="mb-2 text-gray-400">Target skill gap audit</div>
               <div className="flex flex-wrap gap-1.5">
                 <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-md border border-emerald-100 font-bold">React</span>
@@ -365,6 +365,7 @@ export default function LandingPage() {
           top: targetTop,
           behavior: 'smooth',
         })
+        window.history.replaceState(null, '', window.location.pathname)
       })
     }
 
@@ -398,13 +399,8 @@ export default function LandingPage() {
       const prevSectionIdx = activeSectionRef.current
       if (currentSectionIdx !== prevSectionIdx) {
         setActiveSection(currentSectionIdx)
-        const section = LANDING_SECTIONS[currentSectionIdx]
-        if (section?.id === 'hero') {
-          if (window.location.hash) {
-            window.history.replaceState(null, '', window.location.pathname)
-          }
-        } else if (section) {
-          window.history.replaceState(null, '', `#${section.id}`)
+        if (window.location.hash) {
+          window.history.replaceState(null, '', window.location.pathname)
         }
       }
     }
@@ -430,9 +426,8 @@ export default function LandingPage() {
 
         <motion.div
           variants={sectionContainerVariants}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.15 }}
+          initial="show"
+          animate="show"
           className="relative z-10 mx-auto w-full max-w-7xl px-6"
         >
           <div className="flex flex-col lg:flex-row gap-10 lg:gap-14 items-start">
@@ -466,9 +461,8 @@ export default function LandingPage() {
 
         <motion.div 
           variants={sectionContainerVariants}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.15 }}
+          initial="show"
+          animate="show"
           className="max-w-7xl mx-auto px-6 w-full relative z-10 space-y-8 lg:space-y-10"
         >
           {/* Header & Tabs */}
@@ -557,7 +551,7 @@ export default function LandingPage() {
 
                 <div className="lg:col-span-7 relative">
                   <div className="absolute -inset-4 bg-gradient-to-r from-accent-primary/20 to-accent-secondary/20 blur-3xl opacity-50 rounded-[3rem]" />
-                  <div className="bg-white border border-gray-200/60 rounded-2xl shadow-2xl overflow-hidden relative z-10 flex min-h-[420px] flex-col">
+                  <div className="bg-white/70 border-y border-gray-200/70 overflow-hidden relative z-10 flex min-h-[420px] flex-col backdrop-blur">
                     <div className="bg-gray-50/80 border-b border-gray-200 px-4 py-3 flex items-center gap-3">
                       <div className="flex gap-1.5">
                         <div className="w-3 h-3 rounded-full bg-gray-300" />
@@ -567,7 +561,7 @@ export default function LandingPage() {
                       <div className="flex-1 text-center text-xs font-bold text-gray-400 bg-white border border-gray-200 rounded-md py-1 mx-4">recruiter.hiringwallah.com</div>
                     </div>
                     <div className="flex-1 p-8 bg-gray-50/30 overflow-hidden relative">
-                      <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm h-full flex flex-col">
+                      <div className="bg-white/70 border-l border-gray-200 p-6 h-full flex flex-col">
                          <div className="flex items-center justify-between border-b border-gray-100 pb-5 mb-5">
                           <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-full bg-accent-primary/10 border border-accent-primary/20 flex items-center justify-center text-accent-primary font-bold text-lg">
@@ -640,8 +634,8 @@ export default function LandingPage() {
                         onClick={() => setActiveCandidateIdx(idx)}
                         className={`px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 ${
                           activeCandidateIdx === idx
-                            ? 'bg-accent-secondary text-white shadow-md hover:bg-accent-secondary/95 hover:-translate-y-0.5'
-                            : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900 hover:-translate-y-0.5 shadow-sm'
+                            ? 'bg-accent-secondary text-white hover:bg-accent-secondary/95 hover:-translate-y-0.5'
+                            : 'bg-white/70 border border-gray-200 text-gray-600 hover:bg-white hover:text-gray-900 hover:-translate-y-0.5'
                         }`}
                       >
                         {c.name.split(' ')[0]}
@@ -649,7 +643,7 @@ export default function LandingPage() {
                     ))}
                   </div>
 
-                  <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm space-y-4">
+                  <div className="bg-white/70 border-l border-gray-200 p-6 space-y-4">
                     <div className="flex justify-between items-start border-b border-gray-100 pb-4">
                       <div>
                         <h4 className="text-base font-bold text-gray-900">{candidate.name}</h4>
@@ -675,7 +669,7 @@ export default function LandingPage() {
                     )}
                   </div>
 
-                  <div className="space-y-4 pt-2 bg-white border border-gray-200 p-5 rounded-2xl shadow-sm">
+                  <div className="space-y-4 pt-2 bg-white/70 border-l border-gray-200 p-5">
                     <div className="flex items-center justify-between text-xs font-bold">
                       <span className="text-gray-900">Experience: {expWeight}%</span>
                       <span className="text-gray-500">Skills: {skillWeight}%</span>
@@ -691,7 +685,7 @@ export default function LandingPage() {
                   </div>
                 </div>
 
-                <div className="lg:col-span-6 bg-white border border-gray-200 rounded-[2.5rem] p-10 md:p-12 shadow-xl flex flex-col items-center justify-center text-center">
+                <div className="lg:col-span-6 bg-white/70 border-y border-gray-200 p-10 md:p-12 flex flex-col items-center justify-center text-center backdrop-blur">
                   <span className="mb-10 text-sm font-bold tracking-wide text-gray-400">Match score</span>
                   
                   <div className="relative w-56 h-56 flex items-center justify-center mb-10">
@@ -747,9 +741,8 @@ export default function LandingPage() {
 
         <motion.div 
           variants={sectionContainerVariants}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.15 }}
+          initial="show"
+          animate="show"
           className="max-w-7xl mx-auto px-6 w-full relative z-10 space-y-8 lg:space-y-10"
         >
           <div className="text-center max-w-2xl mx-auto space-y-4">
@@ -841,9 +834,8 @@ export default function LandingPage() {
 
         <motion.div 
           variants={sectionContainerVariants}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.15 }}
+          initial="show"
+          animate="show"
           className="max-w-7xl mx-auto px-6 w-full flex flex-col justify-center relative z-10 space-y-8 lg:space-y-10"
         >
           <div className="text-center max-w-2xl mx-auto space-y-4">
@@ -863,7 +855,7 @@ export default function LandingPage() {
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-10 py-4 bg-gray-900 text-white font-bold rounded-xl flex items-center justify-center gap-3 shadow-[0_10px_24px_rgba(15,23,42,0.18)] hover:bg-gray-800 hover:shadow-[0_16px_32px_rgba(15,23,42,0.24)] transition-all cursor-pointer"
+                className="px-10 py-4 bg-gray-900 text-white font-bold rounded-xl flex items-center justify-center gap-3 hover:bg-gray-800 transition-all cursor-pointer"
               >
                 <span>Create Free Account</span>
                 <ArrowRight className="w-4 h-4" />
@@ -873,7 +865,7 @@ export default function LandingPage() {
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-10 py-4 bg-white border border-gray-200 hover:bg-gray-50 text-gray-900 font-bold rounded-xl flex items-center justify-center cursor-pointer shadow-sm transition-all"
+                className="px-10 py-4 bg-white/70 border border-gray-200 hover:bg-white text-gray-900 font-bold rounded-xl flex items-center justify-center cursor-pointer transition-all"
               >
                 <span>Sign In</span>
               </motion.div>
@@ -884,8 +876,8 @@ export default function LandingPage() {
             variants={sectionContainerVariants}
             className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto"
           >
-            <div className="bg-white border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1">
-              <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center mb-6 shadow-sm">
+            <div className="bg-white/60 border-l border-gray-200 p-8 transition-all duration-300 hover:bg-white/85">
+              <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center mb-6">
                 <Briefcase className="w-6 h-6 text-accent-primary" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Recruiter Workspace</h3>
@@ -894,8 +886,8 @@ export default function LandingPage() {
                 Enter Recruiter Portal <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
-            <div className="bg-white border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1">
-              <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center mb-6 shadow-sm">
+            <div className="bg-white/60 border-l border-gray-200 p-8 transition-all duration-300 hover:bg-white/85">
+              <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center mb-6">
                 <User className="w-6 h-6 text-accent-secondary" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Candidate Workspace</h3>
