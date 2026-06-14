@@ -16,6 +16,12 @@ This file is the persistent project memory for AI agents and human contributors.
   - **Recruiter workspace redesign**: Replaced the empty setup state with a professional command center using mock active roles, candidate shortlist, AI agent operations, report readiness, and recruiter action areas.
   - **Candidate workspace redesign**: Replaced the single upload screen with a full candidate career studio using mock role matches, readiness metrics, skill gaps, interview prep, and candidate AI agent areas.
   - **Verification**: Recruiter and candidate signup flows were tested in-browser on `localhost:3000`; both redirect to the correct workspace. Production build passes.
+- **Recent progress (Workspace UX v6.1 — Vertical App Shell & Interactive Mocks):**
+  - **Vertical dashboard shell**: Recruiter and candidate dashboard home pages now use a dedicated left sidebar app shell with module contribution text, app topbar, role status, mobile horizontal fallback nav, and prototype status copy.
+  - **Marketing navbar separation**: The global marketing navbar is hidden on `/recruiter` and `/candidate` so dashboards feel like real product workspaces instead of landing-page sections.
+  - **Working mock actions**: Mock dashboard buttons now open contextual action drawers or show feedback toasts instead of being dead controls.
+  - **Reference alignment**: Structure follows the app-shell pattern from the user's Zoho project: persistent rail, content workspace, top utility/search, and progressive task panels.
+  - **Verification**: Browser-checked recruiter and candidate shells on desktop and candidate mobile layout. Production build passes.
 - **Current blockers:** None.
 - **Known risks:** Email/password auth is intentionally frontend-only mock state until Firebase email/password or backend auth is implemented. Google auth still requires Firebase provider/Firestore configuration to be enabled in the Firebase console.
 
@@ -86,6 +92,74 @@ This file is the persistent project memory for AI agents and human contributors.
 - Replace mock email/password session with Firebase email/password auth or backend session auth.
 - Enable/verify Firebase Google provider and Firestore APIs in the console for real Google auth role persistence.
 - Connect recruiter dashboard actions to real job creation, resume upload, candidate evaluation, and report APIs.
+
+### Session Update - 2026-06-14 (Workspace UX v6.1 — Vertical App Shell & Interactive Mocks)
+
+#### Objective
+- Convert dashboard navigation from horizontal navbar to a professional vertical app shell.
+- Align dashboard structure with the product goal and nearby project patterns.
+- Make mock-data controls contribute useful prototype behavior instead of being dead UI.
+
+#### Completed
+- Added `frontend/src/components/ui/WorkspaceShell.tsx` as a reusable recruiter/candidate app shell.
+- Hid the marketing navbar on exact dashboard home routes `/recruiter` and `/candidate`.
+- Refactored recruiter dashboard into the shell with persistent vertical modules:
+  - Command
+  - Roles
+  - Shortlist
+  - AI Agents
+  - Reports
+- Refactored candidate dashboard into the shell with persistent vertical modules:
+  - Studio
+  - Resume
+  - Matches
+  - Coach
+  - Interviews
+- Added contextual action drawers for mock flows like creating roles, uploading resumes, reviewing candidates, scheduling panels, and opening candidate match plans.
+- Added lightweight toasts for sample metrics and agent lanes.
+- Preserved the light slate/white dashboard palette, dark navy sidebar, and existing typography system.
+
+#### Files Modified
+- `frontend/src/components/ui/WorkspaceShell.tsx`
+- `frontend/src/components/ui/Navbar.tsx`
+- `frontend/src/app/recruiter/page.tsx`
+- `frontend/src/app/candidate/page.tsx`
+- `HANDOFF.md`
+
+#### Architecture Decisions
+- Keep the shell local to the dashboard home pages for now. Detail routes under `/recruiter/*` and `/candidate/*` still use the existing global layout until they are intentionally migrated.
+- Keep mock interactions explicit as prototype actions and avoid presenting mock data as live backend data.
+- Use Tailwind and existing Framer Motion rather than adding another UI dependency.
+
+#### Dependencies Added
+- None.
+
+#### Verification
+- `npm run build` passed.
+- `npm run lint` passed with one existing warning for the raw Google avatar `<img>` in `Navbar.tsx`.
+- Browser checked `/recruiter` with a seeded recruiter mock session:
+  - Vertical sidebar visible.
+  - Global marketing nav hidden.
+  - `Upload resumes` opens the expected action drawer.
+- Browser checked `/candidate` with a seeded candidate mock session:
+  - Vertical sidebar visible.
+  - Global marketing nav hidden.
+  - Role match card opens the expected action drawer.
+  - Mobile layout uses sticky topbar plus horizontal section nav without clipping.
+
+#### Issues Found
+- The earlier dashboard model was too card-first and not enough app-shell-first for a real product workspace.
+- Global heading CSS still overrides some Tailwind text color utilities; dark panels use inline color where needed until typography CSS is cleaned.
+
+#### Pending Work
+- Migrate recruiter/candidate detail routes into the same app shell.
+- Replace mock actions with real backend flows.
+- Replace frontend-only email/password mock session with real Firebase/backend auth.
+
+#### Notes For Next Agent
+- Treat `WorkspaceShell` as the dashboard shell source of truth.
+- Do not reintroduce marketing nav on dashboard home routes.
+- Mock data is acceptable only for frontend prototyping and should remain clearly labeled as non-live until backend integration.
 
 ### Session Update - 2026-06-11 (Design Overhaul v4 — HiringAgents.ai Palette + Kore.ai Transitions)
 

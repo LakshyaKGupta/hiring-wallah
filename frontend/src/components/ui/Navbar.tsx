@@ -17,12 +17,6 @@ import {
   LogOut,
   ChevronDown,
   LayoutDashboard,
-  Bot,
-  BarChart3,
-  FileSearch,
-  Target,
-  CalendarCheck,
-  UploadCloud,
 } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 
@@ -35,22 +29,6 @@ const navLinks = [
 ]
 
 const sectionIds = navLinks.map((item) => item.sectionId)
-
-const recruiterWorkspaceLinks = [
-  { href: '/recruiter', label: 'Command', icon: LayoutDashboard },
-  { href: '/recruiter#roles', label: 'Roles', icon: Briefcase },
-  { href: '/recruiter#shortlist', label: 'Shortlist', icon: FileSearch },
-  { href: '/recruiter#agents', label: 'AI Agents', icon: Bot },
-  { href: '/recruiter#reports', label: 'Reports', icon: BarChart3 },
-]
-
-const candidateWorkspaceLinks = [
-  { href: '/candidate', label: 'Studio', icon: LayoutDashboard },
-  { href: '/candidate#matches', label: 'Matches', icon: Target },
-  { href: '/candidate#resume', label: 'Resume', icon: UploadCloud },
-  { href: '/candidate#coach', label: 'Coach', icon: Sparkles },
-  { href: '/candidate#interviews', label: 'Interviews', icon: CalendarCheck },
-]
 
 function NavLink({
   href, label, sectionId, icon: Icon, isActive, onActivate, className = '',
@@ -93,38 +71,6 @@ function NavLink({
         )}
       </Link>
     </motion.div>
-  )
-}
-
-function DashboardNavLink({
-  href,
-  label,
-  icon: Icon,
-  isActive,
-}: {
-  href: string
-  label: string
-  icon: React.ComponentType<{ className?: string }>
-  isActive: boolean
-}) {
-  return (
-    <Link
-      href={href}
-      className={`relative flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-bold transition-all duration-200 ${
-        isActive
-          ? 'border-slate-950 bg-slate-950 text-white shadow-sm'
-          : 'border-transparent text-text-secondary hover:border-border-subtle hover:bg-white hover:text-text-primary'
-      }`}
-    >
-      <Icon className="h-3.5 w-3.5" />
-      <span>{label}</span>
-      {isActive && (
-        <motion.span
-          layoutId="dashboard-nav-active"
-          className="absolute -bottom-[13px] left-4 right-4 h-0.5 rounded-full bg-sky-400 shadow-[0_0_14px_rgba(56,189,248,0.75)]"
-        />
-      )}
-    </Link>
   )
 }
 
@@ -219,6 +165,7 @@ function NavbarContent() {
   const mode = searchParams?.get('mode')
   const isAuthPage = pathname === '/auth'
   const isDashboard = pathname?.startsWith('/recruiter') || pathname?.startsWith('/candidate')
+  const isWorkspaceHome = pathname === '/recruiter' || pathname === '/candidate'
   const [activeSection, setActiveSection] = useState('hero')
   const { user, loading, signOut } = useAuth()
 
@@ -243,6 +190,8 @@ function NavbarContent() {
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => { window.cancelAnimationFrame(frame); window.removeEventListener('scroll', handleScroll) }
   }, [isDashboard])
+
+  if (isWorkspaceHome) return null
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border-subtle bg-bg-surface/75 backdrop-blur-md">
@@ -279,21 +228,6 @@ function NavbarContent() {
                 icon={item.icon}
                 isActive={pathname === '/' ? activeSection === item.sectionId : item.match(pathname ?? '')}
                 onActivate={setActiveSection}
-              />
-            ))}
-          </nav>
-        )}
-
-        {/* Workspace nav links */}
-        {isDashboard && user && (
-          <nav className="hidden lg:flex items-center gap-1 rounded-2xl border border-border-subtle bg-bg-deep/70 p-1">
-            {(user.role === 'recruiter' ? recruiterWorkspaceLinks : candidateWorkspaceLinks).map((item, index) => (
-              <DashboardNavLink
-                key={item.href}
-                href={item.href}
-                label={item.label}
-                icon={item.icon}
-                isActive={index === 0 && pathname === `/${user.role}`}
               />
             ))}
           </nav>
