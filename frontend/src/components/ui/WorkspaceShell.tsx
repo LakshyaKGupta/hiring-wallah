@@ -12,6 +12,8 @@ import {
   FileSearch,
   LayoutDashboard,
   LogOut,
+  PanelLeftClose,
+  PanelLeftOpen,
   Search,
   ShieldCheck,
   Sparkles,
@@ -82,8 +84,9 @@ export function WorkspaceShell({
 }: WorkspaceShellProps) {
   const { user, signOut } = useAuth()
   const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const nav = role === 'recruiter' ? recruiterNav : candidateNav
-  const roleTone = role === 'recruiter' ? 'text-blue-700 bg-blue-50 border-blue-100' : 'text-emerald-700 bg-emerald-50 border-emerald-100'
+  const roleLabel = role === 'recruiter' ? 'Recruiter workspace' : 'Candidate workspace'
   const initials = useMemo(() => {
     const name = user?.displayName || user?.email || 'User'
     return name.split(' ').filter(Boolean).map((part) => part[0]).join('').toUpperCase().slice(0, 2)
@@ -99,17 +102,34 @@ export function WorkspaceShell({
 
   return (
     <div className="min-h-screen bg-[#f6f8fc] text-slate-950">
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[272px] border-r border-slate-200 bg-slate-950 px-4 py-5 text-white lg:flex lg:flex-col">
-        <Link href="/" className="flex items-center gap-3 rounded-2xl px-2 py-1">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-base font-black text-slate-950">W</div>
-          <div>
-            <div className="text-sm font-extrabold tracking-tight text-white">Hiring Wallah</div>
-            <div className="text-xs font-semibold text-slate-500">Hiring intelligence OS</div>
-          </div>
-        </Link>
+      <aside className={`fixed inset-y-0 left-0 z-40 hidden border-r border-slate-200 bg-white/94 py-5 text-slate-950 shadow-[8px_0_40px_rgba(15,23,42,0.04)] backdrop-blur-xl transition-all duration-300 lg:flex lg:flex-col ${
+        sidebarCollapsed ? 'w-[88px] px-3' : 'w-[272px] px-4'
+      }`}>
+        <div className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-between gap-3'}`}>
+          <Link href="/" className={`flex min-w-0 items-center rounded-2xl ${sidebarCollapsed ? 'justify-center' : 'gap-3'}`}>
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-base font-black text-white">W</div>
+            {!sidebarCollapsed && (
+              <div className="min-w-0">
+                <div className="truncate text-sm font-extrabold tracking-tight text-slate-950">Hiring Wallah</div>
+                <div className="truncate text-xs font-semibold text-slate-500">Hiring intelligence OS</div>
+              </div>
+            )}
+          </Link>
+          <button
+            type="button"
+            onClick={() => setSidebarCollapsed((collapsed) => !collapsed)}
+            className={`${sidebarCollapsed ? 'absolute right-[-14px] top-6' : ''} grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:border-slate-300 hover:text-slate-950`}
+            aria-label={sidebarCollapsed ? 'Open sidebar' : 'Close sidebar'}
+            title={sidebarCollapsed ? 'Open sidebar' : 'Close sidebar'}
+          >
+            {sidebarCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+          </button>
+        </div>
 
-        <div className={`mt-5 rounded-2xl border px-3 py-2 text-xs font-bold ${roleTone}`}>
-          {role === 'recruiter' ? 'Recruiter workspace' : 'Candidate workspace'}
+        <div className={`mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 ${
+          sidebarCollapsed ? 'text-center' : ''
+        }`}>
+          {sidebarCollapsed ? roleLabel.split(' ')[0] : roleLabel}
         </div>
 
         <nav className="mt-5 flex flex-1 flex-col gap-1">
@@ -120,37 +140,46 @@ export function WorkspaceShell({
               <Link
                 key={item.id}
                 href={item.href}
+                title={sidebarCollapsed ? `${item.label}: ${item.contribution}` : undefined}
                 onClick={(event) => handleNavClick(event, item.href)}
-                className={`group rounded-2xl border px-3 py-3 transition duration-150 ${
+                className={`group rounded-2xl border transition duration-150 ${
+                  sidebarCollapsed ? 'flex h-12 items-center justify-center px-0 py-0' : 'px-3 py-3'
+                } ${
                   active
-                    ? 'border-sky-400/30 bg-sky-400/12 text-sky-200'
-                    : 'border-transparent text-slate-400 hover:border-white/10 hover:bg-white/[0.05] hover:text-white'
+                    ? 'border-slate-950 bg-slate-950 text-white shadow-sm'
+                    : 'border-transparent text-slate-500 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-950'
                 }`}
               >
-                <div className="flex items-center gap-3">
+                <div className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'}`}>
                   <Icon className="h-4 w-4 shrink-0" />
-                  <span className="text-sm font-bold">{item.label}</span>
+                  {!sidebarCollapsed && <span className="text-sm font-bold">{item.label}</span>}
                 </div>
-                <div className="mt-1 pl-7 text-[11px] font-semibold leading-4 text-slate-500 group-hover:text-slate-400">
-                  {item.contribution}
-                </div>
+                {!sidebarCollapsed && (
+                  <div className={`mt-1 pl-7 text-[11px] font-semibold leading-4 ${
+                    active ? 'text-slate-300' : 'text-slate-400 group-hover:text-slate-500'
+                  }`}>
+                    {item.contribution}
+                  </div>
+                )}
               </Link>
             )
           })}
         </nav>
 
-        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3">
-          <div className="flex items-center gap-2 text-xs font-bold text-slate-300">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.75)]" />
-            Prototype workspace live
+        {!sidebarCollapsed && (
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
+              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              Workspace sample data
+            </div>
+            <p className="mt-2 text-xs font-medium leading-5 text-slate-500">
+              Interactive frontend state for validating the workflow before backend wiring.
+            </p>
           </div>
-          <p className="mt-2 text-xs font-medium leading-5 text-slate-500">
-            Mock data is interactive for frontend validation. Backend wiring comes next.
-          </p>
-        </div>
+        )}
       </aside>
 
-      <div className="lg:pl-[272px]">
+      <div className={`transition-all duration-300 ${sidebarCollapsed ? 'lg:pl-[88px]' : 'lg:pl-[272px]'}`}>
         <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/86 backdrop-blur-xl">
           <div className="flex h-16 items-center justify-between gap-4 px-4 sm:px-6">
             <div className="min-w-0">

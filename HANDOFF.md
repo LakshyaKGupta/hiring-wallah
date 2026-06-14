@@ -22,6 +22,11 @@ This file is the persistent project memory for AI agents and human contributors.
   - **Working mock actions**: Mock dashboard buttons now open contextual action drawers or show feedback toasts instead of being dead controls.
   - **Reference alignment**: Structure follows the app-shell pattern from the user's Zoho project: persistent rail, content workspace, top utility/search, and progressive task panels.
   - **Verification**: Browser-checked recruiter and candidate shells on desktop and candidate mobile layout. Production build passes.
+- **Recent progress (Workspace UX v6.2 — Cohesive Sidebar Polish):**
+  - **Less AI-generated shell styling**: Replaced the heavy dark dashboard sidebar with a lighter white/slate rail that matches the workspace surfaces and palette.
+  - **Collapsible navigation**: Added a close/open sidebar control on desktop. The rail collapses into a compact icon-only navigation state and the content area expands.
+  - **Professional wording**: Replaced prototype-heavy sidebar copy with calmer workspace sample-data language.
+  - **Verification**: Browser-checked expanded and collapsed recruiter sidebar states. Production build passes.
 - **Current blockers:** None.
 - **Known risks:** Email/password auth is intentionally frontend-only mock state until Firebase email/password or backend auth is implemented. Google auth still requires Firebase provider/Firestore configuration to be enabled in the Firebase console.
 
@@ -160,6 +165,44 @@ This file is the persistent project memory for AI agents and human contributors.
 - Treat `WorkspaceShell` as the dashboard shell source of truth.
 - Do not reintroduce marketing nav on dashboard home routes.
 - Mock data is acceptable only for frontend prototyping and should remain clearly labeled as non-live until backend integration.
+
+### Session Update - 2026-06-14 (Workspace UX v6.2 — Cohesive Sidebar Polish)
+
+#### Objective
+- Remove the AI-generated feel from the dashboard shell.
+- Make the vertical navigation visually consistent with the rest of the workspace.
+- Add an option to close/collapse the vertical bar.
+
+#### Completed
+- Updated `WorkspaceShell` sidebar from high-contrast dark navy to a white/slate surface that matches the dashboard cards and topbar.
+- Kept active navigation aligned with the product palette using the same dark slate action color used by primary buttons.
+- Added desktop sidebar collapse/open control:
+  - Expanded state shows brand, role, module labels, and contribution text.
+  - Collapsed state shows an icon rail with tooltips/title text and expands the content area.
+- Replaced "Prototype workspace live" copy with calmer "Workspace sample data" wording.
+
+#### Files Modified
+- `frontend/src/components/ui/WorkspaceShell.tsx`
+- `HANDOFF.md`
+
+#### Architecture Decisions
+- Collapse state is local UI state for now; persistence can be added later if needed.
+- Keep the sidebar light to preserve a consistent dashboard palette and avoid an overdesigned/generated contrast block.
+
+#### Dependencies Added
+- None.
+
+#### Verification
+- `npm run build` passed.
+- `npm run lint` passed with the existing raw avatar image warning in `Navbar.tsx`.
+- Browser checked `/recruiter` expanded sidebar state.
+- Browser clicked `Close sidebar` and verified compact icon rail plus `Open sidebar` control.
+
+#### Issues Found
+- The previous dark rail made the dashboard feel visually detached from the workspace and contributed to the AI-generated feel.
+
+#### Pending Work
+- Consider persisting the sidebar collapsed state per user after real auth/profile storage is connected.
 
 ### Session Update - 2026-06-11 (Design Overhaul v4 — HiringAgents.ai Palette + Kore.ai Transitions)
 
