@@ -9,15 +9,15 @@ This file is the persistent project memory for AI agents and human contributors.
   - Private GitHub repository at `LakshyaKGupta/hiring-wallah` — latest commit: `8bd86c0`.
   - FastAPI Backend service fully operational on port 8000.
   - Next.js 16 Frontend fully built and type checked, running on port 3000.
-- **Recent progress (Design Overhaul v5.2 — Revert Snap Scrolling & Polish):**
-  - **Reverted Scroll Snapping**: Removed forced 100vh snapping layout (`snap-y snap-mandatory`), restoring natural smooth scrolling and standard vertical padding to all sections.
-  - **Removed Marquee**: Removed the "Evidence-Based Scoring" marquee from the hero section to reduce visual noise.
-  - **Navbar Fixes**: Hid protected workspace links (`/recruiter`, `/candidate`) and in-page anchor links from unauthenticated users in the navigation bar.
-  - **Hero Button Enhancements**: Upgraded the "Create account" button to a high-contrast dark theme (`bg-gray-900 text-white`) for maximum visibility against the light background.
-  - **Floating Icons**: Boosted ambient icon opacity to 15-25% and adjusted random distribution to fill edge-to-edge space.
-  - **GitHub sync**: Changes successfully committed and pushed to `main`.
+- **Recent progress (Workspace UX v6 — Role-Aware Dashboards):**
+  - **Signup role loop fixed**: Google signup now uses the role already selected on the signup form instead of asking the role-picker modal again.
+  - **Frontend mock session bridge**: Email/password signup now creates a local mock session so recruiter/candidate dashboards can be reviewed end-to-end before backend email auth is implemented. Firebase Google auth remains the real auth path.
+  - **Dashboard-aware navbar**: Landing pages keep marketing section links. Recruiter dashboards show `Command / Roles / Shortlist / AI Agents / Reports`; candidate dashboards show `Studio / Matches / Resume / Coach / Interviews`.
+  - **Recruiter workspace redesign**: Replaced the empty setup state with a professional command center using mock active roles, candidate shortlist, AI agent operations, report readiness, and recruiter action areas.
+  - **Candidate workspace redesign**: Replaced the single upload screen with a full candidate career studio using mock role matches, readiness metrics, skill gaps, interview prep, and candidate AI agent areas.
+  - **Verification**: Recruiter and candidate signup flows were tested in-browser on `localhost:3000`; both redirect to the correct workspace. Production build passes.
 - **Current blockers:** None.
-- **Known risks:** None.
+- **Known risks:** Email/password auth is intentionally frontend-only mock state until Firebase email/password or backend auth is implemented. Google auth still requires Firebase provider/Firestore configuration to be enabled in the Firebase console.
 
 
 ## Design System (v3 — Indigo/Violet)
@@ -53,6 +53,39 @@ This file is the persistent project memory for AI agents and human contributors.
 ---
 
 ## Session Updates
+
+### Session Update - 2026-06-14 (Workspace UX v6 — Role-Aware Dashboards)
+
+#### Objective
+- Stop asking users to choose recruiter/candidate again after they already selected a role during signup.
+- Replace placeholder recruiter/candidate pages with professional, role-specific dashboard mockups while backend integration is still pending.
+- Make the navbar behave like a product dashboard after signup rather than a marketing navbar.
+
+#### Completions
+- **Auth role persistence** (`frontend/src/context/AuthContext.tsx`, `frontend/src/app/auth/page.tsx`):
+  - Google signup accepts the selected signup role and persists it immediately.
+  - Added local role fallback when Firestore role sync is unavailable.
+  - Added frontend-only mock session support for email/password signup/signin so the dashboards can be inspected before backend auth is complete.
+- **Dashboard navigation** (`frontend/src/components/ui/Navbar.tsx`):
+  - Added recruiter-specific and candidate-specific workspace navigation.
+  - Removed the old emoji dashboard breadcrumb.
+  - Authenticated dashboard header now shows a clean role workspace pill and account menu.
+- **Recruiter dashboard** (`frontend/src/app/recruiter/page.tsx`):
+  - Rebuilt as a recruiter command center with command stats, active roles, shortlist intelligence, AI agent operations, report readiness, and action CTAs.
+  - Removed empty/placeholder setup state.
+- **Candidate dashboard** (`frontend/src/app/candidate/page.tsx`):
+  - Rebuilt as a candidate career studio with readiness stats, role match board, profile-analysis upload flow, skill gap map, interview prep, and AI agent bench.
+  - Preserved backend upload/report flow when the API is available.
+- **Browser verification**:
+  - Recruiter email signup redirects to `/recruiter` and shows the recruiter dashboard nav.
+  - Candidate email signup redirects to `/candidate` and shows the candidate dashboard nav.
+  - Desktop and mobile screenshots reviewed for layout and clipping.
+  - Fixed dark-card priority headline contrast after visual inspection.
+
+#### Remaining Work
+- Replace mock email/password session with Firebase email/password auth or backend session auth.
+- Enable/verify Firebase Google provider and Firestore APIs in the console for real Google auth role persistence.
+- Connect recruiter dashboard actions to real job creation, resume upload, candidate evaluation, and report APIs.
 
 ### Session Update - 2026-06-11 (Design Overhaul v4 — HiringAgents.ai Palette + Kore.ai Transitions)
 

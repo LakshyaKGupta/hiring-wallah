@@ -108,7 +108,7 @@ function AuthForm() {
   const mode = searchParams.get('mode')
   const activeTab: 'signin' | 'signup' = mode === 'signup' ? 'signup' : 'signin'
 
-  const { signInWithGoogle, setUserRole } = useAuth()
+  const { signInWithGoogle, startMockSession, setUserRole } = useAuth()
 
   const [email,    setEmail]    = useState('')
   const [password, setPassword] = useState('')
@@ -133,8 +133,9 @@ function AuthForm() {
     setGoogleLoading(true)
     setAuthNotice('')
     try {
-      const { isNewUser, role: storedRole } = await signInWithGoogle()
-      if (isNewUser || !storedRole) {
+      const preferredRole = activeTab === 'signup' ? role : undefined
+      const { role: storedRole } = await signInWithGoogle(preferredRole)
+      if (!storedRole) {
         setRoleModalOpen(true)
       } else {
         redirectToWorkspace(storedRole)
@@ -153,7 +154,8 @@ function AuthForm() {
       } else if (code.includes('configuration-not-found') || code.includes('operation-not-allowed')) {
         setAuthNotice('Google sign-in is not enabled in the Hiring Wallah Firebase console yet.')
       } else {
-        setAuthNotice('Google sign-in failed. Please try again.')
+        console.error('Google Auth Error:', err)
+        setAuthNotice(`Google sign-in failed: ${msg}`)
       }
     } finally {
       setGoogleLoading(false)
@@ -182,6 +184,11 @@ function AuthForm() {
     setAuthNotice('')
     // TODO: Wire up Firebase email/password auth here
     setTimeout(() => {
+      startMockSession({
+        role,
+        email,
+        displayName: activeTab === 'signup' ? name : email,
+      })
       setIsLoading(false)
       setSuccessRole(role)
       setIsSuccess(true)

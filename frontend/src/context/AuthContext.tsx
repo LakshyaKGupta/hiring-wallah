@@ -13,14 +13,15 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   signOut as firebaseSignOut,
+  type User as FirebaseUser,
 } from 'firebase/auth'
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore'
 import { auth, db } from '@/lib/firebase'
-import { supabase } from '@/lib/supabase'
 
 // ── Types ─────────────────────────────────────
 
 export type UserRole = 'recruiter' | 'candidate' | null
+type ConcreteUserRole = Exclude<UserRole, null>
 
 export interface AuthUser {
   uid:         string
@@ -33,9 +34,10 @@ export interface AuthUser {
 interface AuthContextValue {
   user:            AuthUser | null
   loading:         boolean
-  signInWithGoogle: () => Promise<{ isNewUser: boolean; role: UserRole }>
+  signInWithGoogle: (preferredRole?: ConcreteUserRole) => Promise<{ isNewUser: boolean; role: UserRole }>
+  startMockSession: (params: { role: ConcreteUserRole; email: string; displayName?: string }) => AuthUser
   signOut:         () => Promise<void>
-  setUserRole:     (role: 'recruiter' | 'candidate') => Promise<void>
+  setUserRole:     (role: ConcreteUserRole) => Promise<void>
 }
 
 // ── Context ───────────────────────────────────
@@ -67,7 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           role,
         })
       } else {
-        setUser(null)
+        setUser(readMockSession())
       }
       setLoading(false)
     })
@@ -75,7 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   // ── Google Sign-In ────────────────────────────
-  async function signInWithGoogle(): Promise<{ isNewUser: boolean; role: UserRole }> {
+  async function signInWithGoogle(preferredRole?: ConcreteUserRole): Promise<{ isNewUser: boolean; role: UserRole }> {
     assertHiringWallahFirebaseConfig()
 
     const provider = new GoogleAuthProvider()
@@ -90,54 +92,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     if (!isNewUser) {
       // Existing user — sync role from Firestore
-      const role = (snap.data()?.role ?? null) as UserRole
-      setUser({
-        uid:         fbUser.uid,
-        email:       fbUser.email,
-        displayName: fbUser.displayName,
-        photoURL:    fbUser.photoURL,
-        role,
-      })
+      const role = ((snap.data()?.role ?? readLocalRole(fbUser.uid)) ?? null) as UserRole
+      setUser(toAuthUser(fbUser, role))
       return { isNewUser, role }
-    } else {
-      // New user — role not set yet; will be set by RoleModal
-      setUser({
-        uid:         fbUser.uid,
-        email:       fbUser.email,
-        displayName: fbUser.displayName,
-        photoURL:    fbUser.photoURL,
-        role: null,
-      })
-      return { isNewUser, role: null }
     }
+
+    // New Google signup: if the signup form already selected a role, persist it
+    // immediately so users are not asked the same question twice.
+    const role = preferredRole ?? readLocalRole(fbUser.uid)
+    if (role) await persistUserRole(fbUser, role)
+
+    setUser(toAuthUser(fbUser, role ?? null))
+    return { isNewUser, role: role ?? null }
   }
 
   // ── Set role (called after role modal) ────────
-  async function setUserRole(role: 'recruiter' | 'candidate') {
+  async function setUserRole(role: ConcreteUserRole) {
     if (!user) return
 
-    // Write to Firestore
-    const userRef = doc(db, 'users', user.uid)
-    await setDoc(userRef, {
-      uid:         user.uid,
-      email:       user.email ?? '',
-      displayName: user.displayName ?? '',
-      photoURL:    user.photoURL ?? '',
-      role,
-      createdAt: serverTimestamp(),
-    }, { merge: true })
+    if (user.uid.startsWith('mock-')) {
+      const nextUser = { ...user, role }
+      writeMockSession(nextUser)
+      setUser(nextUser)
+      return
+    }
 
-    // Mirror to Supabase PostgreSQL
+    writeLocalRole(user.uid, role)
     try {
-      await supabase.from('users').upsert({
-        firebase_uid: user.uid,
-        email:        user.email ?? '',
-        name:         user.displayName ?? '',
+      const userRef = doc(db, 'users', user.uid)
+      await setDoc(userRef, {
+        uid:         user.uid,
+        email:       user.email ?? '',
+        displayName: user.displayName ?? '',
+        photoURL:    user.photoURL ?? '',
         role,
-      }, { onConflict: 'firebase_uid' })
-    } catch {
-      // Supabase is optional for auth — don't block the flow
-      console.warn('Supabase sync skipped (keys not configured yet)')
+        createdAt: serverTimestamp(),
+      }, { merge: true })
+    } catch (error) {
+      console.warn('Role saved locally; Firestore role sync is not available yet.', error)
     }
 
     setUser((prev) => prev ? { ...prev, role } : null)
@@ -145,12 +137,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // ── Sign Out ──────────────────────────────────
   async function signOut() {
+    clearMockSession()
     await firebaseSignOut(auth)
     setUser(null)
   }
 
+  function startMockSession(params: { role: ConcreteUserRole; email: string; displayName?: string }) {
+    const nextUser: AuthUser = {
+      uid: `mock-${params.role}-${Date.now()}`,
+      email: params.email || null,
+      displayName: params.displayName || params.email || 'Hiring Wallah User',
+      photoURL: null,
+      role: params.role,
+    }
+    writeMockSession(nextUser)
+    setUser(nextUser)
+    return nextUser
+  }
+
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithGoogle, signOut, setUserRole }}>
+    <AuthContext.Provider value={{ user, loading, signInWithGoogle, startMockSession, signOut, setUserRole }}>
       {children}
     </AuthContext.Provider>
   )
@@ -161,9 +167,86 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 async function getUserRole(uid: string): Promise<UserRole> {
   try {
     const snap = await getDoc(doc(db, 'users', uid))
-    return (snap.exists() ? snap.data()?.role : null) ?? null
+    return ((snap.exists() ? snap.data()?.role : null) ?? readLocalRole(uid)) ?? null
+  } catch {
+    return readLocalRole(uid)
+  }
+}
+
+function toAuthUser(firebaseUser: FirebaseUser, role: UserRole): AuthUser {
+  return {
+    uid:         firebaseUser.uid,
+    email:       firebaseUser.email,
+    displayName: firebaseUser.displayName,
+    photoURL:    firebaseUser.photoURL,
+    role,
+  }
+}
+
+async function persistUserRole(firebaseUser: FirebaseUser, role: ConcreteUserRole) {
+  writeLocalRole(firebaseUser.uid, role)
+
+  try {
+    await setDoc(doc(db, 'users', firebaseUser.uid), {
+      uid:         firebaseUser.uid,
+      email:       firebaseUser.email ?? '',
+      displayName: firebaseUser.displayName ?? '',
+      photoURL:    firebaseUser.photoURL ?? '',
+      role,
+      createdAt: serverTimestamp(),
+    }, { merge: true })
+  } catch (error) {
+    console.warn('Role saved locally; Firestore role sync is not available yet.', error)
+  }
+}
+
+function readLocalRole(uid: string): ConcreteUserRole | null {
+  if (typeof window === 'undefined') return null
+  try {
+    const roles = JSON.parse(window.localStorage.getItem('hiring-wallah.roles') ?? '{}') as Record<string, ConcreteUserRole>
+    return roles[uid] === 'recruiter' || roles[uid] === 'candidate' ? roles[uid] : null
   } catch {
     return null
+  }
+}
+
+function writeLocalRole(uid: string, role: ConcreteUserRole) {
+  if (typeof window === 'undefined') return
+  try {
+    const roles = JSON.parse(window.localStorage.getItem('hiring-wallah.roles') ?? '{}') as Record<string, ConcreteUserRole>
+    roles[uid] = role
+    window.localStorage.setItem('hiring-wallah.roles', JSON.stringify(roles))
+  } catch {
+    // Local role fallback is best-effort only.
+  }
+}
+
+function readMockSession(): AuthUser | null {
+  if (typeof window === 'undefined') return null
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem('hiring-wallah.mockSession') ?? 'null') as AuthUser | null
+    if (!parsed?.uid || (parsed.role !== 'recruiter' && parsed.role !== 'candidate')) return null
+    return parsed
+  } catch {
+    return null
+  }
+}
+
+function writeMockSession(user: AuthUser) {
+  if (typeof window === 'undefined') return
+  try {
+    window.localStorage.setItem('hiring-wallah.mockSession', JSON.stringify(user))
+  } catch {
+    // Mock session is a frontend-only bridge until email/password auth is implemented.
+  }
+}
+
+function clearMockSession() {
+  if (typeof window === 'undefined') return
+  try {
+    window.localStorage.removeItem('hiring-wallah.mockSession')
+  } catch {
+    // No-op.
   }
 }
 

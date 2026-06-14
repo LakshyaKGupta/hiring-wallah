@@ -1,55 +1,92 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { motion, Variants } from 'framer-motion'
-import { UserCheck, Upload, ArrowLeft, Loader2, Sparkles } from 'lucide-react'
-import MeshBackground from '@/components/ui/MeshBackground'
+import { motion, type Variants } from 'framer-motion'
+import {
+  AlertCircle,
+  ArrowRight,
+  Bot,
+  BriefcaseBusiness,
+  CalendarCheck,
+  CheckCircle2,
+  FileText,
+  Loader2,
+  MessageSquareText,
+  Sparkles,
+  Target,
+  TrendingUp,
+  Upload,
+  UserCheck,
+} from 'lucide-react'
+import { useAuth } from '@/context/AuthContext'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
 const containerVariants: Variants = {
   hidden: {},
-  show: {
-    transition: {
-      staggerChildren: 0.06,
-      delayChildren: 0.02
-    }
-  }
+  show: { transition: { staggerChildren: 0.06, delayChildren: 0.04 } },
 }
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 12 },
+  hidden: { opacity: 0, y: 16 },
   show: {
     opacity: 1,
     y: 0,
-    transition: {
-      type: 'spring',
-      stiffness: 150,
-      damping: 20
-    }
-  }
+    transition: { type: 'spring', stiffness: 170, damping: 23 },
+  },
 }
+
+const readinessStats = [
+  { label: 'Role fit score', value: '84', note: '+11 after resume rewrite', icon: Target },
+  { label: 'Resume readiness', value: '92%', note: 'ATS-safe and evidence rich', icon: FileText },
+  { label: 'Interviews prepared', value: '14', note: 'STAR answers generated', icon: MessageSquareText },
+  { label: 'Live matches', value: '6', note: 'Aligned with your profile', icon: BriefcaseBusiness },
+]
+
+const roleMatches = [
+  { title: 'AI Product Engineer', company: 'Fintech scaleup', score: 91, reason: 'Strong LLM orchestration and product shipping evidence' },
+  { title: 'Growth Product Manager', company: 'B2B SaaS', score: 86, reason: 'Good GTM and analytics overlap, needs more pricing examples' },
+  { title: 'AI Solutions Consultant', company: 'Enterprise AI', score: 82, reason: 'Strong founder story, needs clearer enterprise implementation proof' },
+]
+
+const skillGaps = [
+  { label: 'System design examples', level: 72 },
+  { label: 'Enterprise stakeholder proof', level: 64 },
+  { label: 'Metrics storytelling', level: 88 },
+]
+
+const candidateAgents = [
+  { name: 'Resume Strategist', task: 'Turns projects into evidence-backed bullets', icon: FileText, state: 'Ready' },
+  { name: 'Gap Analyst', task: 'Maps missing signals for each target role', icon: Target, state: 'Scanning' },
+  { name: 'Interview Coach', task: 'Builds STAR answers and follow-up drills', icon: MessageSquareText, state: 'Ready' },
+  { name: 'Application Writer', task: 'Drafts role-specific cover notes', icon: Sparkles, state: 'Drafting' },
+]
 
 export default function CandidateDashboard() {
   const router = useRouter()
-  
-  const [targetRole, setTargetRole] = useState('')
+  const { user, loading } = useAuth()
+
+  const [targetRole, setTargetRole] = useState('AI Product Engineer')
   const [resumeFile, setResumeFile] = useState<File | null>(null)
   const [isDragOver, setIsDragOver] = useState(false)
-  
   const [isRunning, setIsRunning] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
   const [errorMsg, setErrorMsg] = useState('')
 
+  useEffect(() => {
+    if (!loading && (!user || user.role !== 'candidate')) {
+      router.replace('/auth?mode=signin')
+    }
+  }, [user, loading, router])
+
   const pipelineSteps = [
-    'Parsing PDF & Extracting Resume Text',
-    'Investigating project evidence & achievements',
-    'Analyzing target role criteria & prerequisites',
-    'Evaluating skill gaps & drafting improvements',
-    'Composing optimized custom cover letter',
-    'Building STAR interview preparation questions'
+    'Parsing resume evidence',
+    'Mapping target role criteria',
+    'Scoring strengths and gaps',
+    'Drafting resume improvements',
+    'Preparing interview answers',
+    'Generating application strategy',
   ]
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -61,28 +98,23 @@ export default function CandidateDashboard() {
     setIsDragOver(false)
   }
 
+  const acceptFile = (file: File) => {
+    if (file.type === 'application/pdf') {
+      setResumeFile(file)
+      setErrorMsg('')
+      return
+    }
+    setErrorMsg('Only PDF files are supported.')
+  }
+
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault()
     setIsDragOver(false)
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const file = e.dataTransfer.files[0]
-      if (file.type === 'application/pdf') {
-        setResumeFile(file)
-      } else {
-        setErrorMsg('Only PDF files are supported.')
-      }
-    }
+    if (e.dataTransfer.files?.[0]) acceptFile(e.dataTransfer.files[0])
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
-      if (file.type === 'application/pdf') {
-        setResumeFile(file)
-      } else {
-        setErrorMsg('Only PDF files are supported.')
-      }
-    }
+    if (e.target.files?.[0]) acceptFile(e.target.files[0])
   }
 
   const handleRunAnalysis = async (e: React.FormEvent) => {
@@ -93,16 +125,9 @@ export default function CandidateDashboard() {
     setCurrentStep(0)
     setErrorMsg('')
 
-    // Animate through candidate pipeline steps
-    const stepInterval = 2500 // 2.5s per step
     const interval = setInterval(() => {
-      setCurrentStep(prev => {
-        if (prev >= 5) {
-          return prev
-        }
-        return prev + 1
-      })
-    }, stepInterval)
+      setCurrentStep((prev) => (prev >= pipelineSteps.length - 1 ? prev : prev + 1))
+    }, 1600)
 
     try {
       const formData = new FormData()
@@ -111,15 +136,14 @@ export default function CandidateDashboard() {
 
       const res = await fetch(`${API_URL}/candidate/analyze`, {
         method: 'POST',
-        body: formData
+        body: formData,
       })
 
       clearInterval(interval)
 
       if (res.ok) {
         const data = await res.json()
-        const sessionId = data.session.id
-        router.push(`/candidate/report/${sessionId}`)
+        router.push(`/candidate/report/${data.session.id}`)
       } else {
         const err = await res.json()
         setErrorMsg(err.detail || 'Candidate profile analysis failed.')
@@ -127,190 +151,308 @@ export default function CandidateDashboard() {
       }
     } catch {
       clearInterval(interval)
-      setErrorMsg('Could not connect to backend service.')
+      setErrorMsg('Could not connect to backend service. The frontend workspace is ready; backend analysis can be connected next.')
       setIsRunning(false)
     }
   }
 
-  return (
-    <div className="relative min-h-[calc(100vh-64px)] bg-bg-deep overflow-hidden flex flex-col font-sans">
-      {/* Zoho Grid backdrop with Mesh Blobs */}
-      <MeshBackground opacity={0.35} />
-
-      {/* Header */}
-      <header className="w-full max-w-7xl mx-auto px-6 py-5 flex items-center justify-between relative z-10">
-        <div className="flex items-center gap-4">
-          <Link href="/">
-            <div 
-              className="w-9 h-9 rounded-full border border-border-subtle hover:border-accent-primary flex items-center justify-center text-text-secondary hover:text-accent-primary cursor-pointer transition-colors hover:scale-105 active:scale-95 transition-all duration-200"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </div>
-          </Link>
-          <span className="font-display font-extrabold text-xl text-text-primary tracking-tight">
-            Application Strategist
-          </span>
+  if (loading || !user) {
+    return (
+      <div className="min-h-[calc(100vh-64px)] bg-[#f7f9fc] flex items-center justify-center">
+        <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
+          <div className="h-5 w-5 rounded-full border-2 border-slate-900 border-t-transparent animate-spin" />
+          <span className="text-sm font-semibold text-slate-600">Opening candidate studio...</span>
         </div>
-      </header>
+      </div>
+    )
+  }
 
-      {/* Main Container */}
-      <main className="flex-1 flex items-center justify-center px-6 py-10 relative z-10 w-full">
-        
-        {/* Loading Overlay */}
-        {isRunning && (
-          <div className="absolute inset-0 bg-bg-deep/95 z-50 flex flex-col items-center justify-center p-6">
-            <div 
-              className="w-full max-w-lg bg-bg-surface border border-border-subtle rounded-xl p-8 shadow-sm text-center"
-            >
-              <div className="flex items-center justify-center gap-3 mb-6">
-                <Loader2 className="w-6 h-6 text-accent-primary animate-spin" />
-                <h3 className="font-display font-extrabold text-lg text-text-primary tracking-tight uppercase">
-                  Analyzing Job Fit Strategy
-                </h3>
+  const firstName = user.displayName?.split(' ')[0] ?? 'there'
+
+  return (
+    <main className="min-h-[calc(100vh-64px)] bg-[#f6f8fc] text-slate-950">
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute right-[-12%] top-[-18%] h-[520px] w-[520px] rounded-full bg-emerald-200/35 blur-3xl" />
+        <div className="absolute left-[-12%] top-[22%] h-[430px] w-[430px] rounded-full bg-sky-200/30 blur-3xl" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(15,23,42,0.08)_1px,transparent_0)] bg-[size:34px_34px]" />
+      </div>
+
+      {isRunning && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 px-4 backdrop-blur-sm">
+          <div className="w-full max-w-xl rounded-[28px] border border-white/15 bg-white p-6 shadow-2xl">
+            <div className="flex items-center gap-3">
+              <div className="rounded-2xl bg-slate-950 p-3 text-white">
+                <Loader2 className="h-5 w-5 animate-spin" />
               </div>
-
-              <div 
-                className="space-y-3 text-left"
-              >
-                {pipelineSteps.map((step, idx) => {
-                  const isActive = idx === currentStep
-                  const isDone = idx < currentStep
-                  return (
-                    <div 
-                      key={step} 
-                      className={`p-2.5 rounded-lg border text-xs type-label flex items-center justify-between ${
-                        isActive 
-                          ? 'border-accent-primary bg-accent-primary/5 text-text-primary font-semibold' 
-                          : isDone 
-                            ? 'border-accent-green/20 bg-accent-green/5 text-text-secondary opacity-60' 
-                            : 'border-border-subtle text-text-tertiary opacity-30'
-                      }`}
-                    >
-                      <span>{step}</span>
-                      <span>
-                        {isDone ? '✓' : isActive ? '...' : 'WAITING'}
-                      </span>
-                    </div>
-                  )
-                })}
+              <div>
+                <h3 className="text-lg font-extrabold tracking-tight">Building your application strategy</h3>
+                <p className="text-sm font-medium text-slate-500">Running the candidate agent workflow.</p>
               </div>
             </div>
+            <div className="mt-6 space-y-3">
+              {pipelineSteps.map((step, idx) => {
+                const isDone = idx < currentStep
+                const isActive = idx === currentStep
+                return (
+                  <div
+                    key={step}
+                    className={`flex items-center justify-between rounded-2xl border p-3 text-sm font-semibold ${
+                      isDone
+                        ? 'border-emerald-100 bg-emerald-50 text-emerald-800'
+                        : isActive
+                          ? 'border-sky-100 bg-sky-50 text-sky-800'
+                          : 'border-slate-200 bg-slate-50 text-slate-400'
+                    }`}
+                  >
+                    <span>{step}</span>
+                    {isDone ? <CheckCircle2 className="h-4 w-4" /> : isActive ? <Loader2 className="h-4 w-4 animate-spin" /> : <span className="h-2 w-2 rounded-full bg-slate-300" />}
+                  </div>
+                )
+              })}
+            </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Dashboard Box */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ type: 'spring', stiffness: 150, damping: 20 }}
-          className="w-full max-w-xl bg-bg-surface border border-border-subtle rounded-xl p-6 md:p-8 shadow-2xl relative"
+      <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
+        <motion.section
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]"
         >
-          <div className="flex items-center gap-3 mb-6 border-b border-border-subtle pb-4">
-            <Sparkles className="w-5 h-5 text-accent-primary" />
-            <div>
-              <h1 className="font-display font-extrabold text-xl text-text-primary tracking-tight uppercase">
-                Analyze Candidate Profile
-              </h1>
-              <span className="text-[10px] text-text-tertiary type-label block mt-0.5">
-                Optimize your application matching for any target role
-              </span>
+          <motion.div
+            variants={itemVariants}
+            className="rounded-[28px] border border-white/80 bg-white/85 p-6 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl md:p-8"
+          >
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700">
+              <Sparkles className="h-3.5 w-3.5" />
+              Candidate career studio
             </div>
+            <h1 className="font-display text-4xl font-extrabold tracking-tight text-slate-950 md:text-5xl">
+              {firstName}, turn your resume into a stronger hiring signal.
+            </h1>
+            <p className="mt-4 max-w-2xl text-base font-medium leading-7 text-slate-600">
+              Compare your profile against target roles, find the evidence gaps, and let AI agents prepare resumes, interviews, and application notes.
+            </p>
+
+            <div className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              {readinessStats.map((stat) => {
+                const Icon = stat.icon
+                return (
+                  <motion.div
+                    key={stat.label}
+                    variants={itemVariants}
+                    whileHover={{ y: -4 }}
+                    className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+                  >
+                    <div className="rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-slate-700 w-fit">
+                      <Icon className="h-4 w-4" />
+                    </div>
+                    <div className="mt-4 font-display text-3xl font-extrabold tracking-tight">{stat.value}</div>
+                    <div className="mt-1 text-sm font-bold text-slate-800">{stat.label}</div>
+                    <div className="mt-1 text-xs font-semibold text-slate-500">{stat.note}</div>
+                  </motion.div>
+                )
+              })}
+            </div>
+          </motion.div>
+
+          <motion.form
+            id="resume"
+            variants={itemVariants}
+            onSubmit={handleRunAnalysis}
+            className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm md:p-6"
+          >
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-extrabold tracking-tight">Run a profile analysis</h2>
+                <p className="mt-1 text-sm font-medium text-slate-500">Upload a PDF resume and choose the role you want.</p>
+              </div>
+              <UserCheck className="h-5 w-5 text-slate-400" />
+            </div>
+
+            {errorMsg && (
+              <div className="mb-4 flex gap-2 rounded-2xl border border-amber-100 bg-amber-50 p-3 text-sm font-semibold text-amber-800">
+                <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                <span>{errorMsg}</span>
+              </div>
+            )}
+
+            <label className="text-xs font-bold text-slate-500">Target role</label>
+            <input
+              type="text"
+              required
+              value={targetRole}
+              onChange={(e) => setTargetRole(e.target.value)}
+              placeholder="e.g. AI Product Engineer"
+              className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition focus:border-slate-400 focus:bg-white"
+            />
+
+            <div className="mt-5">
+              <label className="text-xs font-bold text-slate-500">Resume PDF</label>
+              <div
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                className={`relative mt-2 flex min-h-[168px] cursor-pointer flex-col items-center justify-center rounded-[24px] border-2 border-dashed p-6 text-center transition ${
+                  isDragOver ? 'border-emerald-300 bg-emerald-50' : 'border-slate-200 bg-slate-50 hover:border-slate-300'
+                }`}
+              >
+                <input
+                  type="file"
+                  required={!resumeFile}
+                  accept="application/pdf"
+                  onChange={handleFileChange}
+                  className="absolute inset-0 cursor-pointer opacity-0"
+                />
+                <div className="rounded-2xl border border-slate-200 bg-white p-3 text-slate-600">
+                  <Upload className="h-5 w-5" />
+                </div>
+                {resumeFile ? (
+                  <>
+                    <p className="mt-3 text-sm font-extrabold text-slate-950">{resumeFile.name}</p>
+                    <p className="mt-1 text-xs font-semibold text-slate-500">{(resumeFile.size / 1024 / 1024).toFixed(2)} MB PDF selected</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="mt-3 text-sm font-extrabold text-slate-950">Drop your resume here</p>
+                    <p className="mt-1 text-xs font-semibold text-slate-500">or click to browse locally</p>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={!resumeFile || !targetRole}
+              className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-5 py-3.5 text-sm font-extrabold text-white shadow-lg shadow-slate-950/10 transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0"
+            >
+              Analyze my profile
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </motion.form>
+        </motion.section>
+
+        <section className="mt-6 grid gap-6 xl:grid-cols-[1fr_1fr]">
+          <motion.div
+            id="matches"
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ type: 'spring', stiffness: 180, damping: 24 }}
+            className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm md:p-6"
+          >
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-extrabold tracking-tight">Role match board</h2>
+                <p className="mt-1 text-sm font-medium text-slate-500">Mock roles to show how matching will work.</p>
+              </div>
+              <TrendingUp className="h-5 w-5 text-slate-400" />
+            </div>
+
+            <div className="space-y-3">
+              {roleMatches.map((role) => (
+                <article key={role.title} className="rounded-2xl border border-slate-200 bg-[#fbfcff] p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 className="font-bold text-slate-950">{role.title}</h3>
+                      <p className="mt-1 text-xs font-bold text-slate-500">{role.company}</p>
+                    </div>
+                    <div className="rounded-2xl bg-emerald-600 px-3 py-2 text-center text-white">
+                      <div className="font-display text-xl font-extrabold leading-none">{role.score}</div>
+                      <div className="mt-0.5 text-[10px] font-bold text-emerald-100">Match</div>
+                    </div>
+                  </div>
+                  <p className="mt-3 text-sm font-medium leading-6 text-slate-600">{role.reason}</p>
+                </article>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div
+            id="coach"
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ type: 'spring', stiffness: 180, damping: 24 }}
+            className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm md:p-6"
+          >
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-extrabold tracking-tight">Skill gap map</h2>
+                <p className="mt-1 text-sm font-medium text-slate-500">Where the candidate agents should improve your signal.</p>
+              </div>
+              <Target className="h-5 w-5 text-slate-400" />
+            </div>
+
+            <div className="space-y-5">
+              {skillGaps.map((gap) => (
+                <div key={gap.label}>
+                  <div className="mb-2 flex items-center justify-between text-sm font-bold">
+                    <span>{gap.label}</span>
+                    <span className="text-slate-500">{gap.level}%</span>
+                  </div>
+                  <div className="h-2.5 overflow-hidden rounded-full bg-slate-100">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      whileInView={{ width: `${gap.level}%` }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                      className="h-full rounded-full bg-emerald-400 shadow-[0_0_18px_rgba(52,211,153,0.5)]"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div id="interviews" className="mt-6 rounded-2xl border border-sky-100 bg-sky-50 p-4">
+              <div className="flex items-center gap-2 text-sm font-extrabold text-sky-900">
+                <CalendarCheck className="h-4 w-4" />
+                Interview prep queue
+              </div>
+              <p className="mt-2 text-sm font-medium leading-6 text-sky-800">
+                14 answers prepared across product sense, technical judgment, founder story, and execution examples.
+              </p>
+            </div>
+          </motion.div>
+        </section>
+
+        <motion.section
+          id="agents"
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ type: 'spring', stiffness: 180, damping: 24 }}
+          className="mt-6 rounded-[28px] border border-slate-200 bg-slate-950 p-5 text-white shadow-[0_24px_80px_rgba(15,23,42,0.16)] md:p-6"
+        >
+          <div className="mb-5 flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-extrabold tracking-tight">Candidate AI agent bench</h2>
+              <p className="mt-1 text-sm font-medium text-slate-400">Purpose-built helpers for the application workflow.</p>
+            </div>
+            <Bot className="h-5 w-5 text-sky-300" />
           </div>
 
-          {errorMsg && (
-            <div className="mb-5 p-3 bg-accent-red/5 border border-accent-red/20 text-accent-red text-xs rounded">
-              {errorMsg}
-            </div>
-          )}
-
-          <form onSubmit={handleRunAnalysis} className="space-y-6">
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="show"
-              className="space-y-6"
-            >
-              {/* Target Role Input */}
-              <motion.div variants={itemVariants}>
-                <label className="type-label block mb-1.5">
-                  Target Role / Title *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={targetRole}
-                  onChange={(e) => setTargetRole(e.target.value)}
-                  placeholder="e.g. Senior Frontend Engineer"
-                  className="w-full bg-bg-deep border border-border-subtle rounded px-3 py-2.5 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
-                />
-              </motion.div>
-
-              {/* Resume dropzone */}
-              <motion.div variants={itemVariants}>
-                <label className="type-label block mb-1.5">
-                  Upload Resume (PDF only) *
-                </label>
-
-                <div
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  className={`border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer relative transition-colors active:scale-99 transition-all duration-200 ${
-                    isDragOver 
-                      ? 'border-accent-primary bg-accent-primary/5' 
-                      : 'border-border-subtle hover:border-accent-primary/35'
-                  }`}
-                >
-                  <input
-                    type="file"
-                    required={!resumeFile}
-                    accept="application/pdf"
-                    onChange={handleFileChange}
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                  />
-                  <Upload className="w-10 h-10 text-text-tertiary mb-3" />
-                  
-                  {resumeFile ? (
-                    <div>
-                      <p className="text-sm font-semibold text-accent-primary">
-                        {resumeFile.name}
-                      </p>
-                      <p className="text-[10px] text-text-tertiary mt-0.5">
-                        {(resumeFile.size / 1024 / 1024).toFixed(2)} MB • PDF Document
-                      </p>
+          <div className="grid gap-3 md:grid-cols-4">
+            {candidateAgents.map((agent) => {
+              const Icon = agent.icon
+              return (
+                <div key={agent.name} className="rounded-2xl border border-white/10 bg-white/[0.06] p-4">
+                  <div className="mb-4 flex items-center justify-between">
+                    <div className="rounded-xl bg-sky-300 p-2.5 text-slate-950">
+                      <Icon className="h-4 w-4" />
                     </div>
-                  ) : (
-                    <div>
-                      <p className="text-sm font-semibold text-text-primary">
-                        Drag & Drop Your Resume
-                      </p>
-                      <p className="text-[10px] text-text-tertiary mt-0.5">
-                        Click to browse files locally
-                      </p>
-                    </div>
-                  )}
+                    <span className="rounded-full border border-white/10 bg-white/10 px-2.5 py-1 text-[11px] font-bold text-slate-200">{agent.state}</span>
+                  </div>
+                  <h3 className="font-bold text-white">{agent.name}</h3>
+                  <p className="mt-2 text-sm font-medium leading-6 text-slate-400">{agent.task}</p>
                 </div>
-              </motion.div>
-
-              {/* Trigger button */}
-              <motion.button
-                variants={itemVariants}
-                type="submit"
-                disabled={!resumeFile || !targetRole}
-                whileHover={{ scale: 1.01 }}
-                whileTap={{ scale: 0.96 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-                className="w-full py-3.5 bg-accent-primary hover:bg-white hover:text-accent-primary text-white border border-accent-primary disabled:opacity-40 disabled:hover:bg-accent-primary disabled:hover:text-white rounded font-sans font-bold text-caption flex items-center justify-center gap-2 shadow-sm cursor-pointer transition-all duration-200"
-              >
-                <UserCheck className="w-5 h-5" />
-                <span>Analyze My Profile</span>
-              </motion.button>
-            </motion.div>
-          </form>
-        </motion.div>
-
-      </main>
-
-    </div>
+              )
+            })}
+          </div>
+        </motion.section>
+      </div>
+    </main>
   )
 }

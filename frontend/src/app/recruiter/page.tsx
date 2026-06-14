@@ -1,633 +1,412 @@
 'use client'
 
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { motion, AnimatePresence, Variants } from 'framer-motion'
-import { Briefcase, Plus, Upload, Play, Loader2, Sparkles } from 'lucide-react'
-import MeshBackground from '@/components/ui/MeshBackground'
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
-
-interface Job {
-  id: string
-  title: string
-  company: string
-  description: string
-  requirement_analysis?: {
-    must_have?: string[]
-    red_flags?: string[]
-  }
-  evaluation_framework?: {
-    evaluation_framework?: Record<string, number>
-  }
-}
+import { motion, type Variants } from 'framer-motion'
+import {
+  AlertTriangle,
+  ArrowUpRight,
+  BarChart3,
+  Bot,
+  Briefcase,
+  CalendarClock,
+  CheckCircle2,
+  ChevronRight,
+  Clock3,
+  FileCheck2,
+  FileSearch,
+  MessageSquareText,
+  Plus,
+  ShieldCheck,
+  Sparkles,
+  Target,
+  Users,
+  Zap,
+} from 'lucide-react'
+import { useAuth } from '@/context/AuthContext'
 
 const containerVariants: Variants = {
   hidden: {},
-  show: {
-    transition: {
-      staggerChildren: 0.05,
-      delayChildren: 0.02
-    }
-  }
+  show: { transition: { staggerChildren: 0.055, delayChildren: 0.04 } },
 }
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 12 },
+  hidden: { opacity: 0, y: 18 },
   show: {
     opacity: 1,
     y: 0,
-    transition: {
-      type: 'spring',
-      stiffness: 150,
-      damping: 20
-    }
-  }
+    transition: { type: 'spring', stiffness: 190, damping: 24 },
+  },
+}
+
+const commandStats = [
+  { label: 'Active roles', value: '8', delta: '+3 this week', icon: Briefcase, tone: 'blue' },
+  { label: 'Candidates screened', value: '1,247', delta: '6.1x faster review', icon: Users, tone: 'violet' },
+  { label: 'Strong finalists', value: '36', delta: '12 ready for panel', icon: Target, tone: 'emerald' },
+  { label: 'Avg evidence score', value: '91', delta: '+8 vs last cycle', icon: ShieldCheck, tone: 'sky' },
+]
+
+const roles = [
+  { title: 'Senior Product Designer', team: 'Growth Product', stage: 'Shortlist review', screened: 184, finalists: 5, score: 92, sla: '2h left' },
+  { title: 'Backend Platform Engineer', team: 'Core Infrastructure', stage: 'Evidence verification', screened: 312, finalists: 8, score: 88, sla: 'On track' },
+  { title: 'Founding GTM Lead', team: 'Revenue', stage: 'Interview kit ready', screened: 96, finalists: 3, score: 94, sla: 'Ready' },
+]
+
+const shortlist = [
+  { name: 'Aarav Mehta', role: 'Senior Product Designer', score: 94, signal: 'Strong portfolio evidence', risk: 'Needs enterprise SaaS depth' },
+  { name: 'Naina Kapoor', role: 'Backend Platform Engineer', score: 91, signal: 'High systems ownership', risk: 'Limited hiring loop exposure' },
+  { name: 'Rohan Iyer', role: 'Founding GTM Lead', score: 89, signal: 'Clear 0-1 pipeline wins', risk: 'Compensation expectations high' },
+]
+
+const agentLanes = [
+  { name: 'JD Analyst', task: 'Extracting must-have criteria from 3 open roles', status: 'Running', icon: FileSearch, progress: 76 },
+  { name: 'Evidence Verifier', task: 'Checking claims against project and tenure signals', status: 'Auditing', icon: ShieldCheck, progress: 61 },
+  { name: 'Interview Designer', task: 'Drafting structured panel questions', status: 'Ready', icon: MessageSquareText, progress: 100 },
+  { name: 'Consensus Board', task: 'Resolving score disagreement on 11 profiles', status: 'Review', icon: Bot, progress: 48 },
+]
+
+const reports = [
+  { label: 'Signed scorecards', value: '42', note: 'SHA-256 evidence reports' },
+  { label: 'Panel briefs', value: '18', note: 'Interview-ready packets' },
+  { label: 'Risk flags', value: '7', note: 'Needs recruiter decision' },
+]
+
+const toneClass: Record<string, string> = {
+  blue: 'bg-blue-50 text-blue-700 border-blue-100',
+  violet: 'bg-violet-50 text-violet-700 border-violet-100',
+  emerald: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+  sky: 'bg-sky-50 text-sky-700 border-sky-100',
 }
 
 export default function RecruiterDashboard() {
+  const { user, loading } = useAuth()
   const router = useRouter()
-  const [jobs, setJobs] = useState<Job[]>([])
-  const [selectedJob, setSelectedJob] = useState<Job | null>(null)
-  
-  // Forms
-  const [isCreatingJob, setIsCreatingJob] = useState(false)
-  const [newTitle, setNewTitle] = useState('')
-  const [newCompany, setNewCompany] = useState('')
-  const [newDescription, setNewDescription] = useState('')
-  
-  // Uploads
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
-  const [isDragOver, setIsDragOver] = useState(false)
-  
-  // Pipeline Running States
-  const [isRunning, setIsRunning] = useState(false)
-  const [currentStep, setCurrentStep] = useState(0)
-  const [errorMsg, setErrorMsg] = useState('')
-
-  const pipelineSteps = [
-    { label: 'Requirement Analyst', desc: 'Agent 1 deconstructing JD into structured must-haves & flags' },
-    { label: 'Hiring Strategist', desc: 'Agent 2 creating weighted rubric framework' },
-    { label: 'Resume Investigator', desc: 'Agent 3 forensically parsing and extracting resume evidence' },
-    { label: 'Candidate Evaluator', desc: 'Agent 4 scoring profile strictly against rubric' },
-    { label: "Devil's Advocate", desc: 'Agent 5 challenging claims and adjusting confidence scores' },
-    { label: 'Hiring Committee', desc: 'Agent 6 synthesizing reports and rendering verdicts' }
-  ]
-
-  const initialLoadRef = useRef(true)
-
-  // Load jobs list
-  const loadJobs = useCallback(async () => {
-    try {
-      const res = await fetch(`${API_URL}/jobs`)
-      if (res.ok) {
-        const data = await res.json()
-        setJobs(data)
-        if (data.length > 0 && initialLoadRef.current) {
-          setSelectedJob(data[0])
-          initialLoadRef.current = false
-        }
-      }
-    } catch (e) {
-      console.error('Error fetching jobs:', e)
-    }
-  }, [])
 
   useEffect(() => {
-    let active = true
-    const handle = requestAnimationFrame(() => {
-      if (active) {
-        loadJobs()
-      }
-    })
-    return () => {
-      active = false
-      cancelAnimationFrame(handle)
+    if (!loading && (!user || user.role !== 'recruiter')) {
+      router.replace('/auth?mode=signin')
     }
-  }, [loadJobs])
+  }, [user, loading, router])
 
-  // Create Job
-  const handleCreateJob = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!newTitle || !newDescription) return
-    
-    setIsRunning(true)
-    setCurrentStep(0) // Start requirement analyst animations
-    setErrorMsg('')
-
-    // Run simulated steps 1-2 progress
-    const interval = setInterval(() => {
-      setCurrentStep(prev => {
-        if (prev >= 1) {
-          clearInterval(interval)
-          return 1
-        }
-        return prev + 1
-      })
-    }, 1200)
-
-    try {
-      const res = await fetch(`${API_URL}/recruiter/job`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: newTitle,
-          company: newCompany,
-          description: newDescription
-        })
-      })
-
-      clearInterval(interval)
-
-      if (res.ok) {
-        const job = await res.json()
-        setJobs(prev => [job, ...prev])
-        setSelectedJob(job)
-        setIsCreatingJob(false)
-        setNewTitle('')
-        setNewCompany('')
-        setNewDescription('')
-      } else {
-        const err = await res.json()
-        setErrorMsg(err.detail || 'Failed to create job rubric.')
-      }
-    } catch {
-      clearInterval(interval)
-      setErrorMsg('Server connection failed.')
-    } finally {
-      setIsRunning(false)
-      setCurrentStep(0)
-    }
+  if (loading || !user) {
+    return (
+      <div className="min-h-[calc(100vh-64px)] bg-[#f7f9fc] flex items-center justify-center">
+        <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
+          <div className="h-5 w-5 rounded-full border-2 border-slate-900 border-t-transparent animate-spin" />
+          <span className="text-sm font-semibold text-slate-600">Opening recruiter workspace...</span>
+        </div>
+      </div>
+    )
   }
 
-  // Handle Drag & Drop Files
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragOver(true)
-  }
-
-  const handleDragLeave = () => {
-    setIsDragOver(false)
-  }
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragOver(false)
-    if (e.dataTransfer.files) {
-      const files = Array.from(e.dataTransfer.files).filter(f => f.type === 'application/pdf')
-      setUploadedFiles(prev => [...prev, ...files])
-    }
-  }
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const files = Array.from(e.target.files).filter(f => f.type === 'application/pdf')
-      setUploadedFiles(prev => [...prev, ...files])
-    }
-  }
-
-  const removeFile = (idx: number) => {
-    setUploadedFiles(prev => prev.filter((_, i) => i !== idx))
-  }
-
-  // Run Pipeline on Resume uploads
-  const handleRunPipeline = async () => {
-    if (!selectedJob || uploadedFiles.length === 0) return
-    setIsRunning(true)
-    setCurrentStep(2) // Jump directly to Agent 3: Resume Investigator
-    setErrorMsg('')
-
-    // Animate through agents 3, 4, 5, 6
-    const totalSteps = 6
-    const stepInterval = 4000 // 4 seconds per agent
-    const interval = setInterval(() => {
-      setCurrentStep(prev => {
-        if (prev >= totalSteps - 1) {
-          return prev
-        }
-        return prev + 1
-      })
-    }, stepInterval)
-
-    try {
-      const formData = new FormData()
-      formData.append('job_id', selectedJob.id)
-      uploadedFiles.forEach(file => {
-        formData.append('resumes', file)
-      })
-
-      const res = await fetch(`${API_URL}/recruiter/evaluate`, {
-        method: 'POST',
-        body: formData
-      })
-
-      clearInterval(interval)
-
-      if (res.ok) {
-        // Redirect to results page
-        router.push(`/recruiter/results/${selectedJob.id}`)
-      } else {
-        const err = await res.json()
-        setErrorMsg(err.detail || 'Evaluation pipeline failed.')
-        setIsRunning(false)
-      }
-    } catch {
-      clearInterval(interval)
-      setErrorMsg('Connection to backend failed.')
-      setIsRunning(false)
-    }
-  }
+  const firstName = user.displayName?.split(' ')[0] ?? 'Lakshya'
 
   return (
-    <div className="flex-1 flex bg-bg-deep overflow-hidden h-[calc(100vh-4rem)]">
-      
-      {/* 1. Left Sidebar: Job list */}
-      <aside className="w-80 border-r border-border-subtle bg-bg-surface flex flex-col shrink-0">
-        <div className="p-4 border-b border-border-subtle flex items-center justify-between">
-          <h2 className="font-display font-extrabold text-md tracking-tight text-text-primary uppercase">
-            Hiring Positions
-          </h2>
-          <motion.button 
-            onClick={() => {
-              setIsCreatingJob(true)
-              setSelectedJob(null)
-            }}
-            whileHover={{ scale: 1.08, rotate: 90 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-            className="w-7 h-7 rounded bg-accent-primary/10 border border-accent-primary/20 hover:bg-accent-primary hover:text-white flex items-center justify-center text-accent-primary cursor-pointer transition-all duration-200"
-          >
-            <Plus className="w-4 h-4" />
-          </motion.button>
-        </div>
+    <main className="min-h-[calc(100vh-64px)] bg-[#f6f8fc] text-slate-950">
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute left-[-12%] top-[-20%] h-[520px] w-[520px] rounded-full bg-sky-200/35 blur-3xl" />
+        <div className="absolute right-[-10%] top-[16%] h-[420px] w-[420px] rounded-full bg-indigo-200/30 blur-3xl" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.045)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.035)_1px,transparent_1px)] bg-[size:72px_72px]" />
+      </div>
 
-        <motion.div 
+      <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
+        <motion.section
           variants={containerVariants}
           initial="hidden"
           animate="show"
-          className="flex-1 overflow-y-auto p-3 space-y-1"
+          className="grid gap-6 lg:grid-cols-[1.35fr_0.65fr]"
         >
-          {jobs.map((job) => (
-            <motion.div
-              key={job.id}
-              variants={itemVariants}
-              onClick={() => {
-                setSelectedJob(job)
-                setIsCreatingJob(false)
-                setUploadedFiles([])
-                setErrorMsg('')
-              }}
-              whileHover={{ x: 2 }}
-              whileTap={{ scale: 0.97 }}
-              transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-              className={`p-3 rounded-lg cursor-pointer flex items-center gap-3 border transition-all duration-200 ${
-                selectedJob?.id === job.id 
-                  ? 'bg-bg-raised border-accent-primary/30 text-text-primary' 
-                  : 'bg-transparent border-transparent hover:bg-bg-raised/40 text-text-secondary'
-              }`}
-            >
-              <Briefcase className="w-4 h-4 shrink-0 text-text-tertiary" />
-              <div className="truncate">
-                <p className="font-semibold text-sm truncate">{job.title}</p>
-                <p className="type-caption text-text-tertiary truncate">{job.company || 'Private Co'}</p>
-              </div>
-            </motion.div>
-          ))}
-          {jobs.length === 0 && (
-            <div className="text-center py-8 text-xs text-text-tertiary">
-              No jobs configured. Click + to setup.
-            </div>
-          )}
-        </motion.div>
-      </aside>
-
-      {/* 2. Main Content Area */}
-      <main className="flex-1 overflow-y-auto p-8 relative">
-        {/* Zoho Grid backdrop with Mesh Blobs */}
-        <MeshBackground opacity={0.2} />
-        
-        {/* Loader Overlays */}
-        <AnimatePresence>
-          {isRunning && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-bg-deep/90 z-50 flex flex-col items-center justify-center p-6"
-            >
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95, y: 15 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 15 }}
-                transition={{ type: 'spring', stiffness: 180, damping: 24 }}
-                className="w-full max-w-xl bg-bg-surface border border-border-subtle rounded-xl p-8 shadow-sm"
-              >
-                <div className="flex items-center gap-3 mb-6">
-                  <Loader2 className="w-6 h-6 text-accent-primary animate-spin" />
-                  <h3 className="font-display font-extrabold text-lg text-text-primary tracking-tight">
-                    RUNNING ASSESSMENT COMMITTEE PIPELINE
-                  </h3>
-                </div>
-
-                <div className="space-y-4">
-                  {pipelineSteps.map((step, idx) => {
-                    const isActive = idx === currentStep
-                    const isDone = idx < currentStep
-                    return (
-                      <div 
-                        key={step.label} 
-                        className={`p-3 rounded-lg border flex items-center justify-between ${
-                          isActive 
-                            ? 'border-accent-primary bg-accent-primary/5 text-text-primary' 
-                            : isDone 
-                              ? 'border-accent-green/20 bg-accent-green/5 opacity-60' 
-                              : 'border-border-subtle opacity-30'
-                        }`}
-                      >
-                        <div>
-                          <p className="text-xs type-label font-bold text-text-primary">
-                            {step.label}
-                          </p>
-                          <p className="text-[10px] text-text-secondary mt-0.5">{step.desc}</p>
-                        </div>
-                        <div>
-                          {isDone ? (
-                            <span className="text-[10px] type-label text-accent-green font-bold">Done</span>
-                          ) : isActive ? (
-                            <span className="text-[10px] type-label text-accent-primary font-bold animate-pulse">Processing...</span>
-                          ) : (
-                            <span className="text-[10px] type-label text-text-tertiary font-bold">Waiting</span>
-                          )}
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* --- CREATE NEW JOB FORM --- */}
-        {isCreatingJob && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.97, y: 15 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ type: 'spring', stiffness: 180, damping: 24 }}
-            className="max-w-2xl bg-bg-surface border border-border-subtle rounded-xl p-6 shadow-xl"
+            variants={itemVariants}
+            className="overflow-hidden rounded-[28px] border border-white/80 bg-white/82 p-6 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl md:p-8"
           >
-            <div className="flex items-center gap-2 mb-4 border-b border-border-subtle pb-4">
-              <Sparkles className="w-5 h-5 text-accent-primary" />
-              <h1 className="font-display font-extrabold text-xl text-text-primary tracking-tight">
-                CREATE POSITION EVALUATION STRATEGY
-              </h1>
-            </div>
-
-            {errorMsg && (
-              <div className="mb-4 p-3 bg-accent-red/5 border border-accent-red/20 text-accent-red text-xs rounded">
-                {errorMsg}
-              </div>
-            )}
-
-            <form onSubmit={handleCreateJob} className="space-y-5">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="type-label block mb-1">
-                    Job Title *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={newTitle}
-                    onChange={(e) => setNewTitle(e.target.value)}
-                    placeholder="e.g. Senior Backend Engineer"
-                    className="w-full bg-bg-deep border border-border-subtle rounded px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
-                  />
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+              <div className="max-w-2xl">
+                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-sky-100 bg-sky-50 px-3 py-1.5 text-xs font-bold text-sky-700">
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Recruiter command center
                 </div>
-                <div>
-                  <label className="type-label block mb-1">
-                    Company
-                  </label>
-                  <input
-                    type="text"
-                    value={newCompany}
-                    onChange={(e) => setNewCompany(e.target.value)}
-                    placeholder="e.g. LakshyaCorp"
-                    className="w-full bg-bg-deep border border-border-subtle rounded px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="type-label block mb-1">
-                  Full Job Description *
-                </label>
-                <textarea
-                  required
-                  rows={8}
-                  value={newDescription}
-                  onChange={(e) => setNewDescription(e.target.value)}
-                  placeholder="Paste the full job requirements, skills, guidelines, responsibilities..."
-                  className="w-full bg-bg-deep border border-border-subtle rounded px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none font-sans"
-                />
-              </div>
-
-              <motion.button
-                type="submit"
-                whileHover={{ scale: 1.01 }}
-                whileTap={{ scale: 0.96 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-                className="w-full py-3 bg-accent-primary hover:bg-white hover:text-accent-primary text-white rounded font-sans font-bold text-caption flex items-center justify-center gap-2 cursor-pointer border border-accent-primary transition-all duration-200"
-              >
-                <Play className="w-4 h-4 fill-current" />
-                <span>Run Requirements Analysis (Agent 1 + 2)</span>
-              </motion.button>
-            </form>
-          </motion.div>
-        )}
-
-        {/* --- DISPLAY SELECTED JOB Rubrics & Resume dropzone --- */}
-        {selectedJob && (
-          <motion.div 
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ type: 'spring', stiffness: 150, damping: 22 }}
-            className="space-y-6 max-w-4xl"
-          >
-            {/* Title block */}
-            <div className="border-b border-border-subtle pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <h1 className="text-3xl font-display font-extrabold tracking-tight text-text-primary">
-                  {selectedJob.title}
+                <h1 className="font-display text-4xl font-extrabold tracking-tight text-slate-950 md:text-5xl">
+                  Welcome back, {firstName}. Your hiring desk is live.
                 </h1>
-                <p className="type-caption text-text-secondary mt-1">
-                  {selectedJob.company || 'Private Co'}
+                <p className="mt-4 max-w-2xl text-base font-medium leading-7 text-slate-600">
+                  Track open roles, inspect evidence-backed finalists, and assign AI agents to screening work from one focused workspace.
                 </p>
               </div>
 
-              <Link href={`/recruiter/results/${selectedJob.id}`}>
-                <motion.div 
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.96 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-                  className="px-4 py-2 border border-accent-primary/20 bg-accent-primary/5 hover:bg-accent-primary/10 text-accent-primary font-sans text-caption font-medium rounded cursor-pointer transition-all duration-200"
-                >
-                  View Ranked Results
-                </motion.div>
-              </Link>
+              <div className="flex flex-wrap gap-3">
+                <button className="inline-flex items-center gap-2 rounded-2xl bg-slate-950 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-slate-950/10 transition hover:-translate-y-0.5 hover:bg-slate-800">
+                  <Plus className="h-4 w-4" />
+                  Create role
+                </button>
+                <button className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-800 transition hover:-translate-y-0.5 hover:border-slate-300">
+                  <FileCheck2 className="h-4 w-4" />
+                  Upload resumes
+                </button>
+              </div>
             </div>
 
-            {errorMsg && (
-              <div className="p-3 bg-accent-red/5 border border-accent-red/20 text-accent-red text-xs rounded">
-                {errorMsg}
-              </div>
-            )}
-
-            {/* Rubrics grid */}
-            <motion.div 
-              variants={containerVariants}
-              initial="hidden"
-              animate="show"
-              className="grid grid-cols-1 md:grid-cols-2 gap-6"
-            >
-              {/* Requirements summary (Agent 1) */}
-              <motion.div 
-                variants={itemVariants}
-                className="bg-bg-surface border border-border-subtle rounded-xl p-5"
-              >
-                <h3 className="type-label text-text-tertiary mb-3">
-                  Parsed Job Requirements
-                </h3>
-                <div className="space-y-3 text-xs">
-                  {selectedJob.requirement_analysis ? (
-                    <>
-                      <div>
-                        <span className="type-caption text-accent-primary block mb-1">Must have</span>
-                        <ul className="list-disc list-inside space-y-0.5 text-text-secondary">
-                           {selectedJob.requirement_analysis.must_have?.slice(0, 4).map((m: string) => (
-                            <li key={m} className="truncate">{m}</li>
-                          ))}
-                        </ul>
-                      </div>
-                      <div>
-                        <span className="type-caption text-accent-da block mb-1">Red flags</span>
-                        <ul className="list-disc list-inside space-y-0.5 text-text-secondary">
-                          {selectedJob.requirement_analysis.red_flags?.slice(0, 3).map((r: string) => (
-                            <li key={r} className="truncate">{r}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </>
-                  ) : (
-                    <p className="text-text-tertiary">No requirements parsed.</p>
-                  )}
-                </div>
-              </motion.div>
-
-              {/* Rubric evaluation (Agent 2) */}
-              <motion.div 
-                variants={itemVariants}
-                className="bg-bg-surface border border-border-subtle rounded-xl p-5"
-              >
-                <h3 className="type-label text-text-tertiary mb-3">
-                  Weighted scoring Rubric
-                </h3>
-                <div className="space-y-3">
-                  {selectedJob.evaluation_framework?.evaluation_framework ? (
-                    Object.entries(selectedJob.evaluation_framework.evaluation_framework).map(([dim, weight]) => (
-                      <div key={dim} className="flex items-center justify-between text-xs type-mono border-b border-border-subtle/50 pb-1.5 last:border-b-0">
-                        <span className="text-text-secondary">{dim.replace('_', ' ')}</span>
-                        <span className="text-accent-primary font-bold">{weight as number}%</span>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-text-tertiary text-xs">No scoring framework found.</p>
-                  )}
-                </div>
-              </motion.div>
-            </motion.div>
-
-            {/* Resume Upload Zone */}
-            <motion.div 
-              variants={itemVariants}
-              className="bg-bg-surface border border-border-subtle rounded-xl p-6"
-            >
-              <h3 className="type-label text-text-tertiary mb-4">
-                Candidate Resume Assessment
-              </h3>
-
-              {/* Dropzone container */}
-              <motion.div
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                whileTap={{ scale: 0.99 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                className={`border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer relative transition-all group ${
-                  isDragOver 
-                    ? 'border-accent-primary bg-accent-primary/5' 
-                    : 'border-border-subtle hover:border-accent-primary/40'
-                }`}
-              >
-                <input
-                  type="file"
-                  multiple
-                  accept="application/pdf"
-                  onChange={handleFileChange}
-                  className="absolute inset-0 opacity-0 cursor-pointer"
-                />
-                <div className="p-3 rounded-full bg-bg-raised border border-border-subtle mb-3 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
-                  <Upload className="w-6 h-6 text-text-tertiary group-hover:text-accent-primary transition-colors duration-200" />
-                </div>
-                <p className="text-sm font-semibold text-text-primary">
-                  Drag & Drop PDF Resumes
-                </p>
-                <p className="text-xs text-text-tertiary mt-1">
-                  Supports multiple PDF files up to 10.
-                </p>
-              </motion.div>
-
-              {/* Uploaded File Chip list */}
-              {uploadedFiles.length > 0 && (
-                <div className="mt-5 space-y-2">
-                  <span className="type-label block">
-                    Staged Resumes ({uploadedFiles.length})
-                  </span>
-                  <div className="flex flex-wrap gap-2">
-                    {uploadedFiles.map((file, idx) => (
-                      <div key={idx} className="bg-bg-deep border border-border-subtle px-3 py-1.5 rounded-lg flex items-center gap-2 text-xs">
-                        <span className="text-text-secondary truncate max-w-[180px]">
-                          {file.name}
-                        </span>
-                        <button 
-                          onClick={() => removeFile(idx)}
-                          className="text-accent-da hover:text-white font-bold text-[10px]"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Run Pipeline Trigger Button */}
-                  <motion.button
-                    onClick={handleRunPipeline}
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.96 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-                    className="w-full mt-4 py-3 bg-accent-primary hover:bg-white hover:text-accent-primary text-white rounded font-sans font-bold text-caption flex items-center justify-center gap-2 shadow-sm cursor-pointer border border-accent-primary transition-all duration-200"
+            <div className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              {commandStats.map((stat) => {
+                const Icon = stat.icon
+                return (
+                  <motion.div
+                    key={stat.label}
+                    variants={itemVariants}
+                    whileHover={{ y: -4 }}
+                    className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm"
                   >
-                    <Play className="w-4 h-4 fill-current" />
-                    <span>Run Committee Assessment Chain</span>
-                  </motion.button>
-                </div>
-              )}
-            </motion.div>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className={`rounded-xl border p-2.5 ${toneClass[stat.tone]}`}>
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <ArrowUpRight className="h-4 w-4 text-slate-300" />
+                    </div>
+                    <div className="mt-4 font-display text-3xl font-extrabold tracking-tight">{stat.value}</div>
+                    <div className="mt-1 text-sm font-bold text-slate-800">{stat.label}</div>
+                    <div className="mt-1 text-xs font-semibold text-slate-500">{stat.delta}</div>
+                  </motion.div>
+                )
+              })}
+            </div>
           </motion.div>
-        )}
 
-      </main>
+          <motion.aside
+            variants={itemVariants}
+            className="rounded-[28px] border border-slate-200 bg-slate-950 p-6 text-white shadow-[0_24px_80px_rgba(15,23,42,0.16)]"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold text-sky-300">Today&apos;s priority</p>
+                <h2 className="mt-2 text-2xl font-extrabold tracking-tight" style={{ color: '#ffffff' }}>
+                  5 finalists need recruiter review.
+                </h2>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/10 p-3">
+                <Zap className="h-5 w-5 text-sky-300" />
+              </div>
+            </div>
+            <div className="mt-7 space-y-3">
+              {['Approve product design shortlist', 'Resolve 2 evidence conflicts', 'Send panel brief to hiring manager'].map((task, index) => (
+                <motion.div
+                  key={task}
+                  initial={{ opacity: 0, x: 14 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 + index * 0.08, type: 'spring', stiffness: 180, damping: 22 }}
+                  className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.06] p-3"
+                >
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-sky-300 text-xs font-black text-slate-950">
+                    {index + 1}
+                  </div>
+                  <span className="text-sm font-semibold text-slate-100">{task}</span>
+                </motion.div>
+              ))}
+            </div>
+          </motion.aside>
+        </motion.section>
+
+        <section id="roles" className="mt-6 grid gap-6 xl:grid-cols-[1.12fr_0.88fr]">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: '-80px' }}
+            className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm md:p-6"
+          >
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-extrabold tracking-tight">Active hiring roles</h2>
+                <p className="mt-1 text-sm font-medium text-slate-500">Mock data now, backend pipeline later.</p>
+              </div>
+              <button className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50">View all</button>
+            </div>
+
+            <div className="space-y-3">
+              {roles.map((role) => (
+                <motion.article
+                  key={role.title}
+                  variants={itemVariants}
+                  className="group rounded-2xl border border-slate-200 bg-[#fbfcff] p-4 transition hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-md"
+                >
+                  <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                    <div>
+                      <h3 className="font-bold text-slate-950">{role.title}</h3>
+                      <p className="mt-1 text-sm font-medium text-slate-500">{role.team} · {role.stage}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">{role.sla}</span>
+                      <ChevronRight className="h-4 w-4 text-slate-300 transition group-hover:translate-x-1 group-hover:text-slate-600" />
+                    </div>
+                  </div>
+                  <div className="mt-4 grid grid-cols-3 gap-3">
+                    <MiniMetric label="Screened" value={String(role.screened)} />
+                    <MiniMetric label="Finalists" value={String(role.finalists)} />
+                    <MiniMetric label="Evidence score" value={`${role.score}`} />
+                  </div>
+                </motion.article>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div
+            id="shortlist"
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ type: 'spring', stiffness: 180, damping: 24 }}
+            className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm md:p-6"
+          >
+            <div className="mb-5 flex items-center gap-3">
+              <div className="rounded-2xl border border-violet-100 bg-violet-50 p-3 text-violet-700">
+                <Users className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="text-lg font-extrabold tracking-tight">Shortlist intelligence</h2>
+                <p className="text-sm font-medium text-slate-500">Top candidates with reasons and risks.</p>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              {shortlist.map((candidate) => (
+                <div key={candidate.name} className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 className="font-bold text-slate-950">{candidate.name}</h3>
+                      <p className="text-xs font-semibold text-slate-500">{candidate.role}</p>
+                    </div>
+                    <div className="rounded-2xl bg-slate-950 px-3 py-2 text-center text-white">
+                      <div className="font-display text-xl font-extrabold leading-none">{candidate.score}</div>
+                      <div className="mt-0.5 text-[10px] font-bold text-slate-300">Score</div>
+                    </div>
+                  </div>
+                  <div className="mt-4 grid gap-2 text-xs font-semibold text-slate-600 sm:grid-cols-2">
+                    <div className="rounded-xl border border-emerald-100 bg-emerald-50 p-3 text-emerald-800">{candidate.signal}</div>
+                    <div className="rounded-xl border border-amber-100 bg-amber-50 p-3 text-amber-800">{candidate.risk}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </section>
+
+        <section className="mt-6 grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+          <motion.div
+            id="agents"
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ type: 'spring', stiffness: 180, damping: 24 }}
+            className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm md:p-6"
+          >
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-extrabold tracking-tight">AI agent operations</h2>
+                <p className="mt-1 text-sm font-medium text-slate-500">Dedicated work lanes for the hiring engine.</p>
+              </div>
+              <Bot className="h-5 w-5 text-slate-400" />
+            </div>
+
+            <div className="space-y-4">
+              {agentLanes.map((agent) => {
+                const Icon = agent.icon
+                return (
+                  <div key={agent.name} className="rounded-2xl border border-slate-200 p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="rounded-xl border border-sky-100 bg-sky-50 p-2.5 text-sky-700">
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-3">
+                          <h3 className="font-bold text-slate-950">{agent.name}</h3>
+                          <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-bold text-slate-600">{agent.status}</span>
+                        </div>
+                        <p className="mt-1 text-sm font-medium text-slate-500">{agent.task}</p>
+                        <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            whileInView={{ width: `${agent.progress}%` }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                            className="h-full rounded-full bg-sky-400 shadow-[0_0_18px_rgba(56,189,248,0.5)]"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </motion.div>
+
+          <motion.div
+            id="reports"
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ type: 'spring', stiffness: 180, damping: 24 }}
+            className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm md:p-6"
+          >
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-extrabold tracking-tight">Decision quality room</h2>
+                <p className="mt-1 text-sm font-medium text-slate-500">Reports, risks, and recruiter actions before offers move.</p>
+              </div>
+              <BarChart3 className="h-5 w-5 text-slate-400" />
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3">
+              {reports.map((report) => (
+                <div key={report.label} className="rounded-2xl border border-slate-200 bg-[#fbfcff] p-4">
+                  <div className="font-display text-3xl font-extrabold tracking-tight">{report.value}</div>
+                  <div className="mt-1 text-sm font-bold text-slate-800">{report.label}</div>
+                  <div className="mt-1 text-xs font-semibold text-slate-500">{report.note}</div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-5 grid gap-3 md:grid-cols-2">
+              <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-emerald-900">
+                <div className="flex items-center gap-2 text-sm font-extrabold">
+                  <CheckCircle2 className="h-4 w-4" />
+                  Ready for hiring manager
+                </div>
+                <p className="mt-2 text-sm font-medium leading-6 text-emerald-800">
+                  Product Designer shortlist has clean evidence trails and aligned interview prompts.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4 text-amber-900">
+                <div className="flex items-center gap-2 text-sm font-extrabold">
+                  <AlertTriangle className="h-4 w-4" />
+                  Recruiter attention
+                </div>
+                <p className="mt-2 text-sm font-medium leading-6 text-amber-800">
+                  Two backend candidates have strong scores but unresolved seniority signals.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-5 flex flex-wrap gap-3">
+              <button className="inline-flex items-center gap-2 rounded-2xl bg-slate-950 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-800">
+                <CalendarClock className="h-4 w-4" />
+                Schedule panel
+              </button>
+              <button className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-800 transition hover:border-slate-300">
+                <Clock3 className="h-4 w-4" />
+                Review queue
+              </button>
+            </div>
+          </motion.div>
+        </section>
+      </div>
+    </main>
+  )
+}
+
+function MiniMetric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-3">
+      <div className="font-display text-xl font-extrabold tracking-tight text-slate-950">{value}</div>
+      <div className="mt-0.5 text-[11px] font-bold text-slate-500">{label}</div>
     </div>
   )
 }
