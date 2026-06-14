@@ -27,6 +27,10 @@ This file is the persistent project memory for AI agents and human contributors.
   - **Collapsible navigation**: Added a close/open sidebar control on desktop. The rail collapses into a compact icon-only navigation state and the content area expands.
   - **Professional wording**: Replaced prototype-heavy sidebar copy with calmer workspace sample-data language.
   - **Verification**: Browser-checked expanded and collapsed recruiter sidebar states. Production build passes.
+- **Recent progress (Workspace UX v6.3 — Recruiter View Routing):**
+  - **Recruiter sidebar views**: Sidebar hash links now switch the recruiter workspace view instead of exposing all sections on one long page.
+  - **Priority panel polish**: Reworked "Today's priority" from a dark card into a light sky/white panel with aligned task rows and blue numbered badges.
+  - **Verification**: Browser-checked Command, Roles, Shortlist, Agents, and Reports hash views. Production build passes.
 - **Current blockers:** None.
 - **Known risks:** Email/password auth is intentionally frontend-only mock state until Firebase email/password or backend auth is implemented. Google auth still requires Firebase provider/Firestore configuration to be enabled in the Firebase console.
 
@@ -203,6 +207,51 @@ This file is the persistent project memory for AI agents and human contributors.
 
 #### Pending Work
 - Consider persisting the sidebar collapsed state per user after real auth/profile storage is connected.
+
+### Session Update - 2026-06-14 (Workspace UX v6.3 — Recruiter View Routing)
+
+#### Objective
+- Fix recruiter alignment and color issue in the "Today's priority" panel.
+- Make recruiter sidebar navigation feel like separate workspace pages instead of one long scrolling page.
+
+#### Completed
+- Updated `WorkspaceShell` to support optional `onNavSelect`, allowing pages to handle navigation as local workspace views.
+- Updated recruiter dashboard to track active view from URL hash and render one view at a time:
+  - `#command`
+  - `#roles`
+  - `#shortlist`
+  - `#agents`
+  - `#reports`
+- Changed the "Today's priority" card from dark navy to a light sky/white panel.
+- Aligned task rows with consistent spacing, white row cards, blue numbered badges, and slate text.
+- Added context side panels for Role and Agent views so each view has a clear purpose.
+
+#### Files Modified
+- `frontend/src/components/ui/WorkspaceShell.tsx`
+- `frontend/src/app/recruiter/page.tsx`
+- `HANDOFF.md`
+
+#### Architecture Decisions
+- Keep recruiter subviews hash-driven for now rather than adding separate route files. This preserves the current frontend structure while making the dashboard behave like page-level workspace views.
+
+#### Dependencies Added
+- None.
+
+#### Verification
+- `npm run build` passed.
+- `npm run lint` passed with the existing raw avatar image warning in `Navbar.tsx`.
+- Browser checked:
+  - `/recruiter#command` shows command and priority only.
+  - `/recruiter#roles` shows roles only.
+  - `/recruiter#shortlist` shows shortlist only.
+  - `/recruiter#agents` shows agents only.
+  - `/recruiter#reports` shows reports only.
+
+#### Issues Found
+- The previous sidebar anchors only scrolled within one long dashboard, so navigation did not feel like separate workspace pages.
+
+#### Pending Work
+- Consider moving hash-driven views into actual nested routes if the recruiter workspace grows into full CRUD pages.
 
 ### Session Update - 2026-06-11 (Design Overhaul v4 — HiringAgents.ai Palette + Kore.ai Transitions)
 

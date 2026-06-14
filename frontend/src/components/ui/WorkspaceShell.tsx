@@ -48,6 +48,7 @@ interface WorkspaceShellProps {
   subtitle: string
   primaryActionLabel: string
   onPrimaryAction: () => void
+  onNavSelect?: (id: string) => void
   children: React.ReactNode
   toast?: string
   action: WorkspaceAction | null
@@ -77,6 +78,7 @@ export function WorkspaceShell({
   subtitle,
   primaryActionLabel,
   onPrimaryAction,
+  onNavSelect,
   children,
   toast,
   action,
@@ -92,8 +94,16 @@ export function WorkspaceShell({
     return name.split(' ').filter(Boolean).map((part) => part[0]).join('').toUpperCase().slice(0, 2)
   }, [user?.displayName, user?.email])
 
-  const handleNavClick = (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const handleNavClick = (event: React.MouseEvent<HTMLAnchorElement>, item: WorkspaceNavItem) => {
+    const href = item.href
     if (!href.startsWith('#')) return
+    if (onNavSelect) {
+      event.preventDefault()
+      window.history.replaceState(null, '', href)
+      onNavSelect(item.id)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
     const target = document.querySelector(href)
     if (!target) return
     event.preventDefault()
@@ -141,7 +151,7 @@ export function WorkspaceShell({
                 key={item.id}
                 href={item.href}
                 title={sidebarCollapsed ? `${item.label}: ${item.contribution}` : undefined}
-                onClick={(event) => handleNavClick(event, item.href)}
+                onClick={(event) => handleNavClick(event, item)}
                 className={`group rounded-2xl border transition duration-150 ${
                   sidebarCollapsed ? 'flex h-12 items-center justify-center px-0 py-0' : 'px-3 py-3'
                 } ${
@@ -250,7 +260,7 @@ export function WorkspaceShell({
                 <a
                   key={item.id}
                   href={item.href}
-                  onClick={(event) => handleNavClick(event, item.href)}
+                  onClick={(event) => handleNavClick(event, item)}
                   className={`flex shrink-0 items-center gap-2 rounded-full border px-3 py-2 text-xs font-bold ${
                     active ? 'border-slate-950 bg-slate-950 text-white' : 'border-slate-200 bg-white text-slate-600'
                   }`}

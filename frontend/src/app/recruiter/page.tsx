@@ -84,12 +84,24 @@ export default function RecruiterDashboard() {
   const router = useRouter()
   const [action, setAction] = useState<WorkspaceAction | null>(null)
   const [toast, setToast] = useState('')
+  const [activeView, setActiveView] = useState('command')
 
   useEffect(() => {
     if (!loading && (!user || user.role !== 'recruiter')) {
       router.replace('/auth?mode=signin')
     }
   }, [user, loading, router])
+
+  useEffect(() => {
+    const validViews = new Set(['command', 'roles', 'shortlist', 'agents', 'reports'])
+    const syncFromHash = () => {
+      const next = window.location.hash.replace('#', '')
+      if (validViews.has(next)) setActiveView(next)
+    }
+    syncFromHash()
+    window.addEventListener('hashchange', syncFromHash)
+    return () => window.removeEventListener('hashchange', syncFromHash)
+  }, [])
 
   const showToast = (message: string) => {
     setToast(message)
@@ -114,10 +126,11 @@ export default function RecruiterDashboard() {
   return (
     <WorkspaceShell
       role="recruiter"
-      activeId="command"
+      activeId={activeView}
       title="Recruiter Command Center"
       subtitle="Search roles, candidates, reports..."
       primaryActionLabel="Create role"
+      onNavSelect={setActiveView}
       onPrimaryAction={() => openAction({
         title: 'Create a hiring role',
         description: 'This mock flow shows how a recruiter will configure a role before the AI agents build the rubric.',
@@ -128,7 +141,7 @@ export default function RecruiterDashboard() {
       action={action}
       onCloseAction={() => setAction(null)}
     >
-      <motion.section
+      {activeView === 'command' && <motion.section
         id="command"
         variants={containerVariants}
         initial="hidden"
@@ -210,15 +223,15 @@ export default function RecruiterDashboard() {
 
         <motion.aside
           variants={itemVariants}
-          className="rounded-[28px] border border-slate-200 bg-slate-950 p-6 text-white shadow-[0_24px_80px_rgba(15,23,42,0.16)]"
+          className="rounded-[28px] border border-sky-100 bg-gradient-to-br from-sky-50 via-white to-indigo-50 p-6 text-slate-950 shadow-sm"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-bold text-sky-300">Today&apos;s priority</p>
-              <h2 className="mt-2 text-2xl font-extrabold tracking-tight" style={{ color: '#ffffff' }}>5 finalists need recruiter review.</h2>
+              <p className="text-xs font-bold text-sky-700">Today&apos;s priority</p>
+              <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-slate-950">5 finalists need recruiter review.</h2>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/10 p-3">
-              <Zap className="h-5 w-5 text-sky-300" />
+            <div className="rounded-2xl border border-sky-100 bg-white p-3 shadow-sm">
+              <Zap className="h-5 w-5 text-sky-600" />
             </div>
           </div>
           <div className="mt-7 space-y-3">
@@ -231,17 +244,17 @@ export default function RecruiterDashboard() {
                   description: 'This mock task shows the exact recruiter action that will be connected to the backend workflow.',
                   steps: ['Open candidate evidence trail.', 'Review AI rationale and contested claims.', 'Choose approve, reject, or request more evidence.', 'Write activity back to the hiring ledger.'],
                 })}
-                className="flex w-full items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.06] p-3 text-left transition hover:bg-white/[0.1]"
+                className="flex w-full items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-md"
               >
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-sky-300 text-xs font-black text-slate-950">{index + 1}</div>
-                <span className="text-sm font-semibold text-slate-100">{task}</span>
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sky-600 text-xs font-black text-white">{index + 1}</div>
+                <span className="text-sm font-semibold text-slate-800">{task}</span>
               </button>
             ))}
           </div>
         </motion.aside>
-      </motion.section>
+      </motion.section>}
 
-      <section id="roles" className="mt-6 grid gap-6 xl:grid-cols-[1.12fr_0.88fr]">
+      {activeView === 'roles' && <section id="roles" className="grid gap-6 xl:grid-cols-[1.12fr_0.88fr]">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -291,7 +304,20 @@ export default function RecruiterDashboard() {
             ))}
           </div>
         </motion.div>
+        <WorkspaceSideNote
+          title="Role workspace"
+          icon={Briefcase}
+          body="This page is for opening roles, editing rubrics, uploading candidate batches, and tracking role-level hiring progress."
+          cta="Create role draft"
+          onClick={() => openAction({
+            title: 'Create role draft',
+            description: 'A role draft workspace will collect requirement evidence before publishing.',
+            steps: ['Choose department and hiring owner.', 'Set critical competencies and deal-breakers.', 'Generate a role rubric preview.', 'Invite the hiring manager to approve.'],
+          })}
+        />
+      </section>}
 
+      {activeView === 'shortlist' && (
         <motion.div
           id="shortlist"
           initial={{ opacity: 0, y: 18 }}
@@ -340,9 +366,9 @@ export default function RecruiterDashboard() {
             ))}
           </div>
         </motion.div>
-      </section>
+      )}
 
-      <section className="mt-6 grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+      {activeView === 'agents' && <section className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
         <motion.div
           id="agents"
           initial={{ opacity: 0, y: 18 }}
@@ -395,7 +421,20 @@ export default function RecruiterDashboard() {
             })}
           </div>
         </motion.div>
+        <WorkspaceSideNote
+          title="Agent control room"
+          icon={Bot}
+          body="This page will let recruiters inspect agent status, rerun evaluations, pause workflows, and review automation failures."
+          cta="Open agent runbook"
+          onClick={() => openAction({
+            title: 'AI agent runbook',
+            description: 'Mock operational runbook for the multi-agent hiring workflow.',
+            steps: ['Inspect each agent lane.', 'Review failed or contested runs.', 'Rerun evidence verification where needed.', 'Write final output to the decision ledger.'],
+          })}
+        />
+      </section>}
 
+      {activeView === 'reports' && (
         <motion.div
           id="reports"
           initial={{ opacity: 0, y: 18 }}
@@ -454,8 +493,39 @@ export default function RecruiterDashboard() {
             </button>
           </div>
         </motion.div>
-      </section>
+      )}
     </WorkspaceShell>
+  )
+}
+
+function WorkspaceSideNote({
+  title,
+  body,
+  cta,
+  icon: Icon,
+  onClick,
+}: {
+  title: string
+  body: string
+  cta: string
+  icon: React.ComponentType<{ className?: string }>
+  onClick: () => void
+}) {
+  return (
+    <aside className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-slate-700">
+        <Icon className="h-5 w-5" />
+      </div>
+      <h2 className="mt-5 text-2xl font-extrabold tracking-tight text-slate-950">{title}</h2>
+      <p className="mt-3 text-sm font-medium leading-6 text-slate-600">{body}</p>
+      <button
+        type="button"
+        onClick={onClick}
+        className="mt-6 rounded-2xl bg-slate-950 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-800"
+      >
+        {cta}
+      </button>
+    </aside>
   )
 }
 
