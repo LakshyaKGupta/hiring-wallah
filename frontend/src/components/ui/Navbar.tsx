@@ -162,6 +162,7 @@ function UserMenu({ user, signOut }: { user: { displayName: string | null; email
 function NavbarContent() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const router = useRouter()
   const mode = searchParams?.get('mode')
   const isAuthPage = pathname === '/auth'
   const isDashboard = pathname?.startsWith('/recruiter') || pathname?.startsWith('/candidate')
@@ -239,14 +240,16 @@ function NavbarContent() {
             <div className="w-8 h-8 rounded-full bg-bg-subtle animate-pulse" />
           ) : user ? (
             <>
-              {user.role && !isDashboard && (
-                <Link
-                  href={`/${user.role}`}
-                  className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-800 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-200 hover:text-sky-700"
+              {!isDashboard && (
+                <button
+                  type="button"
+                  onClick={() => router.push(user.role ? `/${user.role}` : '/auth?mode=signup')}
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-sky-100 bg-sky-50 px-3 py-2 text-xs font-extrabold text-sky-700 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white"
+                  title={user.role ? `Open ${user.role} dashboard` : 'Choose a role to open your dashboard'}
                 >
                   <LayoutDashboard className="h-3.5 w-3.5" />
-                  Dashboard
-                </Link>
+                  <span className="hidden sm:inline">Dashboard</span>
+                </button>
               )}
               {isDashboard && (
                 <span className={`hidden sm:inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-bold ${
