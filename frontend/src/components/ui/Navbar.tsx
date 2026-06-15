@@ -243,7 +243,7 @@ function NavbarContent() {
               {!isDashboard && (
                 <button
                   type="button"
-                  onClick={() => router.push(user.role ? `/${user.role}` : '/auth?mode=signup')}
+                  onClick={() => router.push(user.role ? `/${user.role}` : '/auth?mode=signup&completeProfile=1')}
                   className="inline-flex items-center gap-1.5 rounded-xl border border-sky-100 bg-sky-50 px-3 py-2 text-xs font-extrabold text-sky-700 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white"
                   title={user.role ? `Open ${user.role} dashboard` : 'Choose a role to open your dashboard'}
                 >

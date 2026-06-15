@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, Suspense } from 'react'
+import React, { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -106,9 +106,10 @@ function AuthForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const mode = searchParams.get('mode')
+  const completeProfile = searchParams.get('completeProfile') === '1'
   const activeTab: 'signin' | 'signup' = mode === 'signup' ? 'signup' : 'signin'
 
-  const { signInWithGoogle, signInWithEmail, signUpWithEmail, setUserRole } = useAuth()
+  const { user, loading, profileLoading, signInWithGoogle, signInWithEmail, signUpWithEmail, setUserRole } = useAuth()
 
   const [email,    setEmail]    = useState('')
   const [password, setPassword] = useState('')
@@ -122,6 +123,17 @@ function AuthForm() {
   const [isSuccess,      setIsSuccess]      = useState(false)
   const [successRole,    setSuccessRole]    = useState<'recruiter' | 'candidate'>('recruiter')
   const [authNotice,     setAuthNotice]     = useState('')
+  const currentRole = user?.role
+  const isSignedIn = Boolean(user)
+  const shouldShowRoleModal = roleModalOpen || (!loading && !profileLoading && isSignedIn && !currentRole)
+  const profileNotice = completeProfile && shouldShowRoleModal
+    ? 'Choose how you want to use Hiring Wallah to open your dashboard.'
+    : ''
+
+  useEffect(() => {
+    if (loading || profileLoading || isSuccess || !currentRole) return
+    router.replace(`/${currentRole}`)
+  }, [currentRole, loading, profileLoading, isSuccess, router])
 
   const switchTab = (tab: 'signin' | 'signup') => {
     setAuthNotice('')
@@ -209,7 +221,7 @@ function AuthForm() {
     <>
       {/* ── Role Picker Modal ── */}
       <AnimatePresence>
-        {roleModalOpen && (
+        {shouldShowRoleModal && (
           <RolePickerModal onSelect={handleRoleSelect} loading={roleLoading} />
         )}
       </AnimatePresence>
@@ -371,8 +383,8 @@ function AuthForm() {
               </div>
             )}
 
-            {authNotice && (
-              <p className="text-sm text-rose-600 font-medium text-center py-1">{authNotice}</p>
+            {(authNotice || profileNotice) && (
+              <p className="text-sm text-rose-600 font-medium text-center py-1">{authNotice || profileNotice}</p>
             )}
 
             <button

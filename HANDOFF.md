@@ -1972,3 +1972,17 @@ This file is the persistent project memory for AI agents and human contributors.
 
 #### Notes
 - `GEMINI_API_KEY` is still not configured locally, so AI rubric/evaluation calls will fail until that key is added.
+
+### Session Update - 2026-06-15 (Dashboard Shortcut Profile Completion)
+
+#### Objective
+- Fix logged-in users seeing their account in the navbar but being sent back to the login/signup form when clicking Dashboard.
+
+#### Completed
+- Changed the navbar Dashboard fallback to open `/auth?mode=signup&completeProfile=1` when Firebase is signed in but no backend role profile exists yet.
+- Updated the auth page so already-signed-in users with no role see the role picker immediately instead of the login form.
+- Existing users with a loaded role are redirected straight to `/recruiter` or `/candidate`.
+
+#### Verification
+- `npm run lint` in `frontend`: passed with the existing avatar `<img>` warning.
+- `npm run build` in `frontend`: passed.
