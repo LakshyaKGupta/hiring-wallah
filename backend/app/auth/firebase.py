@@ -2,9 +2,12 @@ import json
 from functools import lru_cache
 from typing import Any, Dict
 
+import jwt
 from fastapi import Header, HTTPException, status
 
 from app.config import settings
+
+FIREBASE_JWKS_URL = "https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com"
 
 
 @lru_cache(maxsize=1)
@@ -29,6 +32,28 @@ def _firebase_admin_auth():
     return firebase_auth
 
 
+@lru_cache(maxsize=1)
+def _firebase_jwks_client():
+    return jwt.PyJWKClient(FIREBASE_JWKS_URL)
+
+
+def _verify_with_public_keys(token: str) -> Dict[str, Any]:
+    project_id = settings.FIREBASE_PROJECT_ID
+    if not project_id:
+        raise RuntimeError("FIREBASE_PROJECT_ID is not configured.")
+
+    signing_key = _firebase_jwks_client().get_signing_key_from_jwt(token)
+    decoded = jwt.decode(
+        token,
+        signing_key.key,
+        algorithms=["RS256"],
+        audience=project_id,
+        issuer=f"https://securetoken.google.com/{project_id}",
+    )
+    decoded["uid"] = decoded.get("sub")
+    return decoded
+
+
 async def require_firebase_user(authorization: str = Header(default="")) -> Dict[str, Any]:
     if not authorization.startswith("Bearer "):
         raise HTTPException(
@@ -44,8 +69,10 @@ async def require_firebase_user(authorization: str = Header(default="")) -> Dict
         )
 
     try:
-        firebase_auth = _firebase_admin_auth()
-        return firebase_auth.verify_id_token(token)
+        if settings.FIREBASE_SERVICE_ACCOUNT_JSON or settings.FIREBASE_SERVICE_ACCOUNT_PATH:
+            firebase_auth = _firebase_admin_auth()
+            return firebase_auth.verify_id_token(token)
+        return _verify_with_public_keys(token)
     except RuntimeError as exc:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,

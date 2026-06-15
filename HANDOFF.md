@@ -1952,3 +1952,23 @@ This file is the persistent project memory for AI agents and human contributors.
   - Upload one or more PDF resumes.
   - Trigger immediate Gemini evaluation.
   - Store evaluations and create revisitable reports.
+
+### Session Update - 2026-06-15 (Firebase Token Verification Fix)
+
+#### Objective
+- Fix Google login failing with `Invalid Firebase token` after Firebase sign-in succeeded.
+
+#### Completed
+- Updated backend Firebase auth verification:
+  - Uses Firebase Admin verification when service-account credentials are configured.
+  - Falls back to Google Secure Token public JWKS verification when no backend service account is configured.
+  - Defaults `FIREBASE_PROJECT_ID` to `hiring-wallah-prod`.
+- Restarted the local backend on `http://localhost:8000`.
+
+#### Verification
+- `python3 -m compileall backend`: passed.
+- Backend import smoke: `from main import app` returned `Hiring Wallah Backend`.
+- `curl http://localhost:8000/`: returned `Hiring Wallah Backend API`.
+
+#### Notes
+- `GEMINI_API_KEY` is still not configured locally, so AI rubric/evaluation calls will fail until that key is added.

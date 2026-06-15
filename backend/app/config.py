@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     SUPABASE_ANON_KEY: str = ""
     SUPABASE_SERVICE_ROLE_KEY: str = ""
     CORS_ORIGINS: str = "http://localhost:3000"
-    FIREBASE_PROJECT_ID: str = ""
+    FIREBASE_PROJECT_ID: str = "hiring-wallah-prod"
     FIREBASE_SERVICE_ACCOUNT_JSON: str = ""
     FIREBASE_SERVICE_ACCOUNT_PATH: str = ""
     
