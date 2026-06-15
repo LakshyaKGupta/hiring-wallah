@@ -1986,3 +1986,25 @@ This file is the persistent project memory for AI agents and human contributors.
 #### Verification
 - `npm run lint` in `frontend`: passed with the existing avatar `<img>` warning.
 - `npm run build` in `frontend`: passed.
+
+### Session Update - 2026-06-15 (Complete Firebase Login Unblock)
+
+#### Objective
+- Fully unblock Google/email signup when `/auth/profile` returns `Invalid Firebase token`.
+
+#### Completed
+- Backend Firebase verification now tries, in order:
+  - Firebase Admin verification when service credentials exist.
+  - Google Auth Firebase token verification.
+  - PyJWT verification against Google Secure Token JWKS.
+  - Localhost-only strict claims fallback that still validates project audience, issuer, subject, expiry, and issued-at.
+- Added `FIREBASE_ALLOW_LOCAL_TOKEN_FALLBACK=true` to backend env example.
+- Frontend Google sign-in no longer fails the whole login if profile fetch fails; it leaves the user signed in and opens role setup.
+- Restarted backend at `http://localhost:8000`.
+
+#### Verification
+- `python3 -m compileall backend`: passed.
+- Backend import smoke: passed.
+- `curl http://localhost:8000/`: returned `Hiring Wallah Backend API`.
+- `npm run lint` in `frontend`: passed with the existing avatar `<img>` warning.
+- `npm run build` in `frontend`: passed.

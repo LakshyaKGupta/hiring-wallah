@@ -66,7 +66,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const result = await signInWithPopup(auth, provider)
     setFirebaseUser(result.user)
 
-    let role = await fetchRole(result.user)
+    let role: UserRole = null
+    try {
+      role = await fetchRole(result.user)
+    } catch {
+      role = null
+    }
     const isNewUser = !role
     if (!role && preferredRole) {
       const profile = await persistProfile(result.user, preferredRole)

@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     FIREBASE_PROJECT_ID: str = "hiring-wallah-prod"
     FIREBASE_SERVICE_ACCOUNT_JSON: str = ""
     FIREBASE_SERVICE_ACCOUNT_PATH: str = ""
+    FIREBASE_ALLOW_LOCAL_TOKEN_FALLBACK: bool = True
     
     # Allow DB fallback to SQLite if Supabase url/keys are empty
     DB_FALLBACK_SQLITE: bool = True
