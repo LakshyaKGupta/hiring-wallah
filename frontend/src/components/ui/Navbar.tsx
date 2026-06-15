@@ -239,6 +239,15 @@ function NavbarContent() {
             <div className="w-8 h-8 rounded-full bg-bg-subtle animate-pulse" />
           ) : user ? (
             <>
+              {user.role && !isDashboard && (
+                <Link
+                  href={`/${user.role}`}
+                  className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-800 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-200 hover:text-sky-700"
+                >
+                  <LayoutDashboard className="h-3.5 w-3.5" />
+                  Dashboard
+                </Link>
+              )}
               {isDashboard && (
                 <span className={`hidden sm:inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-bold ${
                   user.role === 'recruiter'

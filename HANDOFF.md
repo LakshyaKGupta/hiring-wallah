@@ -69,6 +69,75 @@ This file is the persistent project memory for AI agents and human contributors.
 
 ## Session Updates
 
+### Session Update - 2026-06-14 (Global MCP Server Expansion - Wave 4)
+
+#### Objective
+- Install 2 massive infrastructure MCP servers to give the AI native DevOps powers without breaking context limits.
+- The new servers are: Docker and Terminal.
+
+#### Completions
+- **Added 2 new local MCPs** into all 5 global configurations (`claude_desktop_config.json`, `.claude.json`, `config.toml`, `opencode.jsonc`, `mcp_config.json`).
+- Updated `instructions.ai/skills/mcp-servers.md` with documentation on how to use Docker and Terminal MCPs.
+- Total highly curated, 100% free stack is now 14 servers.
+
+### Session Update - 2026-06-14 (Global MCP Server Optimization)
+
+#### Objective
+- Prune the MCP stack to remove all tools that require unconfigured API keys (Firecrawl, Perplexity, Glif, Figma).
+- Solidify a lightning-fast, highly curated "Core 12" free/local stack.
+
+#### Completions
+- **Removed 4 API-locked MCPs** from all 5 global configurations (`claude_desktop_config.json`, `.claude.json`, `config.toml`, `opencode.jsonc`, `mcp_config.json`).
+- Rewrote `instructions.ai/skills/mcp-servers.md` to document only the core 12 tools, preventing future agents from hallucinating API tools.
+
+### Session Update - 2026-06-14 (Global MCP Server Installation - Wave 3: The Elite Builder Stack)
+
+#### Objective
+- Install the final 4 elite free/local MCP servers used by top developers without overloading the AI context window.
+- The new servers are: Git, Code Intelligence, Filesystem, and Time.
+
+#### Completions
+- **Added 4 new local MCPs** into all 5 global configurations (`claude_desktop_config.json`, `.claude.json`, `config.toml`, `opencode.jsonc`, `mcp_config.json`).
+- Updated `instructions.ai/skills/mcp-servers.md` with documentation on the newly added tools.
+- Ensured no API keys are required for this specific local stack.
+
+### Session Update - 2026-06-14 (Global MCP Server Installation - Wave 2)
+
+#### Objective
+- Install 5 additional advanced MCP servers to enhance logic, backend, and design capabilities.
+- The new servers are: Sequential Thinking, Memory, Fetch, SQLite, and Figma.
+
+#### Completions
+- **Added 5 new MCPs** into all 5 global configurations (`claude_desktop_config.json`, `.claude.json`, `config.toml`, `opencode.jsonc`, `mcp_config.json`).
+- Updated `instructions.ai/skills/mcp-servers.md` with documentation on how to use these new capabilities.
+- The SQLite MCP is explicitly mapped to `/Users/lol/Docs/antigravity/Hiring Wallah/backend/hiring_wallah.db`.
+
+#### Pending Work
+- `FIGMA_API_KEY` needs to be set in the configurations if you wish to use the Figma MCP integration.
+
+### Session Update - 2026-06-14 (Global MCP Server & Skill Installation - Wave 1)
+
+#### Objective
+- Install and configure 7 MCP servers (Playwright, Chrome DevTools, Aceternity UI, Shadcn, Firecrawl, Perplexity, Glif) across all AI coding assistants (Claude Desktop, Claude Code CLI, Codex, OpenCode, Gemini/Antigravity).
+- Update the global `instructions.ai` system with new design and MCP-related skills (Refero Style, Aceternity UI).
+- Ensure the project `AGENTS.md` is updated to include the new skills.
+
+#### Completions
+- **MCP Configurations Updated**: Added the 7 MCP servers to:
+  - `~/Library/Application Support/Claude/claude_desktop_config.json`
+  - `~/.claude.json` (via CLI)
+  - `~/.codex/config.toml`
+  - `~/.config/opencode/opencode.jsonc`
+  - `~/.gemini/config/mcp_config.json`
+- **New Skill Files Created**:
+  - `refero-style.md`: Guidelines for using the Refero Style MCP.
+  - `aceternity-ui.md`: Guidelines for using the Aceternity UI MCP.
+  - `mcp-servers.md`: Global reference for the installed MCPs.
+- **Global & Project AGENTS.md Updated**: Included references to `refero-style.md`, `aceternity-ui.md`, and `mcp-servers.md` in the active developer skills lists.
+
+#### Pending Work
+- User needs to add valid API keys for Firecrawl, Perplexity, and Glif in the respective configuration files replacing the `YOUR_*_API_KEY` placeholders.
+
 ### Session Update - 2026-06-14 (Workspace UX v6 — Role-Aware Dashboards)
 
 #### Objective
@@ -1814,3 +1883,72 @@ This file is the persistent project memory for AI agents and human contributors.
 - Google sign-in provider is not enabled yet in Firebase Authentication.
   - Enable Firebase Console -> Authentication -> Sign-in method -> Google.
   - Add authorized domains as needed, including `localhost` for local development and the production domain.
+
+### Session Update - 2026-06-15 (MVP Real Data Milestone 1)
+
+#### Objective
+- Apply the final Hiring Wallah MVP decisions:
+  - Firebase Auth + PostgreSQL through FastAPI.
+  - No Firestore.
+  - No mock dashboard data.
+  - Recruiter first milestone: role persistence, dashboard routing, real empty states, and job creation.
+
+#### Completed
+- **Backend auth/profile API**
+  - Added `GET /auth/profile` and `POST /auth/profile`.
+  - Uses Firebase bearer tokens and Firebase Admin verification.
+  - Stores role in the database through FastAPI, not Firestore.
+  - Recruiter onboarding creates/links a company workspace.
+- **Database model**
+  - Added SQLite fallback support for `users` and `companies`.
+  - Added job ownership fields: `owner_uid`, `company_id`.
+  - Rebuilt `supabase_schema.sql` for the MVP stack:
+    `users`, `companies`, `jobs`, `candidates`, `resumes`, `evaluations`, `decisions`, `reports`, `candidate_sessions`.
+- **Frontend auth**
+  - Removed Firestore role reads/writes.
+  - Removed frontend mock email/password sessions.
+  - Email/password now uses Firebase Auth.
+  - Google and email signup persist role through FastAPI.
+  - Navbar shows a visible dashboard button plus dropdown dashboard access when logged in.
+- **Recruiter dashboard**
+  - Removed fake metrics, fake shortlists, fake agent lanes, fake reports, and mock action drawers from the primary dashboard.
+  - Added real `/jobs` loading/error/empty states.
+  - Added real job creation form wired to `POST /jobs`.
+  - Empty states now guide the MVP sequence: create job -> upload resumes -> evaluate -> reports.
+- **Candidate dashboard**
+  - Removed fake readiness scores, role matches, skill gaps, candidate agents, and mock interview flows.
+  - Kept only the real resume upload and candidate analysis path.
+  - Shows truthful pending states for role matching and skill gap reports.
+- **Branding**
+  - Replaced remaining user-facing "Hiring Agent OS" app/backend naming with "Hiring Wallah" and "Autonomous Hiring Intelligence."
+- **Environment docs**
+  - Added `backend/.env.example`.
+  - Updated `frontend/.env.example` to use `NEXT_PUBLIC_API_URL` instead of frontend Supabase variables.
+
+#### Verification
+- `python3 -m compileall backend`: passed.
+- Backend import smoke: `from main import app` returned `Hiring Wallah Backend`.
+- `npm run lint` in `frontend`: passed with one pre-existing Next.js avatar `<img>` warning.
+- `npm run build` in `frontend`: passed.
+- Dev server checks:
+  - Backend running at `http://localhost:8000`.
+  - Existing frontend dev server running at `http://localhost:3000`.
+  - `curl -I http://localhost:3000`, `/recruiter`, and `/candidate`: all returned `200`.
+  - `curl http://localhost:8000/`: returned `Hiring Wallah Backend API`.
+  - `curl http://localhost:8000/jobs`: returned `[]`, confirming real empty jobs state.
+
+#### Blockers / Pending Work
+- Backend AI actions require `GEMINI_API_KEY`; local smoke logs currently show it is not configured.
+- Real Firebase token verification requires backend Firebase Admin credentials:
+  - `FIREBASE_SERVICE_ACCOUNT_JSON` or `FIREBASE_SERVICE_ACCOUNT_PATH`.
+- Google/email auth providers must be enabled in Firebase Authentication for `hiring-wallah-prod`.
+- `pytest` is not installed in the current Python environment, so backend tests were not run.
+- Browser screenshot tooling was unavailable in this session: Playwright MCP transport was closed and local `playwright` package was not installed.
+- Firestore setup is no longer required for MVP and should not be pursued unless the architecture is intentionally changed later.
+
+#### Next Milestone
+- Phase 4: resume upload for recruiter jobs.
+  - Select a real job.
+  - Upload one or more PDF resumes.
+  - Trigger immediate Gemini evaluation.
+  - Store evaluations and create revisitable reports.

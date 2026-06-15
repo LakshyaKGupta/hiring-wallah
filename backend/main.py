@@ -5,13 +5,14 @@ from app.config import settings
 from app.api.recruiter import router as recruiter_router
 from app.api.candidate import router as candidate_router
 from app.api.jobs import router as jobs_router
+from app.api.auth import router as auth_router
 import logging
 
 logger = logging.getLogger("hiring_wallah.main")
 
 app = FastAPI(
-    title="Hiring Agent OS Backend",
-    description="Multi-agent reasoning pipeline for candidate screening and career strategy recommendations.",
+    title="Hiring Wallah Backend",
+    description="Autonomous Hiring Intelligence API for JD analysis, resume evaluation, ranking, and reports.",
     version="1.0.0"
 )
 
@@ -29,15 +30,16 @@ app.add_middleware(
 app.include_router(recruiter_router)
 app.include_router(candidate_router)
 app.include_router(jobs_router)
+app.include_router(auth_router)
 
 @app.get("/")
 async def root():
     return {
         "status": "online",
-        "service": "Hiring Agent OS Backend API",
+        "service": "Hiring Wallah Backend API",
         "version": "1.0.0"
     }
 
 if __name__ == "__main__":
-    logger.info("Starting Hiring Agent OS backend service...")
+    logger.info("Starting Hiring Wallah backend service...")
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

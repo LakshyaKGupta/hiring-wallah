@@ -58,7 +58,7 @@ const featureCards = [
   },
   {
     title: 'Candidate Intelligence',
-    detail: 'Enable candidates to run mock matches, discover skill gaps, and optimize resumes before submitting.',
+    detail: 'Enable candidates to analyze resumes, discover skill gaps, and optimize profiles before applying.',
     icon: Sliders,
     colorClass: 'text-indigo-600',
     bgClass: 'bg-indigo-50',
@@ -468,7 +468,7 @@ export default function LandingPage() {
                       Know your score before recruiters do.
                     </h3>
                     <p className="text-base text-gray-500 leading-relaxed font-medium">
-                      Upload your resume, run mock evaluations against target roles, identify critical skill gaps, and optimize your application strategy before applying.
+                      Upload your resume, analyze fit against target roles, identify critical skill gaps, and optimize your application strategy before applying.
                     </p>
                   </div>
 

@@ -3,6 +3,22 @@ from typing import List, Dict, Any, Optional
 from datetime import datetime
 from uuid import UUID
 
+class UserProfileUpsert(BaseModel):
+    role: str = Field(..., pattern="^(recruiter|candidate)$")
+    display_name: Optional[str] = None
+    company_name: Optional[str] = None
+
+class UserProfileResponse(BaseModel):
+    firebase_uid: str
+    email: Optional[EmailStr] = None
+    display_name: Optional[str] = None
+    photo_url: Optional[str] = None
+    role: str
+    company_id: Optional[UUID] = None
+    company_name: Optional[str] = None
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
 # Job Models
 class JobCreate(BaseModel):
     title: str = Field(..., example="Software Engineer")
@@ -16,6 +32,8 @@ class JobResponse(BaseModel):
     description: str
     requirement_analysis: Optional[Dict[str, Any]] = None
     evaluation_framework: Optional[Dict[str, Any]] = None
+    owner_uid: Optional[str] = None
+    company_id: Optional[UUID] = None
     created_at: datetime
 
 # Candidate Models

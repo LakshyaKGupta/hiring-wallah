@@ -19,8 +19,8 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Hiring Agent OS — Your AI Hiring Committee",
-  description: "An autonomous multi-agent hiring intelligence platform that converts job requirements into evidence-backed hiring decisions.",
+  title: "Hiring Wallah — Autonomous Hiring Intelligence",
+  description: "Autonomous Hiring Intelligence for job creation, resume analysis, candidate ranking, and evidence-backed hiring reports.",
 };
 
 export default function RootLayout({

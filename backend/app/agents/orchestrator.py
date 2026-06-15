@@ -28,7 +28,14 @@ class Orchestrator:
         self.hiring_committee = HiringCommittee(self.gemini_client)
         self.candidate_analyst = CandidateAnalyst(self.gemini_client)
 
-    async def run_job_setup(self, title: str, company: str, description: str) -> Dict[str, Any]:
+    async def run_job_setup(
+        self,
+        title: str,
+        company: str,
+        description: str,
+        owner_uid: str | None = None,
+        company_id: str | None = None,
+    ) -> Dict[str, Any]:
         """
         Runs Agent 1 (Requirement Analyst) and Agent 2 (Hiring Strategist) on a new job
         description, then creates a job record in the database.
@@ -47,7 +54,9 @@ class Orchestrator:
             company=company,
             description=description,
             requirement_analysis=req_analysis,
-            evaluation_framework=framework
+            evaluation_framework=framework,
+            owner_uid=owner_uid,
+            company_id=company_id,
         )
         return job
 

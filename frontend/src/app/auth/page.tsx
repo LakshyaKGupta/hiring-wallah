@@ -84,7 +84,7 @@ function RolePickerModal({
             </div>
             <div>
               <div className="font-extrabold text-slate-950 text-sm">I&apos;m a Candidate</div>
-              <div className="text-xs text-slate-500 mt-0.5 font-medium">Upload resume, run mock evaluations, close skill gaps</div>
+              <div className="text-xs text-slate-500 mt-0.5 font-medium">Upload resume, analyze fit, close skill gaps</div>
             </div>
             <ArrowRight className="w-4 h-4 text-slate-300 ml-auto group-hover:text-emerald-600 group-hover:translate-x-1 transition-all" />
           </button>
@@ -108,7 +108,7 @@ function AuthForm() {
   const mode = searchParams.get('mode')
   const activeTab: 'signin' | 'signup' = mode === 'signup' ? 'signup' : 'signin'
 
-  const { signInWithGoogle, startMockSession, setUserRole } = useAuth()
+  const { signInWithGoogle, signInWithEmail, signUpWithEmail, setUserRole } = useAuth()
 
   const [email,    setEmail]    = useState('')
   const [password, setPassword] = useState('')
@@ -177,23 +177,26 @@ function AuthForm() {
     }
   }
 
-  /* ── Email/Password sign-in (placeholder) ── */
   const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setAuthNotice('')
-    // TODO: Wire up Firebase email/password auth here
-    setTimeout(() => {
-      startMockSession({
-        role,
-        email,
-        displayName: activeTab === 'signup' ? name : email,
-      })
+    try {
+      const authUser = activeTab === 'signup'
+        ? await signUpWithEmail({ role, email, password, displayName: name })
+        : await signInWithEmail(email, password)
+
+      if (!authUser.role) {
+        setRoleModalOpen(true)
+      } else {
+        redirectToWorkspace(authUser.role)
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Authentication failed'
+      setAuthNotice(msg)
+    } finally {
       setIsLoading(false)
-      setSuccessRole(role)
-      setIsSuccess(true)
-      setTimeout(() => router.push(`/${role}`), 1000)
-    }, 1500)
+    }
   }
 
   const redirectToWorkspace = (r: 'recruiter' | 'candidate') => {

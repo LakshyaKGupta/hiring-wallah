@@ -33,6 +33,29 @@ class DatabaseManager:
     def _init_sqlite_db(self):
         conn = sqlite3.connect(settings.SQLITE_DB_PATH)
         cursor = conn.cursor()
+
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS companies (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            created_at TEXT
+        )
+        """)
+
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id TEXT PRIMARY KEY,
+            firebase_uid TEXT UNIQUE NOT NULL,
+            email TEXT,
+            display_name TEXT,
+            photo_url TEXT,
+            role TEXT NOT NULL CHECK(role IN ('recruiter', 'candidate')),
+            company_id TEXT,
+            created_at TEXT,
+            updated_at TEXT,
+            FOREIGN KEY(company_id) REFERENCES companies(id)
+        )
+        """)
         
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS candidates (
@@ -53,9 +76,19 @@ class DatabaseManager:
             description TEXT NOT NULL,
             requirement_analysis TEXT,
             evaluation_framework TEXT,
+            owner_uid TEXT,
+            company_id TEXT,
             created_at TEXT
         )
         """)
+        for statement in [
+            "ALTER TABLE jobs ADD COLUMN owner_uid TEXT",
+            "ALTER TABLE jobs ADD COLUMN company_id TEXT",
+        ]:
+            try:
+                cursor.execute(statement)
+            except sqlite3.OperationalError:
+                pass
         
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS evaluations (
@@ -110,10 +143,122 @@ class DatabaseManager:
         conn.close()
         logger.info("Database: SQLite schemas verified/created.")
 
+    # --- USER / WORKSPACE OPERATIONS ---
+    async def get_user_profile(self, firebase_uid: str) -> Optional[Dict[str, Any]]:
+        if self.use_supabase:
+            def _select():
+                return (
+                    self.supabase_client
+                    .table("users")
+                    .select("*, companies(name)")
+                    .eq("firebase_uid", firebase_uid)
+                    .execute()
+                )
+            res = await asyncio.to_thread(_select)
+            if not res.data:
+                return None
+            profile = res.data[0]
+            company = profile.pop("companies", None)
+            profile["company_name"] = company.get("name") if isinstance(company, dict) else None
+            return profile
+
+        def _select_sqlite():
+            conn = sqlite3.connect(settings.SQLITE_DB_PATH)
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT users.*, companies.name as company_name
+                FROM users
+                LEFT JOIN companies ON companies.id = users.company_id
+                WHERE users.firebase_uid = ?
+            """, (firebase_uid,))
+            row = cursor.fetchone()
+            conn.close()
+            return dict(row) if row else None
+        return await asyncio.to_thread(_select_sqlite)
+
+    async def upsert_user_profile(
+        self,
+        firebase_uid: str,
+        email: Optional[str],
+        display_name: Optional[str],
+        photo_url: Optional[str],
+        role: str,
+        company_name: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        existing = await self.get_user_profile(firebase_uid)
+        now = datetime.utcnow().isoformat()
+        company_id = existing.get("company_id") if existing else None
+
+        if role == "recruiter" and not company_id:
+            company_id = str(uuid.uuid4())
+            company_label = company_name or (f"{display_name}'s Company" if display_name else "Hiring Wallah Workspace")
+            if self.use_supabase:
+                def _insert_company():
+                    return self.supabase_client.table("companies").insert({
+                        "id": company_id,
+                        "name": company_label,
+                        "created_at": now,
+                    }).execute()
+                await asyncio.to_thread(_insert_company)
+            else:
+                def _insert_company_sqlite():
+                    conn = sqlite3.connect(settings.SQLITE_DB_PATH)
+                    cursor = conn.cursor()
+                    cursor.execute(
+                        "INSERT INTO companies (id, name, created_at) VALUES (?, ?, ?)",
+                        (company_id, company_label, now),
+                    )
+                    conn.commit()
+                    conn.close()
+                await asyncio.to_thread(_insert_company_sqlite)
+
+        data = {
+            "id": existing.get("id") if existing else str(uuid.uuid4()),
+            "firebase_uid": firebase_uid,
+            "email": email,
+            "display_name": display_name,
+            "photo_url": photo_url,
+            "role": role,
+            "company_id": company_id,
+            "created_at": existing.get("created_at") if existing else now,
+            "updated_at": now,
+        }
+
+        if self.use_supabase:
+            def _upsert():
+                return self.supabase_client.table("users").upsert(data, on_conflict="firebase_uid").execute()
+            await asyncio.to_thread(_upsert)
+        else:
+            def _upsert_sqlite():
+                conn = sqlite3.connect(settings.SQLITE_DB_PATH)
+                cursor = conn.cursor()
+                cursor.execute("""
+                    INSERT INTO users (id, firebase_uid, email, display_name, photo_url, role, company_id, created_at, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(firebase_uid) DO UPDATE SET
+                        email=excluded.email,
+                        display_name=excluded.display_name,
+                        photo_url=excluded.photo_url,
+                        role=excluded.role,
+                        company_id=excluded.company_id,
+                        updated_at=excluded.updated_at
+                """, (
+                    data["id"], data["firebase_uid"], data["email"], data["display_name"],
+                    data["photo_url"], data["role"], data["company_id"], data["created_at"], data["updated_at"],
+                ))
+                conn.commit()
+                conn.close()
+            await asyncio.to_thread(_upsert_sqlite)
+
+        return await self.get_user_profile(firebase_uid) or data
+
     # --- JOB OPERATIONS ---
-    async def create_job(self, title: str, company: str, description: str, 
+    async def create_job(self, title: str, company: str, description: str,
                          requirement_analysis: Optional[Dict[str, Any]] = None, 
-                         evaluation_framework: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+                         evaluation_framework: Optional[Dict[str, Any]] = None,
+                         owner_uid: Optional[str] = None,
+                         company_id: Optional[str] = None) -> Dict[str, Any]:
         job_id = str(uuid.uuid4())
         created_at = datetime.utcnow().isoformat()
         
@@ -125,6 +270,8 @@ class DatabaseManager:
                 "description": description,
                 "requirement_analysis": requirement_analysis or {},
                 "evaluation_framework": evaluation_framework or {},
+                "owner_uid": owner_uid,
+                "company_id": company_id,
                 "created_at": created_at
             }
             def _insert():
@@ -137,8 +284,8 @@ class DatabaseManager:
                 conn = sqlite3.connect(settings.SQLITE_DB_PATH)
                 cursor = conn.cursor()
                 cursor.execute(
-                    "INSERT INTO jobs (id, title, company, description, requirement_analysis, evaluation_framework, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                    (job_id, title, company, description, json.dumps(requirement_analysis or {}), json.dumps(evaluation_framework or {}), created_at)
+                    "INSERT INTO jobs (id, title, company, description, requirement_analysis, evaluation_framework, owner_uid, company_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    (job_id, title, company, description, json.dumps(requirement_analysis or {}), json.dumps(evaluation_framework or {}), owner_uid, company_id, created_at)
                 )
                 conn.commit()
                 conn.close()
@@ -146,7 +293,7 @@ class DatabaseManager:
             return {
                 "id": job_id, "title": title, "company": company, "description": description,
                 "requirement_analysis": requirement_analysis or {}, "evaluation_framework": evaluation_framework or {},
-                "created_at": created_at
+                "owner_uid": owner_uid, "company_id": company_id, "created_at": created_at
             }
 
     async def get_job(self, job_id: str) -> Optional[Dict[str, Any]]:

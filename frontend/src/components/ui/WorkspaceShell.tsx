@@ -180,10 +180,10 @@ export function WorkspaceShell({
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
               <span className="h-2 w-2 rounded-full bg-emerald-500" />
-              Workspace sample data
+              MVP workspace
             </div>
             <p className="mt-2 text-xs font-medium leading-5 text-slate-500">
-              Interactive frontend state for validating the workflow before backend wiring.
+              Real workflows appear as each backend milestone is connected.
             </p>
           </div>
         )}
