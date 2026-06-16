@@ -32,12 +32,29 @@ Return ONLY valid JSON in this exact structure:
   "breakdown": {{
     "dimension_name": {{
       "score": 0,
-      "evidence": ["explicit bullet points of evidence from candidate profile"],
-      "justification": "why this score was given based on the evidence"
+      "evidence": [
+        {{
+          "claim": "hiring-relevant claim",
+          "evidence": "supporting resume evidence",
+          "resume_section": "Experience/Projects/Education/Achievements/Skills/Unknown"
+        }}
+      ],
+      "justification": "why this score was given based only on the evidence"
     }}
   }},
-  "strengths": ["key evidence-backed candidate strengths"],
-  "weaknesses": ["areas where candidate lacks evidence or falls short of rubric"],
+  "strengths": [
+    {{
+      "claim": "key evidence-backed candidate strength",
+      "evidence": "supporting resume evidence",
+      "resume_section": "Experience/Projects/Education/Achievements/Skills/Unknown"
+    }}
+  ],
+  "weaknesses": [
+    {{
+      "claim": "area where candidate lacks evidence or falls short of rubric",
+      "missing_or_weak_evidence": "what is missing, weak, or unsupported"
+    }}
+  ],
   "evidence_quality": "strong/moderate/weak"
 }}
 
@@ -46,4 +63,5 @@ CRITICAL INSTRUCTIONS:
 2. Be extremely strict. A score above 80 requires strong, direct, explicit evidence of high-impact achievement or expertise.
 3. Every dimension listed in the "evaluation_framework" MUST be evaluated as a key in the "breakdown" dictionary.
 4. Calculate the overall_score as the weighted sum of the dimension scores (i.e. Sum of (dimension_score * dimension_weight) / 100).
+5. No strength is allowed without resume evidence. No weakness is useful unless it names the missing or weak evidence.
 """

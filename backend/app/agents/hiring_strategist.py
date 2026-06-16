@@ -17,15 +17,15 @@ Requirements:
 
 Return ONLY valid JSON in this exact structure:
 {{
-  "evaluation_framework": {{
-    "dimension_name": weight_integer
-  }},
-  "total_weight": 100,
-  "rationale": "detailed explanation of why these weights and dimensions were chosen",
-  "criteria_per_dimension": {{
-    "dimension_name": "detailed criteria of what evidence scores high vs what scores low in this dimension"
-  }}
+  "criteria": [
+    {{
+      "name": "AI Experience",
+      "weight": 40,
+      "signals": ["specific evidence that proves the candidate is strong on this criterion"]
+    }}
+  ],
+  "rationale": "detailed explanation of why these weights and dimensions were chosen"
 }}
 
-CRITICAL: The sum of the weights inside "evaluation_framework" must equal exactly 100.
+CRITICAL: The sum of all criteria weights must equal exactly 100.
 """

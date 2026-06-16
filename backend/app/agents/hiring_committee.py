@@ -41,5 +41,6 @@ Return ONLY valid JSON in this exact structure:
 
 CRITICAL INSTRUCTIONS:
 1. "verdict" MUST be exactly one of: "Strong Hire", "Consider", or "Reject".
-2. "confidence" must be an integer between 0 and 100 representing your degree of certainty in this verdict. Apply the confidence adjustment from the adversarial critique (e.g. if original score was 84 and critique adjustment is -5, adjust confidence accordingly).
+2. "confidence" must be an integer between 0 and 100. Base it on evidence quantity, evidence quality, rubric coverage, and unresolved risks. Do not use vague model certainty.
+3. Apply the confidence adjustment from the adversarial critique when risk is real.
 """

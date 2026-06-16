@@ -72,6 +72,45 @@ create table if not exists evaluations (
   created_at timestamptz not null
 );
 
+create table if not exists candidate_profiles (
+  id text primary key,
+  candidate_id text references candidates(id) on delete cascade,
+  resume_id text references resumes(id) on delete cascade,
+  structured_profile jsonb not null default '{}',
+  created_at timestamptz not null
+);
+
+create table if not exists rubrics (
+  id text primary key,
+  job_id text references jobs(id) on delete cascade,
+  criteria jsonb not null default '[]',
+  weights jsonb not null default '{}',
+  created_at timestamptz not null
+);
+
+create table if not exists evidence (
+  id text primary key,
+  candidate_profile_id text references candidate_profiles(id) on delete cascade,
+  candidate_id text references candidates(id) on delete cascade,
+  resume_id text references resumes(id) on delete cascade,
+  claim text,
+  evidence text,
+  resume_section text,
+  evidence_type text,
+  quality text,
+  created_at timestamptz not null
+);
+
+create table if not exists critiques (
+  id text primary key,
+  evaluation_id text references evaluations(id) on delete cascade,
+  concerns jsonb not null default '[]',
+  unsupported_claims jsonb not null default '[]',
+  risk_factors jsonb not null default '[]',
+  potential_bias jsonb not null default '[]',
+  created_at timestamptz not null
+);
+
 create table if not exists decisions (
   id text primary key,
   candidate_id text references candidates(id) on delete cascade,
@@ -81,6 +120,40 @@ create table if not exists decisions (
   explanation text default '',
   interview_questions jsonb not null default '[]',
   ranking integer,
+  created_at timestamptz not null
+);
+
+create table if not exists rankings (
+  id text primary key,
+  job_id text references jobs(id) on delete cascade,
+  candidate_id text references candidates(id) on delete cascade,
+  score integer default 0 check (score between 0 and 100),
+  rank integer,
+  verdict text,
+  confidence integer default 0 check (confidence between 0 and 100),
+  rationale jsonb not null default '{}',
+  created_at timestamptz not null
+);
+
+create table if not exists committee_decisions (
+  id text primary key,
+  job_id text references jobs(id) on delete cascade,
+  candidate_id text references candidates(id) on delete cascade,
+  evaluation_id text references evaluations(id) on delete cascade,
+  critique_id text references critiques(id) on delete set null,
+  verdict text,
+  confidence integer default 0 check (confidence between 0 and 100),
+  final_reasoning text default '',
+  created_at timestamptz not null
+);
+
+create table if not exists comparisons (
+  id text primary key,
+  job_id text references jobs(id) on delete cascade,
+  candidate_a_id text references candidates(id) on delete cascade,
+  candidate_b_id text references candidates(id) on delete cascade,
+  winner_candidate_id text references candidates(id) on delete cascade,
+  rationale jsonb not null default '{}',
   created_at timestamptz not null
 );
 
@@ -111,5 +184,13 @@ create index if not exists idx_jobs_owner on jobs(owner_uid);
 create index if not exists idx_jobs_company on jobs(company_id);
 create index if not exists idx_resumes_job on resumes(job_id);
 create index if not exists idx_evaluations_job on evaluations(job_id);
+create index if not exists idx_candidate_profiles_resume on candidate_profiles(resume_id);
+create index if not exists idx_rubrics_job on rubrics(job_id);
+create index if not exists idx_evidence_candidate on evidence(candidate_id);
+create index if not exists idx_evidence_resume on evidence(resume_id);
+create index if not exists idx_critiques_evaluation on critiques(evaluation_id);
 create index if not exists idx_decisions_job on decisions(job_id);
+create index if not exists idx_rankings_job on rankings(job_id);
+create index if not exists idx_committee_decisions_job on committee_decisions(job_id);
+create index if not exists idx_comparisons_job on comparisons(job_id);
 create index if not exists idx_reports_job on reports(job_id);

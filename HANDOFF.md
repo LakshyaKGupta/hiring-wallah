@@ -69,6 +69,71 @@ This file is the persistent project memory for AI agents and human contributors.
 
 ## Session Updates
 
+### Session Update - 2026-06-16 (Recruiter Intelligence Layer v1)
+
+#### Objective
+- Implement the evidence-first Hiring Wallah recruiter intelligence roadmap: strict resume investigation, rubric persistence, evaluator critique, committee decision, ranking, and recruiter reports.
+
+#### Completed
+- Added first-class intelligence persistence for candidate profiles, rubrics, normalized evidence, critiques, rankings, committee decisions, and pairwise comparisons.
+- Updated the six-agent contract to prioritize evidence extraction, requirement signals, total-100 rubrics, evidence-linked strengths/weaknesses, adversarial critique, and confidence based on evidence coverage.
+- Reworked the recruiter orchestration pipeline so resume upload now stores structured profiles and evidence before evaluation, then persists evaluation, critique, committee decision, ranking rationale, comparisons, and report data.
+- Added ranking logic based on verdict, score, confidence, and evidence coverage.
+- Updated recruiter evaluations and reports pages to show verdict, confidence, evidence count, why-hire reasons, risks, and ranking rationale instead of plain score cards.
+- Added `email-validator` to backend requirements because `EmailStr` is used by the API models.
+- Updated backend tests to use the current Firebase-protected recruiter profile flow and assert evidence-backed ranking behavior.
+
+#### Files Modified
+- `backend/app/db/database.py`
+- `backend/app/agents/orchestrator.py`
+- `backend/app/agents/resume_investigator.py`
+- `backend/app/agents/requirement_analyst.py`
+- `backend/app/agents/hiring_strategist.py`
+- `backend/app/agents/candidate_evaluator.py`
+- `backend/app/agents/devils_advocate.py`
+- `backend/app/agents/hiring_committee.py`
+- `backend/tests/test_api.py`
+- `backend/requirements.txt`
+- `neon_schema.sql`
+- `frontend/src/app/recruiter/jobs/[jobId]/evaluations/page.tsx`
+- `frontend/src/app/recruiter/jobs/[jobId]/reports/page.tsx`
+- `HANDOFF.md`
+
+#### Architecture Decisions
+- Reused the existing agent classes and orchestrator rather than introducing a parallel agent framework.
+- Kept recruiter intelligence in FastAPI as the source of truth; frontend only renders returned evidence/ranking/report data.
+- Confidence is now evidence-adjusted rather than model-self-reported.
+- No report/ranking is generated without resume evidence.
+- Job creation remains resilient when Gemini is missing; jobs save with `ai_status=unavailable`.
+
+#### Dependencies Added
+- `email-validator>=2.2.0`
+
+#### Verification
+- `python3 -m compileall backend` passed.
+- `./.venv/bin/pytest backend/tests/test_api.py -q` passed: 4 tests.
+- `npm run lint` passed with one existing warning for raw avatar `<img>` in `frontend/src/components/ui/Navbar.tsx`.
+- `npm run build` passed.
+- No-Gemini backend smoke passed: job creation persisted and returned `ai_status=unavailable`.
+
+#### Issues Found
+- Existing SQLite fallback databases were missing `owner_uid` and `company_id`; added idempotent schema ALTERs.
+- Existing backend tests were stale because `/jobs` is now Firebase-protected; tests now override Firebase auth and create a recruiter profile.
+- The local `.venv` was missing declared backend dependencies; synced it with `backend/requirements.txt`.
+- The pasted Gemini key is exposed and must be rotated before real use. Do not commit API keys; use backend-only `GEMINI_API_KEY`.
+
+#### Pending Work
+- Add the internal Evaluation Lab routes and tables for gold datasets, replay mode, agreement rate, false positives/negatives, and confidence calibration.
+- Add recruiter feedback/override capture and learning events.
+- Add a failure analysis dashboard after enough labeled decisions exist.
+- Migrate from deprecated `google.generativeai` to `google.genai` in a separate dependency/API update.
+
+#### Notes For Next Agent
+- Treat `candidate_profiles` + `evidence` as the source of truth for hiring intelligence.
+- Do not reintroduce generic keyword scoring.
+- Keep candidate dashboard work deferred until recruiter intelligence is trustworthy.
+- Existing unrelated worktree changes remain in `AGENTS.md`, `.code-intel/`, and Firebase config/rules files.
+
 ### Session Update - 2026-06-14 (Global MCP Server Expansion - Wave 4)
 
 #### Objective

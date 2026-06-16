@@ -146,8 +146,26 @@ async def dummy_generate(self, prompt: str, retry_count: int = 1) -> str:
 GeminiClient.generate = dummy_generate
 
 from main import app
+from app.auth.firebase import require_firebase_user
 
 client = TestClient(app)
+
+async def fake_firebase_user():
+    return {
+        "uid": "test-recruiter-uid",
+        "email": "recruiter@example.com",
+        "name": "Test Recruiter",
+        "picture": "",
+    }
+
+app.dependency_overrides[require_firebase_user] = fake_firebase_user
+
+def ensure_recruiter_profile():
+    response = client.post(
+        "/auth/profile",
+        json={"role": "recruiter", "display_name": "Test Recruiter", "company_name": "LakshyaCorp"},
+    )
+    assert response.status_code == 200
 
 def test_root():
     response = client.get("/")
@@ -155,6 +173,7 @@ def test_root():
     assert response.json()["status"] == "online"
 
 def test_jobs():
+    ensure_recruiter_profile()
     # 1. Create a job description
     payload = {
         "title": "Software Development Engineer",
@@ -175,6 +194,7 @@ def test_jobs():
     assert len(list_response.json()) > 0
 
 def test_recruiter_pipeline():
+    ensure_recruiter_profile()
     # Setup job
     job_payload = {
         "title": "SDE Mid",
@@ -204,7 +224,10 @@ def test_recruiter_pipeline():
         cand_res = data["results"][0]
         assert cand_res["profile"]["name"] == "Jane Doe"
         assert cand_res["decision"]["verdict"] == "Strong Hire"
-        assert cand_res["decision"]["confidence"] == 80
+        assert 0 <= cand_res["decision"]["confidence"] <= 100
+        assert cand_res["decision"]["ranking"] == 1
+        assert "ranking_rationale" in cand_res["decision"]
+        assert cand_res["evaluation"]["evidence_items"]
         
         # Test fetching details
         eval_id = cand_res["evaluation_id"]

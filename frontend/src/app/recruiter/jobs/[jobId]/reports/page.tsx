@@ -12,17 +12,28 @@ type Report = {
   score?: number
   verdict?: string
   ranking?: number
+  ranking_confidence?: number
+  ranking_rationale?: RankingRationale
   report_data: {
+    candidate_name?: string
     candidate_score?: number
-    strengths?: string[]
-    weaknesses?: string[]
-    evidence?: string[]
+    confidence?: number
+    strengths?: EvidenceClaim[]
+    weaknesses?: WeaknessClaim[]
+    evidence?: EvidenceItem[]
     risk_factors?: unknown
     final_recommendation?: string
     interview_questions?: string[]
     explanation?: string
+    why_hire?: string[]
+    why_not_hire?: string[]
   }
 }
+
+type EvidenceClaim = string | { claim?: string; evidence?: string; resume_section?: string }
+type WeaknessClaim = string | { claim?: string; missing_or_weak_evidence?: string }
+type EvidenceItem = string | { claim?: string; evidence?: string; resume_section?: string; quality?: string }
+type RankingRationale = { summary?: string; why_hire?: string[]; why_not_hire?: string[]; risks?: string[]; evidence_count?: number }
 
 export default function ReportsPage({ params }: { params: Promise<{ jobId: string }> }) {
   const { jobId } = use(params)
@@ -52,15 +63,19 @@ export default function ReportsPage({ params }: { params: Promise<{ jobId: strin
               <article key={report.id} className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h2 className="text-lg font-extrabold text-slate-950">{report.candidate_name || 'Candidate'}</h2>
-                    <p className="text-sm font-bold text-slate-500">{report.report_data.final_recommendation || report.verdict || 'Recommendation pending'}</p>
+                    <h2 className="text-lg font-extrabold text-slate-950">#{report.ranking || '-'} {report.candidate_name || report.report_data.candidate_name || 'Candidate'}</h2>
+                    <p className="mt-1 text-sm font-bold text-emerald-700">{report.report_data.final_recommendation || report.verdict || 'Recommendation pending'} · {report.report_data.confidence ?? report.ranking_confidence ?? 0}% confidence</p>
+                    {(report.ranking_rationale?.summary || report.report_data.explanation) && <p className="mt-3 max-w-4xl text-sm font-medium leading-6 text-slate-600">{report.ranking_rationale?.summary || report.report_data.explanation}</p>}
                   </div>
                   <div className="text-3xl font-extrabold">{report.report_data.candidate_score ?? report.score ?? 0}</div>
                 </div>
-                <ReportList title="Strengths" items={report.report_data.strengths} />
-                <ReportList title="Weaknesses" items={report.report_data.weaknesses} />
-                <ReportList title="Evidence" items={report.report_data.evidence} />
-                <ReportList title="Interview Questions" items={report.report_data.interview_questions} />
+                <div className="mt-5 grid gap-4 lg:grid-cols-2">
+                  <ReportList title="Why hire" items={report.report_data.why_hire || report.ranking_rationale?.why_hire || report.report_data.strengths?.map(labelFor)} />
+                  <ReportList title="Why not hire" items={report.report_data.why_not_hire || report.ranking_rationale?.why_not_hire || report.report_data.weaknesses?.map(labelFor)} />
+                  <ReportList title="Evidence" items={report.report_data.evidence?.map(labelFor)} />
+                  <ReportList title="Risks" items={riskItems(report.report_data.risk_factors, report.ranking_rationale?.risks)} />
+                  <ReportList title="Interview Questions" items={report.report_data.interview_questions} />
+                </div>
               </article>
             ))}
           </div>
@@ -72,9 +87,23 @@ export default function ReportsPage({ params }: { params: Promise<{ jobId: strin
 
 function ReportList({ title, items = [] }: { title: string; items?: string[] }) {
   if (!items.length) return null
-  return <div className="mt-4"><h3 className="text-sm font-extrabold text-slate-800">{title}</h3><ul className="mt-2 list-disc space-y-1 pl-5 text-sm font-medium leading-6 text-slate-600">{items.map((item) => <li key={item}>{item}</li>)}</ul></div>
+  return <div className="rounded-2xl border border-white bg-white p-4"><h3 className="text-sm font-extrabold text-slate-800">{title}</h3><ul className="mt-2 list-disc space-y-1 pl-5 text-sm font-medium leading-6 text-slate-600">{items.slice(0, 6).map((item) => <li key={item}>{item}</li>)}</ul></div>
 }
 
 function Empty({ text }: { text: string }) {
   return <div className="mt-5 rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center font-extrabold text-slate-700">{text}</div>
+}
+
+function labelFor(item: EvidenceClaim | WeaknessClaim | EvidenceItem) {
+  if (typeof item === 'string') return item
+  const evidence = 'evidence' in item ? item.evidence : undefined
+  const missing = 'missing_or_weak_evidence' in item ? item.missing_or_weak_evidence : undefined
+  return item.claim || evidence || missing || 'Evidence signal'
+}
+
+function riskItems(value: unknown, fallback?: string[]) {
+  if (fallback?.length) return fallback
+  if (Array.isArray(value)) return value.map((item) => typeof item === 'string' ? item : labelFor(item as EvidenceItem))
+  if (typeof value === 'string') return [value]
+  return []
 }

@@ -21,14 +21,16 @@ Evaluation Report:
 
 Return ONLY valid JSON in this exact structure:
 {{
-  "contested_claims": [
+  "concerns": [
     {{
-      "original_claim": "The specific claim made in the evaluation",
-      "counter": "Adversarial counter-argument detailing why this claim is weak or lacks evidence",
+      "claim": "The specific claim made in the evaluation",
+      "concern": "Adversarial counter-argument detailing why this claim is weak or lacks evidence",
       "severity": "low/medium/high"
     }}
   ],
+  "unsupported_claims": ["claims that are not sufficiently supported by resume evidence"],
   "risk_factors": ["critical items or red flags that remain unverified or represent hiring risks"],
+  "potential_bias": ["ways the evaluation may be overvaluing prestige, keywords, confidence, or writing style"],
   "overall_confidence_adjustment": -5,
   "recommendation": "approve/flag/reject_evaluation"
 }}

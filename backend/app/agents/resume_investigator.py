@@ -11,21 +11,23 @@ Resume Text:
 
 Return ONLY valid JSON in this exact structure:
 {{
-  "name": "Candidate Name (if available, otherwise set empty string)",
-  "experience_years": 0.0,
-  "projects": [
+  "candidate_name": "Candidate Name (if available, otherwise set empty string)",
+  "skills": ["skills explicitly demonstrated by project or work evidence, not keyword stuffing"],
+  "experience": ["work experience entries or roles explicitly stated in the resume"],
+  "projects": ["project outcomes explicitly stated in the resume"],
+  "achievements": ["quantified achievements, metrics, awards, shipped outcomes, or business results"],
+  "evidence": [
     {{
-      "name": "Project name",
-      "description": "Short description of what the project does",
-      "evidence": ["list of explicit actions, implementations, or architectures verified from text"],
-      "impact": "any stated metrics or business output of this project",
-      "technologies": ["languages, frameworks, tools explicitly mentioned for this project"]
+      "claim": "short hiring-relevant claim",
+      "evidence": "exact supporting fact from the resume, preferably action + outcome",
+      "resume_section": "Experience/Projects/Education/Achievements/Skills/Unknown",
+      "evidence_type": "achievement|project|experience|leadership|impact|technical",
+      "quality": "strong|moderate|weak"
     }}
   ],
-  "skills_demonstrated": ["languages, frameworks, concepts explicitly demonstrated through experience/projects"],
-  "quantified_achievements": ["explicit metrics, growth, savings, or numbers achieved"],
-  "education": ["degrees, universities, graduation years explicitly mentioned"],
-  "missing_evidence": ["what critical details or evidence are conspicuously missing in this resume (e.g. scale, duration, github links, specific roles)"],
-  "career_trajectory": "short summary describing candidate's career growth, transition, or consistency"
+  "missing_evidence": ["critical details missing from the resume, such as scale, ownership, duration, metrics, team size, links, or stakeholder proof"]
 }}
+
+Evidence examples are "Built AI hiring platform", "Onboarded 50 recruiters", "Reduced screening time 6x".
+Do not return generic evidence like "Python", "Leadership", or "Communication" unless tied to a concrete action or outcome.
 """
