@@ -2008,3 +2008,68 @@ This file is the persistent project memory for AI agents and human contributors.
 - `curl http://localhost:8000/`: returned `Hiring Wallah Backend API`.
 - `npm run lint` in `frontend`: passed with the existing avatar `<img>` warning.
 - `npm run build` in `frontend`: passed.
+
+### Session Update - 2026-06-16 (Recruiter MVP Functionality Pass)
+
+#### Objective
+- Make the recruiter workflow functional before any further design polish or AI expansion.
+- Apply final technical decisions: Firebase Auth + Neon PostgreSQL + FastAPI, no Supabase, no Firestore, job creation must not depend on Gemini.
+
+#### Completed
+- **Database**
+  - Replaced Supabase-specific backend paths with SQL database abstraction.
+  - Backend now uses `DATABASE_URL` for Neon/PostgreSQL and SQLite only as local fallback.
+  - Added active `neon_schema.sql`.
+  - Removed active `supabase_schema.sql`.
+- **Job creation**
+  - Job creation now saves immediately before AI rubric generation.
+  - If Gemini is missing/fails, job remains saved with `ai_status=unavailable`.
+  - Added simple fields only: title, company, location, experience range, description.
+- **Recruiter API**
+  - Added auth-scoped `/jobs` endpoints:
+    - `GET /jobs`
+    - `POST /jobs`
+    - `GET /jobs/{job_id}`
+    - `GET /jobs/{job_id}/resumes`
+    - `POST /jobs/{job_id}/resumes`
+    - `GET /jobs/{job_id}/evaluations`
+    - `GET /jobs/{job_id}/reports`
+  - Resume upload supports PDF, DOCX, TXT.
+  - Batch upload limit is 20 resumes.
+  - If Gemini is not configured, resumes still parse and save; response says `Evaluation unavailable. Configure AI provider.`
+- **Parsing and reports**
+  - Parser now supports PDF, DOCX, TXT.
+  - Evaluation flow now creates web report records when AI evaluation succeeds.
+- **Recruiter frontend**
+  - Replaced hash-section dashboard pattern with real routes:
+    - `/recruiter`
+    - `/recruiter/jobs`
+    - `/recruiter/jobs/new`
+    - `/recruiter/jobs/[jobId]`
+    - `/recruiter/jobs/[jobId]/resumes`
+    - `/recruiter/jobs/[jobId]/evaluations`
+    - `/recruiter/jobs/[jobId]/reports`
+    - `/recruiter/settings`
+  - Sidebar labels now match final MVP: Dashboard, Jobs, Resume Upload, Evaluations, Reports, Settings.
+  - Removed fake recruiter metrics from the new recruiter routes.
+
+#### Verification
+- `python3 -m pip install -r backend/requirements.txt`: installed `python-docx`; `psycopg` already present.
+- `python3 -m compileall backend`: passed.
+- Backend import smoke: passed, using SQLite fallback because `DATABASE_URL` is not set.
+- Orchestrator smoke: job creation succeeded without `GEMINI_API_KEY`, returning `ai_status=unavailable`.
+- Resume smoke: TXT resume parsed and saved to a job.
+- Backend restarted on `http://localhost:8000`.
+- `curl http://localhost:8000/`: returned `Hiring Wallah Backend API`.
+- `curl http://localhost:8000/jobs`: returned `401 Missing Firebase bearer token`, expected for protected recruiter data.
+- `npm run lint` in `frontend`: passed with existing avatar `<img>` warning.
+- `npm run build` in `frontend`: passed and generated the new recruiter routes.
+- Frontend route smoke:
+  - `http://localhost:3000/recruiter/jobs`: `200`
+  - `http://localhost:3000/recruiter/jobs/new`: `200`
+
+#### Remaining Work
+- Configure Neon `DATABASE_URL` in backend environment to leave SQLite fallback.
+- Configure `GEMINI_API_KEY` for real evaluation/ranking/report generation.
+- Browser-click verify the authenticated recruiter flow end to end with a real Firebase session.
+- Old planning docs still mention Supabase historically; active implementation and schema no longer use Supabase.

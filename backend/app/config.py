@@ -8,16 +8,14 @@ load_dotenv()
 
 class Settings(BaseSettings):
     GEMINI_API_KEY: str = ""
-    SUPABASE_URL: str = ""
-    SUPABASE_ANON_KEY: str = ""
-    SUPABASE_SERVICE_ROLE_KEY: str = ""
+    DATABASE_URL: str = ""
     CORS_ORIGINS: str = "http://localhost:3000"
     FIREBASE_PROJECT_ID: str = "hiring-wallah-prod"
     FIREBASE_SERVICE_ACCOUNT_JSON: str = ""
     FIREBASE_SERVICE_ACCOUNT_PATH: str = ""
     FIREBASE_ALLOW_LOCAL_TOKEN_FALLBACK: bool = True
     
-    # Allow DB fallback to SQLite if Supabase url/keys are empty
+    # Allow local development fallback when Neon DATABASE_URL is empty.
     DB_FALLBACK_SQLITE: bool = True
     SQLITE_DB_PATH: str = "hiring_wallah.db"
 

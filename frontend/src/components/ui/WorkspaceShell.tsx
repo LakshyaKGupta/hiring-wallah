@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   Bell,
-  Bot,
   Briefcase,
   CalendarCheck,
   ChevronDown,
@@ -16,6 +15,8 @@ import {
   PanelLeftOpen,
   Search,
   ShieldCheck,
+  Settings,
+  Upload,
   Sparkles,
   Target,
   UploadCloud,
@@ -56,11 +57,12 @@ interface WorkspaceShellProps {
 }
 
 const recruiterNav: WorkspaceNavItem[] = [
-  { id: 'command', label: 'Command', href: '#command', icon: LayoutDashboard, contribution: 'Daily operating view' },
-  { id: 'roles', label: 'Roles', href: '#roles', icon: Briefcase, contribution: 'Open hiring demand' },
-  { id: 'shortlist', label: 'Shortlist', href: '#shortlist', icon: FileSearch, contribution: 'Evidence-ranked talent' },
-  { id: 'agents', label: 'AI Agents', href: '#agents', icon: Bot, contribution: 'Screening automation' },
-  { id: 'reports', label: 'Reports', href: '#reports', icon: ShieldCheck, contribution: 'Decision records' },
+  { id: 'dashboard', label: 'Dashboard', href: '/recruiter', icon: LayoutDashboard, contribution: 'Workspace home' },
+  { id: 'jobs', label: 'Jobs', href: '/recruiter/jobs', icon: Briefcase, contribution: 'Create and view jobs' },
+  { id: 'resumes', label: 'Resume Upload', href: '/recruiter/jobs', icon: Upload, contribution: 'Upload to a job' },
+  { id: 'evaluations', label: 'Evaluations', href: '/recruiter/jobs', icon: FileSearch, contribution: 'Candidate ranking' },
+  { id: 'reports', label: 'Reports', href: '/recruiter/jobs', icon: ShieldCheck, contribution: 'Web reports' },
+  { id: 'settings', label: 'Settings', href: '/recruiter/settings', icon: Settings, contribution: 'Company profile' },
 ]
 
 const candidateNav: WorkspaceNavItem[] = [

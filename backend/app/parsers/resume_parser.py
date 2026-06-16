@@ -2,10 +2,44 @@ import io
 import fitz  # PyMuPDF
 import pdfplumber
 import logging
+from docx import Document
 
 logger = logging.getLogger("hiring_wallah.resume_parser")
 
-def parse_resume(pdf_bytes: bytes) -> str:
+def parse_resume(file_bytes: bytes, filename: str = "") -> str:
+    suffix = filename.lower().rsplit(".", 1)[-1] if "." in filename else "pdf"
+    if suffix == "txt":
+        return parse_txt(file_bytes)
+    if suffix == "docx":
+        return parse_docx(file_bytes)
+    return parse_pdf(file_bytes)
+
+
+def parse_txt(file_bytes: bytes) -> str:
+    for encoding in ("utf-8", "utf-16", "latin-1"):
+        try:
+            return file_bytes.decode(encoding).strip()
+        except UnicodeDecodeError:
+            continue
+    return ""
+
+
+def parse_docx(file_bytes: bytes) -> str:
+    try:
+        document = Document(io.BytesIO(file_bytes))
+        parts = [paragraph.text for paragraph in document.paragraphs if paragraph.text.strip()]
+        for table in document.tables:
+            for row in table.rows:
+                row_text = " ".join(cell.text.strip() for cell in row.cells if cell.text.strip())
+                if row_text:
+                    parts.append(row_text)
+        return "\n".join(parts).strip()
+    except Exception as e:
+        logger.error(f"DOCX extraction failed: {e}")
+        return ""
+
+
+def parse_pdf(pdf_bytes: bytes) -> str:
     """
     Extracts text from PDF bytes.
     Tries pdfplumber first, falls back to PyMuPDF (fitz) if pdfplumber fails or returns insufficient text.

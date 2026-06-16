@@ -1,8 +1,5 @@
 import logging
-import asyncio
-import sqlite3
 from typing import List, Dict, Any, Tuple
-from app.config import settings
 from app.utils.gemini_client import GeminiClient
 from app.parsers.resume_parser import parse_resume
 from app.db.database import db
@@ -35,29 +32,35 @@ class Orchestrator:
         description: str,
         owner_uid: str | None = None,
         company_id: str | None = None,
+        location: str | None = None,
+        experience_range: str | None = None,
     ) -> Dict[str, Any]:
         """
         Runs Agent 1 (Requirement Analyst) and Agent 2 (Hiring Strategist) on a new job
         description, then creates a job record in the database.
         """
-        logger.info(f"Orchestration: Setting up job '{title}'...")
-        
-        # Step 1: Analyze job description
-        req_analysis = await self.requirement_analyst.run({"jd": description})
-        
-        # Step 2: Create weighted rubric framework
-        framework = await self.hiring_strategist.run({"requirements": req_analysis})
-        
-        # Step 3: Store in database
+        logger.info(f"Orchestration: Creating job '{title}'...")
         job = await db.create_job(
             title=title,
             company=company,
+            location=location,
+            experience_range=experience_range,
             description=description,
-            requirement_analysis=req_analysis,
-            evaluation_framework=framework,
+            requirement_analysis={},
+            evaluation_framework={},
+            ai_status="pending",
             owner_uid=owner_uid,
             company_id=company_id,
         )
+        try:
+            req_analysis = await self.requirement_analyst.run({"jd": description})
+            framework = await self.hiring_strategist.run({"requirements": req_analysis})
+            await db.update_job_ai(job["id"], req_analysis, framework, "ready")
+            job = await db.get_job(job["id"]) or job
+        except Exception as exc:
+            logger.warning("Job saved but AI rubric generation failed: %s", exc)
+            await db.update_job_ai(job["id"], {}, {}, "unavailable")
+            job = await db.get_job(job["id"]) or job
         return job
 
     async def run_candidate_evaluation(self, job_id: str, resume_bytes: bytes, filename: str = "") -> Dict[str, Any]:
@@ -72,7 +75,7 @@ class Orchestrator:
         framework = job.get("evaluation_framework", {})
         
         # Step 3: Extract resume text
-        resume_text = parse_resume(resume_bytes)
+        resume_text = parse_resume(resume_bytes, filename)
         if not resume_text:
             raise ValueError(f"Unable to parse or extract text from file {filename}")
             
@@ -91,6 +94,13 @@ class Orchestrator:
             raw_resume_text=resume_text
         )
         candidate_id = candidate["id"]
+        resume = await db.create_resume(
+            job_id=job_id,
+            candidate_id=candidate_id,
+            file_name=filename,
+            file_type=filename.rsplit(".", 1)[-1].lower() if "." in filename else "pdf",
+            raw_text=resume_text,
+        )
         
         # Run Agent 4: Candidate Evaluator
         evaluation = await self.candidate_evaluator.run({
@@ -116,7 +126,8 @@ class Orchestrator:
             strengths=evaluation.get("strengths") or [],
             weaknesses=evaluation.get("weaknesses") or [],
             evidence=profile.get("skills_demonstrated") or [],
-            devils_advocate=critique
+            devils_advocate=critique,
+            resume_id=resume.get("id"),
         )
         
         # Save decision in DB
@@ -129,12 +140,28 @@ class Orchestrator:
             interview_questions=decision.get("suggested_interview_questions") or [],
             ranking=999 # Placeholder, will be updated during global sorting
         )
+        report = await db.create_report(
+            evaluation_id=eval_record["id"],
+            candidate_id=candidate_id,
+            job_id=job_id,
+            report_data={
+                "candidate_score": eval_record.get("score", 0),
+                "strengths": eval_record.get("strengths", []),
+                "weaknesses": eval_record.get("weaknesses", []),
+                "evidence": eval_record.get("evidence", []),
+                "risk_factors": critique.get("risks") or critique.get("risk_factors") or critique,
+                "final_recommendation": decision_record.get("verdict"),
+                "interview_questions": decision_record.get("interview_questions", []),
+                "explanation": decision_record.get("explanation", ""),
+            },
+        )
         
         return {
             "candidate": candidate,
             "evaluation": eval_record,
             "critique": critique,
-            "decision": decision_record
+            "decision": decision_record,
+            "report": report,
         }
 
     async def evaluate_multiple_candidates(self, job_id: str, resumes: List[Tuple[bytes, str]]) -> List[Dict[str, Any]]:
@@ -170,23 +197,10 @@ class Orchestrator:
             rank = index + 1
             item["decision"]["ranking"] = rank
             
-            # Update ranking in DB (async, non-blocking to loop)
-            # In Supabase/SQLite we update the specific record
-            c_id = item["profile"]["id"]
+            # Update ranking in the configured SQL database.
             d_id = item["decision"]["id"]
-            
-            if db.use_supabase:
-                def _update():
-                    db.supabase_client.table("decisions").update({"ranking": rank}).eq("id", d_id).execute()
-                await asyncio.to_thread(_update)
-            else:
-                def _update_sqlite():
-                    conn = sqlite3.connect(settings.SQLITE_DB_PATH)
-                    cursor = conn.cursor()
-                    cursor.execute("UPDATE decisions SET ranking = ? WHERE id = ?", (rank, d_id))
-                    conn.commit()
-                    conn.close()
-                await asyncio.to_thread(_update_sqlite)
+            if d_id:
+                await db.update_decision_ranking(d_id, rank)
                 
         return results_sorted
 
@@ -198,7 +212,7 @@ class Orchestrator:
         logger.info(f"Orchestration: Running candidate flow for target role '{target_role}'...")
         
         # Step 1: Parse resume
-        resume_text = parse_resume(resume_bytes)
+        resume_text = parse_resume(resume_bytes, filename)
         if not resume_text:
             raise ValueError(f"Unable to parse or extract text from resume.")
             

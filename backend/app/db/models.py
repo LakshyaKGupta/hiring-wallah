@@ -23,15 +23,20 @@ class UserProfileResponse(BaseModel):
 class JobCreate(BaseModel):
     title: str = Field(..., example="Software Engineer")
     company: Optional[str] = Field(None, example="Hiring Wallah")
+    location: Optional[str] = Field(None, example="Remote")
+    experience_range: Optional[str] = Field(None, example="2-5 years")
     description: str = Field(..., example="Looking for a Python developer with FastAPI experience.")
 
 class JobResponse(BaseModel):
     id: UUID
     title: str
     company: Optional[str]
+    location: Optional[str] = None
+    experience_range: Optional[str] = None
     description: str
     requirement_analysis: Optional[Dict[str, Any]] = None
     evaluation_framework: Optional[Dict[str, Any]] = None
+    ai_status: Optional[str] = None
     owner_uid: Optional[str] = None
     company_id: Optional[UUID] = None
     created_at: datetime
